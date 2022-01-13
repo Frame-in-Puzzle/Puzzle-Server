@@ -1,4 +1,4 @@
-package com.server.Puzzle.config.web;
+package com.server.Puzzle.global.config.web;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
