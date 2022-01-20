@@ -43,6 +43,9 @@ dependencies {
 	// *** QueryDsl *** //
 	implementation 'com.querydsl:querydsl-jpa'
 
+	// *** Oauth2 *** //
+	implementation 'org.springframework.boot:spring-boot-configuration-processor:2.6.2'
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 }
 
 test {
