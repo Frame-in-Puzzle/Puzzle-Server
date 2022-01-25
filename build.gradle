@@ -3,8 +3,6 @@ plugins {
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
 	id "com.ewerk.gradle.plugins.querydsl" version "1.0.10" //querydsl
-	// *** Q-Type error *** //
-	id "io.franzbecker.gradle-lombok" version "3.0.0"
 }
 
 group = 'com.server'
@@ -29,8 +27,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-validation' // validation
 
 	// *** lombok *** //
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
+	compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.22'
 
 	// *** h2 *** //
 	runtimeOnly 'com.h2database:h2'
@@ -46,6 +43,14 @@ dependencies {
 	// *** QueryDsl *** //
 	implementation 'com.querydsl:querydsl-jpa'
 
+	// *** Oauth2 *** //
+	implementation 'org.springframework.boot:spring-boot-configuration-processor:2.6.2'
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+	// *** JsonWebToken *** //
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.1'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.1'
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.1'
 }
 
 test {
