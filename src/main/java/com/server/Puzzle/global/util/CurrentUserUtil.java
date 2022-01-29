@@ -1,4 +1,4 @@
-package com.server.Puzzle.global.config.security.authentication;
+package com.server.Puzzle.global.util;
 
 import com.server.Puzzle.domain.user.domain.User;
 import com.server.Puzzle.domain.user.repository.UserRepository;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class CurrentUser {
+public class CurrentUserUtil {
 
     private final UserRepository userRepository;
 

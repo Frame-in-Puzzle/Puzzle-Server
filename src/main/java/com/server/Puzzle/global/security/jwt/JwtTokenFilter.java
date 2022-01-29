@@ -1,4 +1,4 @@
-package com.server.Puzzle.global.config.security.jwt;
+package com.server.Puzzle.global.security.jwt;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

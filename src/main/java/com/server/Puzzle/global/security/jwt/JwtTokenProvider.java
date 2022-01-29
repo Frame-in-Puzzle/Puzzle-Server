@@ -1,6 +1,6 @@
-package com.server.Puzzle.global.config.security.jwt;
+package com.server.Puzzle.global.security.jwt;
 
-import com.server.Puzzle.global.config.security.authentication.CustomUserDetailsService;
+import com.server.Puzzle.global.security.authentication.CustomUserDetailsService;
 import com.server.Puzzle.global.enumType.Role;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
