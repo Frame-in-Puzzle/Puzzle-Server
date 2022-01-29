@@ -1,4 +1,4 @@
-package com.server.Puzzle.domain.user.oauth2.dto;
+package com.server.Puzzle.domain.oauth2.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
