@@ -39,6 +39,7 @@ public class OauthService {
 
         return LoginResponse.builder()
                 .id(user.getId())
+                .oauthId(user.getOauthId())
                 .name(user.getName())
                 .email(user.getEmail())
                 .imageUrl(user.getImageUrl())
@@ -51,9 +52,9 @@ public class OauthService {
     }
 
     private User saveOrUpdate(UserProfile userProfile) {
-        User user = userRepository.findByEmail(userProfile.getEmail())
+        User user = userRepository.findByOauthId(userProfile.getOauthId())
                 .map(entity -> entity.update(
-                        userProfile.getEmail(), userProfile.getName(), userProfile.getImageUrl()))
+                        userProfile.getEmail(), userProfile.getName()))
                 .orElseGet(userProfile::toUser);
         return userRepository.save(user);
     }
