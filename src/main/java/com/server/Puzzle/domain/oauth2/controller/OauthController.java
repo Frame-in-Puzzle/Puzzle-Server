@@ -5,10 +5,7 @@ import com.server.Puzzle.domain.oauth2.dto.LoginResponse;
 import com.server.Puzzle.domain.oauth2.dto.OauthCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RequestMapping("/v1/api/oauth")
@@ -16,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class OauthController {
     private final OauthServiceImpl oauthServiceImpl;
 
-    @GetMapping("/login/github")
+    @PostMapping("/login/github")
     public ResponseEntity<LoginResponse> login(@RequestBody OauthCode code) {
         LoginResponse loginResponse = oauthServiceImpl.login(code);
         return ResponseEntity.ok().body(loginResponse);
