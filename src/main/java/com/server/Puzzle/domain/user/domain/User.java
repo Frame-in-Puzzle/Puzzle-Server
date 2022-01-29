@@ -3,6 +3,7 @@ package com.server.Puzzle.domain.user.domain;
 import com.server.Puzzle.global.entity.BaseTimeEntity;
 import com.server.Puzzle.global.enumType.Field;
 import com.server.Puzzle.global.enumType.Role;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
@@ -20,6 +21,7 @@ import static javax.persistence.EnumType.STRING;
 
 @Getter
 @Entity
+@AllArgsConstructor
 @Table(name = "User")
 public class User extends BaseTimeEntity implements UserDetails {
 
@@ -27,6 +29,9 @@ public class User extends BaseTimeEntity implements UserDetails {
     @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "oauth_id")
+    private String oauthId;
 
     @Column(name = "user_email", nullable = true)
     private String email;
@@ -53,8 +58,12 @@ public class User extends BaseTimeEntity implements UserDetails {
     @Column(name = "user_image_url", nullable = false)
     private String imageUrl;
 
+    public User() {}
+
     @Builder
-    public User(String email, String name, String imageUrl, Role roles, String bio) {
+    public User(Long id, String oauthId,String email, String name, String imageUrl, Role roles, String bio) {
+        this.id = id;
+        this.oauthId = oauthId;
         this.email = email;
         this.name = name;
         this.roles = Collections.singletonList(roles);
@@ -62,10 +71,9 @@ public class User extends BaseTimeEntity implements UserDetails {
         this.bio = bio;
     }
 
-    public User update(String name, String email, String imageUrl) {
+    public User update(String name, String email) {
         this.name = name;
         this.email = email;
-        this.imageUrl = imageUrl;
         return this;
     }
 
@@ -79,7 +87,6 @@ public class User extends BaseTimeEntity implements UserDetails {
     public String getPassword() {
         return null;
     }
-
 
     @Override
     public String getUsername() {
@@ -106,3 +113,4 @@ public class User extends BaseTimeEntity implements UserDetails {
         return false;
     }
 }
+
