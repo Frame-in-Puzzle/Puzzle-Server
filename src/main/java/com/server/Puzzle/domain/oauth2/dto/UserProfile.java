@@ -1,9 +1,11 @@
-package com.server.Puzzle.domain.user.oauth2.dto;
+package com.server.Puzzle.domain.oauth2.dto;
 
 import com.server.Puzzle.domain.user.domain.User;
 import com.server.Puzzle.global.enumType.Role;
 import lombok.Builder;
 import lombok.Getter;
+
+import java.util.Collections;
 
 @Getter
 public class UserProfile {
@@ -29,7 +31,7 @@ public class UserProfile {
                 .name(name)
                 .imageUrl(imageUrl)
                 .bio(bio)
-                .roles(Role.USER)
+                .roles(Collections.singletonList(Role.USER))
                 .build();
     }
 }
