@@ -3,8 +3,10 @@ package com.server.Puzzle.domain.user.domain;
 import com.server.Puzzle.global.entity.BaseTimeEntity;
 import com.server.Puzzle.global.enumType.Field;
 import com.server.Puzzle.global.enumType.Role;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,7 +14,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,6 +21,9 @@ import static javax.persistence.EnumType.STRING;
 
 @Getter
 @Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "User")
 public class User extends BaseTimeEntity implements UserDetails {
 
@@ -28,7 +32,10 @@ public class User extends BaseTimeEntity implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "user_email", nullable = true)
+    @Column(name = "oauth_id")
+    private String oauthId;
+
+    @Column(name = "user_email", unique = true, nullable = true)
     private String email;
 
     @Column(name = "user_name", nullable = false)
@@ -53,14 +60,8 @@ public class User extends BaseTimeEntity implements UserDetails {
     @Column(name = "user_image_url", nullable = false)
     private String imageUrl;
 
-    @Builder
-    public User(String email, String name, String imageUrl, Role roles, String bio) {
-        this.email = email;
-        this.name = name;
-        this.roles = Collections.singletonList(roles);
-        this.imageUrl = imageUrl;
-        this.bio = bio;
-    }
+    @Column(name = "is_first_visit")
+    private boolean isFirstVisit;
 
     public User update(String name, String email, String imageUrl) {
         this.name = name;
@@ -79,7 +80,6 @@ public class User extends BaseTimeEntity implements UserDetails {
     public String getPassword() {
         return null;
     }
-
 
     @Override
     public String getUsername() {
@@ -106,3 +106,4 @@ public class User extends BaseTimeEntity implements UserDetails {
         return false;
     }
 }
+

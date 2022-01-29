@@ -25,7 +25,7 @@ public class JwtTokenProvider {
     @Value("${security.jwt.token.secretKey}")
     private String secretKey;
 
-    private static long TOKEN_VALIDATION_EXPIREDTIME = 60 * 60 * 3;
+    private static long TOKEN_VALIDATION_EXPIREDTIME = 1000L * 60 * 60 * 3;
     private static long REFRESHTOKEN_VALIDATION_EXPIREDTIME = TOKEN_VALIDATION_EXPIREDTIME * 8 * 90;
 
     private final CustomUserDetailsService customUserDetailsService;

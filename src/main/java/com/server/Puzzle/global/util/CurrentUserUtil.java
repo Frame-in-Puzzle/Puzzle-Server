@@ -13,25 +13,14 @@ public class CurrentUserUtil {
 
     private final UserRepository userRepository;
 
-    public static String getCurrentName (){
-        String name  = null;
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if(principal instanceof UserDetails) {
-            name  = ((UserDetails) principal).getUsername();
-        } else{
-            name  = principal.toString();
-        }
-        return name ;
-    }
-
     public User getCurrentUser() {
-        String name  = null;
+        String name = null;
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         if(principal instanceof UserDetails) {
-            name  = ((UserDetails) principal).getUsername();
+            name = ((UserDetails) principal).getUsername();
         } else{
-            name  = principal.toString();
+            name = principal.toString();
         }
         return userRepository.findByName(name)
                 .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다"));
