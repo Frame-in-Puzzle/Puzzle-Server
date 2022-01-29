@@ -44,7 +44,7 @@ public class User extends BaseTimeEntity implements UserDetails {
     @Column(name = "user_field", nullable = true)
     private Field field; //분야
 
-    @Enumerated(STRING)
+    @Enumerated(EnumType.STRING)
     @Column(name = "Role")
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "Role", joinColumns = @JoinColumn(name = "user_id"))
