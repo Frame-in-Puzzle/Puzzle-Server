@@ -12,6 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 public class LoginResponse {
     private Long id;
+    private String oauthId;
     private String name;
     private String email;
     private String imageUrl;
@@ -22,8 +23,9 @@ public class LoginResponse {
     private String bio;
 
     @Builder
-    public LoginResponse(Long id, String name, String email, String imageUrl, List<Role> roles, String tokenType, String accessToken, String refreshToken, String bio) {
+    public LoginResponse(Long id, String oauthId, String name, String email, String imageUrl, List<Role> roles, String tokenType, String accessToken, String refreshToken, String bio) {
         this.id = id;
+        this.oauthId = oauthId;
         this.name = name;
         this.email = email;
         this.imageUrl = imageUrl;
