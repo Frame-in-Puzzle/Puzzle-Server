@@ -6,6 +6,7 @@ import com.server.Puzzle.global.enumType.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,7 +14,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,7 +21,9 @@ import static javax.persistence.EnumType.STRING;
 
 @Getter
 @Entity
+@Builder
 @AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "User")
 public class User extends BaseTimeEntity implements UserDetails {
 
@@ -33,7 +35,7 @@ public class User extends BaseTimeEntity implements UserDetails {
     @Column(name = "oauth_id")
     private String oauthId;
 
-    @Column(name = "user_email", nullable = true)
+    @Column(name = "user_email", unique = true, nullable = true)
     private String email;
 
     @Column(name = "user_name", nullable = false)
