@@ -60,18 +60,8 @@ public class User extends BaseTimeEntity implements UserDetails {
     @Column(name = "user_image_url", nullable = false)
     private String imageUrl;
 
-    public User() {}
-
-    @Builder
-    public User(Long id, String oauthId,String email, String name, String imageUrl, Role roles, String bio) {
-        this.id = id;
-        this.oauthId = oauthId;
-        this.email = email;
-        this.name = name;
-        this.roles = Collections.singletonList(roles);
-        this.imageUrl = imageUrl;
-        this.bio = bio;
-    }
+    @Column(name = "is_first_visit")
+    private boolean isFirstVisit;
 
     public User update(String name, String email) {
         this.name = name;
