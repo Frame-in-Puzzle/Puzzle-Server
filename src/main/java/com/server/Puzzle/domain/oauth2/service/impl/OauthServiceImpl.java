@@ -1,11 +1,13 @@
-package com.server.Puzzle.domain.user.oauth2.service;
+package com.server.Puzzle.domain.oauth2.service.impl;
 
+import com.server.Puzzle.domain.oauth2.service.OauthService;
 import com.server.Puzzle.domain.user.domain.User;
-import com.server.Puzzle.domain.user.enumType.OauthAttributes;
-import com.server.Puzzle.domain.user.oauth2.OauthProperties;
-import com.server.Puzzle.domain.user.oauth2.dto.LoginResponse;
-import com.server.Puzzle.domain.user.oauth2.dto.OauthTokenResponse;
-import com.server.Puzzle.domain.user.oauth2.dto.UserProfile;
+import com.server.Puzzle.domain.oauth2.config.OauthAttributes;
+import com.server.Puzzle.domain.oauth2.config.OauthProperties;
+import com.server.Puzzle.domain.oauth2.dto.LoginResponse;
+import com.server.Puzzle.domain.oauth2.dto.OauthCode;
+import com.server.Puzzle.domain.oauth2.dto.OauthTokenResponse;
+import com.server.Puzzle.domain.oauth2.dto.UserProfile;
 import com.server.Puzzle.domain.user.repository.UserRepository;
 import com.server.Puzzle.global.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -22,15 +24,18 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 @Service
-public class OauthService {
+public class OauthServiceImpl implements OauthService {
     private final UserRepository userRepository;
     private final OauthProperties oauthProperties;
     private final JwtTokenProvider jwtTokenProvider;
-    public LoginResponse login(String providerName, String code) {
+    private final OauthAttributes oauthAttributes;
+
+    @Override
+    public LoginResponse login(OauthCode code) {
         // access token 가져오기
         OauthTokenResponse tokenResponse = getToken(code);
         // 유저 정보 가져오기
-        UserProfile userProfile = getUserProfile(providerName, tokenResponse);
+        UserProfile userProfile = getUserProfile(tokenResponse);
         // 유저 DB에 저장
         User user = saveOrUpdate(userProfile);
 
@@ -38,29 +43,24 @@ public class OauthService {
         String refreshToken = jwtTokenProvider.createRefreshToken();
 
         return LoginResponse.builder()
-                .id(user.getId())
                 .name(user.getName())
                 .email(user.getEmail())
-                .imageUrl(user.getImageUrl())
-                .tokenType("Bearer")
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
-                .roles(user.getRoles())
-                .bio(user.getBio())
                 .build();
     }
 
     private User saveOrUpdate(UserProfile userProfile) {
-        User user = userRepository.findByEmail(userProfile.getEmail())
+        User user = userRepository.findByOauthId(userProfile.getOauthId())
                 .map(entity -> entity.update(
-                        userProfile.getEmail(), userProfile.getName(), userProfile.getImageUrl()))
+                        entity.getName(), entity.getEmail(), entity.getImageUrl()))
                 .orElseGet(userProfile::toUser);
         return userRepository.save(user);
     }
 
-    private UserProfile getUserProfile(String providerName, OauthTokenResponse tokenResponse) {
+    private UserProfile getUserProfile(OauthTokenResponse tokenResponse) {
         Map<String, Object> userAttributes = getUserAttributes(tokenResponse);
-        return OauthAttributes.extract(providerName, userAttributes);
+        return oauthAttributes.extract(userAttributes);
     }
 
     private Map<String, Object> getUserAttributes(OauthTokenResponse tokenResponse) {
@@ -73,7 +73,7 @@ public class OauthService {
                 .block();
     }
 
-    private OauthTokenResponse getToken(String code) {
+    private OauthTokenResponse getToken(OauthCode code) {
         return WebClient.create()
                 .post()
                 .uri(oauthProperties.getTokenUri())
@@ -89,9 +89,9 @@ public class OauthService {
                 .block();
     }
 
-    private MultiValueMap<String, String> tokenRequest(String code) {
+    private MultiValueMap<String, String> tokenRequest(OauthCode code) {
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
-        formData.add("code", code);
+        formData.add("code", code.getCode());
         formData.add("grant_type", "authorization_code");
         formData.add("redirect_uri", oauthProperties.getRedirectUri());
         return formData;

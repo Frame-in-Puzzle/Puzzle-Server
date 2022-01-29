@@ -1,4 +1,4 @@
-package com.server.Puzzle.domain.user.oauth2;
+package com.server.Puzzle.domain.oauth2.config;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
