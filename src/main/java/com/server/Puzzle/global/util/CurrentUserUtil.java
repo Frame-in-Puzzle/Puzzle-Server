@@ -1,4 +1,4 @@
-package com.server.Puzzle.global.config.security.authentication;
+package com.server.Puzzle.global.util;
 
 import com.server.Puzzle.domain.user.domain.User;
 import com.server.Puzzle.domain.user.repository.UserRepository;
