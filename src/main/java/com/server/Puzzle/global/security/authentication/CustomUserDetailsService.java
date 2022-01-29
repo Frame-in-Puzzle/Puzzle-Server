@@ -1,4 +1,4 @@
-package com.server.Puzzle.global.config.security.authentication;
+package com.server.Puzzle.global.security.authentication;
 
 import com.server.Puzzle.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

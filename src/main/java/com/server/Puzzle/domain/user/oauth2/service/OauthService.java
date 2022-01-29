@@ -7,7 +7,7 @@ import com.server.Puzzle.domain.user.oauth2.dto.LoginResponse;
 import com.server.Puzzle.domain.user.oauth2.dto.OauthTokenResponse;
 import com.server.Puzzle.domain.user.oauth2.dto.UserProfile;
 import com.server.Puzzle.domain.user.repository.UserRepository;
-import com.server.Puzzle.global.config.security.jwt.JwtTokenProvider;
+import com.server.Puzzle.global.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
