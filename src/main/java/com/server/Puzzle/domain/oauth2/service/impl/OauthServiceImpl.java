@@ -53,9 +53,8 @@ public class OauthServiceImpl implements OauthService {
     private User saveOrUpdate(UserProfile userProfile) {
         User user = userRepository.findByOauthId(userProfile.getOauthId())
                 .map(entity -> entity.update(
-                        userProfile.getEmail(), userProfile.getName()))
+                        entity.getName(), entity.getEmail(), entity.getImageUrl()))
                 .orElseGet(userProfile::toUser);
-        System.out.println(user);
         return userRepository.save(user);
     }
 
