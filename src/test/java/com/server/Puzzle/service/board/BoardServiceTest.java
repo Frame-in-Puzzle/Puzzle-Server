@@ -64,6 +64,7 @@ public class BoardServiceTest {
     }
 
     @Test
+    @DisplayName("게시물을 등록 기능을 테스트하는 테스트")
     void postTest(){
         PostRequestDto requestDto = PostRequestDto.builder()
                 .title("string")
@@ -78,6 +79,7 @@ public class BoardServiceTest {
     }
 
     @Test
+    @DisplayName("게시물을 수정 기능을 테스트하는 테스트")
     void correctionPostTest(){
         PostRequestDto postRequestDto = PostRequestDto.builder()
                 .title("string")
