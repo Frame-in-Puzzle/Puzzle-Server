@@ -39,4 +39,23 @@ public class Board extends BaseTimeEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    public Board updateTitle(String title){
+        this.title = title != null ? title : this.title;
+        return this;
+    }
+
+    public Board updateContents(String contents) {
+        this.contents = contents != null ? contents : this.contents;
+        return this;
+    }
+
+    public Board updatePurpose(Purpose purpose) {
+        this.purpose = purpose;
+        return this;
+    }
+
+    public Board updateStatus(Status status) {
+        this.status = status;
+        return this;
+    }
 }
