@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Getter
-public class PostRequestDto {
+public class CorrectionPostRequestDto {
 
     private String title;
     private String contents;
