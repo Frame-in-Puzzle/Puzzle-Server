@@ -1,18 +1,23 @@
 package com.server.Puzzle.domain.board.service.Impl;
 
 import com.server.Puzzle.domain.board.domain.Board;
+import com.server.Puzzle.domain.board.domain.BoardFile;
 import com.server.Puzzle.domain.board.dto.request.CorrectionPostRequestDto;
 import com.server.Puzzle.domain.board.dto.request.PostRequestDto;
 import com.server.Puzzle.domain.board.enumType.Purpose;
 import com.server.Puzzle.domain.board.enumType.Status;
+import com.server.Puzzle.domain.board.repository.BoardFileRepository;
 import com.server.Puzzle.domain.board.repository.BoardRepository;
 import com.server.Puzzle.domain.board.service.BoardService;
 import com.server.Puzzle.domain.user.domain.User;
+import com.server.Puzzle.global.util.AwsS3Util;
 import com.server.Puzzle.global.util.CurrentUserUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
@@ -20,14 +25,18 @@ public class BoardServiceImpl implements BoardService {
 
     private final BoardRepository boardRepository;
     private final CurrentUserUtil currentUserUtil;
+    private final AwsS3Util awsS3Util;
+    private final BoardFileRepository boardFileRepository;
 
     @Override
-    public Board post(PostRequestDto request) {
+    public Board post(List<MultipartFile> files, PostRequestDto request) {
         String title = request.getTitle();
         String contents = request.getContents();
         Purpose purpose = request.getPurpose();
         Status status = request.getStatus();
         User currentUser = currentUserUtil.getCurrentUser();
+
+        ArrayList<String> filenameList = awsS3Util.putS3(files);
 
         Board board = boardRepository.save(
                 Board.builder()
@@ -38,6 +47,19 @@ public class BoardServiceImpl implements BoardService {
                         .user(currentUser)
                         .build()
         );
+
+        if(filenameList != null){
+            for (String filenames : filenameList) {
+                boardFileRepository.save(
+                        BoardFile.builder()
+                                .board(board)
+                                .filename(filenames)
+                                .build()
+                );
+            }
+        } else {
+            return board;
+        }
 
         return board;
     }
@@ -62,4 +84,5 @@ public class BoardServiceImpl implements BoardService {
 
         return board;
     }
+
 }
