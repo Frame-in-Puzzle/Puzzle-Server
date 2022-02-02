@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.io.IOException;
 import java.util.List;
 
 @SpringBootTest
@@ -26,12 +25,12 @@ public class UserServiceTest {
     @Autowired
     UserRepository userRepository;
 
-
     @Autowired
     CurrentUserUtil currentUserUtil;
-    @DisplayName("로그인 한 유저를 확인하는 테스트")
+
+    @DisplayName("로그인한 유저를 확인하는 테스트")
     @Test
-    void getCurrentUserTest() throws IOException {
+    void getCurrentUserTest() {
         //given
         User user = User.builder()
                 .oauthId("68847615")
@@ -48,7 +47,9 @@ public class UserServiceTest {
         userRepository.save(user);
 
         //when
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user.getName(), "password", user.getRoles());
+        UsernamePasswordAuthenticationToken token =
+                new UsernamePasswordAuthenticationToken(user.getName(), "password", user.getRoles());
+
         SecurityContext securityContext = SecurityContextHolder.getContext();
         securityContext.setAuthentication(token);
 
