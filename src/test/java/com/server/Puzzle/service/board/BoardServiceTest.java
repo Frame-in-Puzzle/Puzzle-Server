@@ -73,7 +73,7 @@ public class BoardServiceTest {
                 .status(Status.RECRUITMENT)
                 .build();
 
-        Board post = boardService.post(requestDto);
+        Board post = boardService.post(null, requestDto);
 
         assertThat(post.getTitle()).isEqualTo(requestDto.getTitle());
     }
@@ -88,7 +88,7 @@ public class BoardServiceTest {
                 .status(Status.RECRUITMENT)
                 .build();
 
-        Board post = boardService.post(postRequestDto);
+        Board post = boardService.post(null, postRequestDto);
         Long postId = post.getId();
 
         CorrectionPostRequestDto correctionPostRequestDto = CorrectionPostRequestDto.builder()
