@@ -7,11 +7,8 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 @RequestMapping("/v1/api/board")
@@ -25,7 +22,7 @@ public class BoardController {
     })
     @ResponseStatus( HttpStatus.OK )
     @PostMapping("/")
-    public void post(@RequestPart List<MultipartFile> files, @RequestPart PostRequestDto request){
+    public void post(@RequestBody PostRequestDto request){
         boardService.post(request);
     }
 
