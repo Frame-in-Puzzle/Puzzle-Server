@@ -10,17 +10,17 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder @Getter
-@Entity @Table(name = "File")
+@Entity @Table(name = "Board_File")
 public class BoardFile {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "file_id")
+    @Column(name = "board_file_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id", nullable = false)
     private Board board;
 
-    @Column(name = "file_filename")
-    private String filename;
+    @Column(name = "board_file_url")
+    private String url;
 }
