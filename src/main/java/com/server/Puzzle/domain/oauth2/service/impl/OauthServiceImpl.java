@@ -18,6 +18,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import javax.transaction.Transactional;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Map;
@@ -30,6 +31,7 @@ public class OauthServiceImpl implements OauthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final OauthAttributes oauthAttributes;
 
+    @Transactional
     @Override
     public LoginResponse login(OauthCode code) {
         // access token 가져오기
@@ -41,6 +43,8 @@ public class OauthServiceImpl implements OauthService {
 
         String accessToken = jwtTokenProvider.createToken(String.valueOf(user.getName()), user.getRoles());
         String refreshToken = jwtTokenProvider.createRefreshToken();
+
+        user.updateRefreshToken(refreshToken);
 
         return LoginResponse.builder()
                 .name(user.getName())
