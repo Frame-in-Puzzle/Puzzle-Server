@@ -34,6 +34,7 @@ public class BoardServiceImpl implements BoardService {
         String contents = request.getContents();
         Purpose purpose = request.getPurpose();
         Status status = request.getStatus();
+        List<String> image_url = request.getImage_url();
         User currentUser = currentUserUtil.getCurrentUser();
 
         Board board = boardRepository.save(
@@ -45,6 +46,15 @@ public class BoardServiceImpl implements BoardService {
                         .user(currentUser)
                         .build()
         );
+
+        for (String url : image_url) {
+            boardFileRepository.save(
+                    BoardFile.builder()
+                            .board(board)
+                            .url(url)
+                            .build()
+            );
+        }
 
         return board;
     }
