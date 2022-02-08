@@ -51,9 +51,9 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public String createUrl(MultipartFile files) {
-        String file_url = awsS3Util.putS3(files);
+        String filename = awsS3Util.putS3(files);
 
-        return "https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/"+file_url;
+        return "https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/"+filename;
     }
 
     @Transactional
