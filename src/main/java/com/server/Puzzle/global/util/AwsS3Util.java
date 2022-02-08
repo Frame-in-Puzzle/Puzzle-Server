@@ -27,34 +27,30 @@ public class AwsS3Util {
 
     private final AmazonS3 amazonS3;
 
-    public ArrayList<String> putS3(List<MultipartFile> files){
-        ArrayList<String> filenameList = new ArrayList<>();
+    public String putS3(MultipartFile files){
+        String filename = null;
 
         try{
-            for (MultipartFile file : files) {
-                if (file.getSize() == 0){
-                    return null;
-                }
+            if (files.getSize() == 0) throw new IllegalArgumentException("null");
 
-                String filename = createFilename(file.getOriginalFilename()); // 원래의 파일 명을 UUID로 변환
+            filename = createFilename(files.getOriginalFilename()); // 원래의 파일 명을 UUID로 변환
 
-                ObjectMetadata objectMetadata = new ObjectMetadata();
-                objectMetadata.setContentLength(file.getSize());
-                objectMetadata.setContentType(file.getContentType());
+            ObjectMetadata objectMetadata = new ObjectMetadata();
+            objectMetadata.setContentLength(files.getSize());
+            objectMetadata.setContentType(files.getContentType());
 
-                try(InputStream inputStream = file.getInputStream()) {
-                    amazonS3.putObject(new PutObjectRequest(bucket, filename, inputStream, objectMetadata)
-                            .withCannedAcl(CannedAccessControlList.PublicRead));
-                } catch(IOException e) {
-                    throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다.");
-                }
-                filenameList.add(filename);
+            try(InputStream inputStream = files.getInputStream()) {
+                amazonS3.putObject(new PutObjectRequest(bucket, filename, inputStream, objectMetadata)
+                        .withCannedAcl(CannedAccessControlList.PublicRead));
+            } catch(IOException e) {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다.");
             }
+
         } catch (NullPointerException e){
             return null;
         }
 
-        return filenameList;
+        return filename;
     }
 
     private String createFilename(String filename) {

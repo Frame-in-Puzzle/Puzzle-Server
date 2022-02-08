@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,7 +26,16 @@ public class BoardController {
     @ResponseStatus( HttpStatus.OK )
     @PostMapping("/")
     public void post(@RequestPart List<MultipartFile> files, @RequestPart PostRequestDto request){
-        boardService.post(files, request);
+        boardService.post(request);
+    }
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header")
+    })
+    @ResponseStatus( HttpStatus.OK )
+    @PostMapping("/create-url")
+    public String createUrl(@RequestPart MultipartFile files) {
+        return boardService.createUrl(files);
     }
 
     @ApiImplicitParams({

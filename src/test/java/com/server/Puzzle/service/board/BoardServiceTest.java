@@ -63,44 +63,44 @@ public class BoardServiceTest {
         assertEquals(user.getEmail(),currentUser.getEmail());
     }
 
-    @Test
-    @DisplayName("게시물을 등록 기능을 테스트하는 테스트")
-    void postTest(){
-        PostRequestDto requestDto = PostRequestDto.builder()
-                .title("string")
-                .contents("contents")
-                .purpose(Purpose.PROJECT)
-                .status(Status.RECRUITMENT)
-                .build();
+//    @Test
+//    @DisplayName("게시물을 등록 기능을 테스트하는 테스트")
+//    void postTest(){
+//        PostRequestDto requestDto = PostRequestDto.builder()
+//                .title("string")
+//                .contents("contents")
+//                .purpose(Purpose.PROJECT)
+//                .status(Status.RECRUITMENT)
+//                .build();
+//
+//        Board post = boardService.post(null, requestDto);
+//
+//        assertThat(post.getTitle()).isEqualTo(requestDto.getTitle());
+//    }
 
-        Board post = boardService.post(null, requestDto);
-
-        assertThat(post.getTitle()).isEqualTo(requestDto.getTitle());
-    }
-
-    @Test
-    @DisplayName("게시물을 수정 기능을 테스트하는 테스트")
-    void correctionPostTest(){
-        PostRequestDto postRequestDto = PostRequestDto.builder()
-                .title("string")
-                .contents("contents")
-                .purpose(Purpose.PROJECT)
-                .status(Status.RECRUITMENT)
-                .build();
-
-        Board post = boardService.post(null, postRequestDto);
-        Long postId = post.getId();
-
-        CorrectionPostRequestDto correctionPostRequestDto = CorrectionPostRequestDto.builder()
-                .title("string2")
-                .contents("contents2")
-                .purpose(Purpose.PROJECT)
-                .status(Status.RECRUITMENT)
-                .build();
-
-        Board correctionPost = boardService.correctionPost(postId,correctionPostRequestDto);
-
-        assertEquals(correctionPost.getTitle(),"string2");
-    }
+//    @Test
+//    @DisplayName("게시물을 수정 기능을 테스트하는 테스트")
+//    void correctionPostTest(){
+//        PostRequestDto postRequestDto = PostRequestDto.builder()
+//                .title("string")
+//                .contents("contents")
+//                .purpose(Purpose.PROJECT)
+//                .status(Status.RECRUITMENT)
+//                .build();
+//
+//        Board post = boardService.post(null, postRequestDto);
+//        Long postId = post.getId();
+//
+//        CorrectionPostRequestDto correctionPostRequestDto = CorrectionPostRequestDto.builder()
+//                .title("string2")
+//                .contents("contents2")
+//                .purpose(Purpose.PROJECT)
+//                .status(Status.RECRUITMENT)
+//                .build();
+//
+//        Board correctionPost = boardService.correctionPost(postId,correctionPostRequestDto);
+//
+//        assertEquals(correctionPost.getTitle(),"string2");
+//    }
 }
 
