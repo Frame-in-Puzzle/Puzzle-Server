@@ -64,6 +64,9 @@ public class User extends BaseTimeEntity implements UserDetails {
     @Column(name = "user_image_url", nullable = false)
     private String imageUrl;
 
+    @Column(name = "refresh_token")
+    private String refreshToken;
+
     @Column(name = "is_first_visit")
     private boolean isFirstVisit;
 
@@ -80,6 +83,9 @@ public class User extends BaseTimeEntity implements UserDetails {
         return rolesConvertString.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
     }
 
+    public void updateRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
     @Override
     public String getPassword() {
         return null;
