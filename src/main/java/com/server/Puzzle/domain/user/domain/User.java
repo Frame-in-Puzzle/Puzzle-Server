@@ -70,10 +70,38 @@ public class User extends BaseTimeEntity implements UserDetails {
     @Column(name = "is_first_visit")
     private boolean isFirstVisit;
 
-    public User update(String name, String email, String imageUrl) {
-        this.name = name;
-        this.email = email;
-        this.imageUrl = imageUrl;
+    public User updateName(String name){
+        this.name = name != null ? name : this.name;
+        return this;
+    }
+
+    public User updateEmail(String email){
+        this.email = email != null ? email : this.email;
+        return this;
+    }
+
+    public User updateImageUrl(String imageUrl){
+        this.imageUrl = imageUrl != null ? imageUrl : this.imageUrl;
+        return this;
+    }
+
+    public User updateField(Field field){
+        this.field = field != null ? field : this.field;
+        return this;
+    }
+
+    public User updateLanguage(Language language){
+        this.language = language != null ? language : this.language;
+        return this;
+    }
+
+    public User updateBio(String bio){
+        this.bio = bio != null ? bio : this.bio;
+        return this;
+    }
+
+    public User updateUrl(String url){
+        this.url = url != null ? url : this.url;
         return this;
     }
 
