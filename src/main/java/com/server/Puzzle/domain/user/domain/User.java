@@ -2,6 +2,7 @@ package com.server.Puzzle.domain.user.domain;
 
 import com.server.Puzzle.global.entity.BaseTimeEntity;
 import com.server.Puzzle.global.enumType.Field;
+import com.server.Puzzle.global.enumType.Language;
 import com.server.Puzzle.global.enumType.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -43,6 +44,9 @@ public class User extends BaseTimeEntity implements UserDetails {
 
     @Column(name = "user_field", nullable = true)
     private Field field; //분야
+
+    @Column(name = "language", nullable = true)
+    private Language language; // 세부언어
 
     @Enumerated(EnumType.STRING)
     @Column(name = "Role")
