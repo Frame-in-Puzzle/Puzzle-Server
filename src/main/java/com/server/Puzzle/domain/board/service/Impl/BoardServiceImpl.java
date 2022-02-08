@@ -29,14 +29,12 @@ public class BoardServiceImpl implements BoardService {
     private final BoardFileRepository boardFileRepository;
 
     @Override
-    public Board post(List<MultipartFile> files, PostRequestDto request) {
+    public Board post(PostRequestDto request) {
         String title = request.getTitle();
         String contents = request.getContents();
         Purpose purpose = request.getPurpose();
         Status status = request.getStatus();
         User currentUser = currentUserUtil.getCurrentUser();
-
-        ArrayList<String> filenameList = awsS3Util.putS3(files);
 
         Board board = boardRepository.save(
                 Board.builder()
@@ -48,20 +46,14 @@ public class BoardServiceImpl implements BoardService {
                         .build()
         );
 
-        if(filenameList != null){
-            for (String filenames : filenameList) {
-                boardFileRepository.save(
-                        BoardFile.builder()
-                                .board(board)
-                                .filename(filenames)
-                                .build()
-                );
-            }
-        } else {
-            return board;
-        }
-
         return board;
+    }
+
+    @Override
+    public String createUrl(MultipartFile files) {
+        String filename = awsS3Util.putS3(files);
+
+        return "https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/"+filename;
     }
 
     @Transactional
