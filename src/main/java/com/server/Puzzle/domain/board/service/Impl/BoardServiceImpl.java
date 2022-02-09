@@ -14,6 +14,7 @@ import com.server.Puzzle.global.util.AwsS3Util;
 import com.server.Puzzle.global.util.CurrentUserUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
@@ -34,7 +35,7 @@ public class BoardServiceImpl implements BoardService {
         String contents = request.getContents();
         Purpose purpose = request.getPurpose();
         Status status = request.getStatus();
-        List<String> image_url = request.getImage_url();
+        List<String> fileUrlList = request.getFileUrl();
         User currentUser = currentUserUtil.getCurrentUser();
 
         Board board = boardRepository.save(
@@ -47,11 +48,11 @@ public class BoardServiceImpl implements BoardService {
                         .build()
         );
 
-        for (String url : image_url) {
+        for (String fileUrl : fileUrlList) {
             boardFileRepository.save(
                     BoardFile.builder()
                             .board(board)
-                            .url(url)
+                            .url(fileUrl)
                             .build()
             );
         }
@@ -84,7 +85,66 @@ public class BoardServiceImpl implements BoardService {
                 .updatePurpose(purpose)
                 .updateStatus(status);
 
+        List<String> saveFileUrlList = this.getSaveFileUrlList(board, request);
+
+        try{
+            for (String fileUrl : saveFileUrlList) {
+                boardFileRepository.save(
+                        BoardFile.builder()
+                                .board(board)
+                                .url(fileUrl)
+                                .build()
+                );
+            }
+        } catch (NullPointerException e){
+            return board;
+        }
+
         return board;
+    }
+
+    private List<String> getSaveFileUrlList(Board board, CorrectionPostRequestDto request){
+        List<BoardFile> dbBoardFileList = boardFileRepository.findByBoardId(board.getId());
+        List<String> requestFileUrlList = request.getFileUrl();
+        List<String> addFileList = new ArrayList<>();
+
+        if(CollectionUtils.isEmpty(dbBoardFileList)) { // db에 url 이 없다면,
+            if(!CollectionUtils.isEmpty(requestFileUrlList)) { // 요청파일 목록에 파일이 있다면,
+                for (String fileUrls : requestFileUrlList) {
+                    addFileList.add(fileUrls); // addFileList 에 fileUrls 을 추가
+                }
+                return addFileList;
+            } else {
+                return null;
+            }
+        } else { // db에 url 이 있다면,
+            if(CollectionUtils.isEmpty(requestFileUrlList)){ // 요청파일 목록에 파일이 없다면,
+                for (BoardFile dbBoardFile : dbBoardFileList) {
+                    boardFileRepository.deleteById(dbBoardFile.getId()); // BoardFile 테이블에서 해당 게시물의 url들을 삭제
+                    awsS3Util.deleteS3(dbBoardFile.getUrl().substring(61));
+                }
+            } else { // 요청파일 목록에 파일이 있다면,
+                List<String> dbBoardFileUrlList = new ArrayList<>();
+
+                for (BoardFile dbBoardFile : dbBoardFileList) {
+                    if(!requestFileUrlList.contains(dbBoardFile.getUrl())){ // 요청파일 목록에 이미 db에 존재하는 파일이 존재하지 않는다면,
+                        boardFileRepository.deleteById(dbBoardFile.getId()); // 해당 데이터 삭제
+                        awsS3Util.deleteS3(dbBoardFile.getUrl().substring(61));
+                    } else { // 요청 파일 목록에 이미 db에 존재하는 파일이 존재한다면,
+                        dbBoardFileUrlList.add(dbBoardFile.getUrl());
+                    }
+                }
+
+                for (String requestFileUrl : requestFileUrlList) {
+                    if(!dbBoardFileUrlList.contains(requestFileUrl))
+                        addFileList.add(requestFileUrl);
+                }
+
+                return addFileList;
+            }
+        }
+
+        return null;
     }
 
 }

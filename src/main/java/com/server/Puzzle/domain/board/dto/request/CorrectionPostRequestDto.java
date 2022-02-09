@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -17,5 +19,6 @@ public class CorrectionPostRequestDto {
     private String contents;
     private Purpose purpose;
     private Status status;
+    private List<String> fileUrl;
 
 }
