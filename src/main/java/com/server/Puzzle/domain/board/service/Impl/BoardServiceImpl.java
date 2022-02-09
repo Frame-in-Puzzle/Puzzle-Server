@@ -105,7 +105,7 @@ public class BoardServiceImpl implements BoardService {
 
     private List<String> getSaveFileUrlList(Board board, CorrectionPostRequestDto request){
         List<BoardFile> dbBoardFileList = boardFileRepository.findByBoardId(board.getId());
-        List<String> requestFileUrlList = request.getFile_url();
+        List<String> requestFileUrlList = request.getFileUrl();
         List<String> addFileList = new ArrayList<>();
 
         if(CollectionUtils.isEmpty(dbBoardFileList)) { // db에 url 이 없다면,
