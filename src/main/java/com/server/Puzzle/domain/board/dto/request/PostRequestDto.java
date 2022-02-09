@@ -19,6 +19,6 @@ public class PostRequestDto {
     private String contents;
     private Purpose purpose;
     private Status status;
-    private List<String> image_url;
+    private List<String> fileUrl;
 
 }
