@@ -1,15 +1,21 @@
 package com.server.Puzzle.domain.board.service.Impl;
 
 import com.server.Puzzle.domain.board.domain.Board;
+import com.server.Puzzle.domain.board.domain.BoardField;
 import com.server.Puzzle.domain.board.domain.BoardFile;
+import com.server.Puzzle.domain.board.domain.BoardLanguage;
 import com.server.Puzzle.domain.board.dto.request.CorrectionPostRequestDto;
 import com.server.Puzzle.domain.board.dto.request.PostRequestDto;
 import com.server.Puzzle.domain.board.enumType.Purpose;
 import com.server.Puzzle.domain.board.enumType.Status;
+import com.server.Puzzle.domain.board.repository.BoardFieldRepository;
 import com.server.Puzzle.domain.board.repository.BoardFileRepository;
+import com.server.Puzzle.domain.board.repository.BoardLanguageRepository;
 import com.server.Puzzle.domain.board.repository.BoardRepository;
 import com.server.Puzzle.domain.board.service.BoardService;
 import com.server.Puzzle.domain.user.domain.User;
+import com.server.Puzzle.global.enumType.Field;
+import com.server.Puzzle.global.enumType.Language;
 import com.server.Puzzle.global.util.AwsS3Util;
 import com.server.Puzzle.global.util.CurrentUserUtil;
 import lombok.RequiredArgsConstructor;
@@ -24,10 +30,13 @@ import java.util.*;
 @Service
 public class BoardServiceImpl implements BoardService {
 
-    private final BoardRepository boardRepository;
     private final CurrentUserUtil currentUserUtil;
     private final AwsS3Util awsS3Util;
+
+    private final BoardRepository boardRepository;
     private final BoardFileRepository boardFileRepository;
+    private final BoardFieldRepository boardFieldRepository;
+    private final BoardLanguageRepository boardLanguageRepository;
 
     @Override
     public Board post(PostRequestDto request) {
@@ -35,7 +44,9 @@ public class BoardServiceImpl implements BoardService {
         String contents = request.getContents();
         Purpose purpose = request.getPurpose();
         Status status = request.getStatus();
-        List<String> fileUrlList = request.getFileUrl();
+        List<Field> fieldList = request.getFieldList();
+        List<Language> languageList = request.getLanguageList();
+        List<String> fileUrlList = request.getFileUrlList();
         User currentUser = currentUserUtil.getCurrentUser();
 
         Board board = boardRepository.save(
@@ -53,6 +64,24 @@ public class BoardServiceImpl implements BoardService {
                     BoardFile.builder()
                             .board(board)
                             .url(fileUrl)
+                            .build()
+            );
+        }
+
+        for (Field field : fieldList) {
+            boardFieldRepository.save(
+                    BoardField.builder()
+                            .board(board)
+                            .field(field)
+                            .build()
+            );
+        }
+
+        for (Language language : languageList) {
+            boardLanguageRepository.save(
+                    BoardLanguage.builder()
+                            .board(board)
+                            .language(language)
                             .build()
             );
         }
