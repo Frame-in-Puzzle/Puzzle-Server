@@ -103,6 +103,8 @@ public class BoardServiceImpl implements BoardService {
         String contents = request.getContents();
         Purpose purpose = request.getPurpose();
         Status status = request.getStatus();
+        List<Field> fieldList = request.getFieldList();
+        List<Language> languageList = request.getLanguageList();
 
         Board board = boardRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("게시물을 찾을 수 없습니다."));
@@ -113,6 +115,27 @@ public class BoardServiceImpl implements BoardService {
                 .updateContents(contents)
                 .updatePurpose(purpose)
                 .updateStatus(status);
+
+        boardFieldRepository.deleteByBoardId(board.getId());
+        boardLanguageRepository.deleteByBoardId(board.getId());
+
+        for (Field field : fieldList) {
+            boardFieldRepository.save(
+                    BoardField.builder()
+                            .board(board)
+                            .field(field)
+                            .build()
+            );
+        }
+
+        for (Language language : languageList) {
+            boardLanguageRepository.save(
+                    BoardLanguage.builder()
+                            .board(board)
+                            .language(language)
+                            .build()
+            );
+        }
 
         List<String> saveFileUrlList = this.getSaveFileUrlList(board, request);
 
@@ -134,7 +157,7 @@ public class BoardServiceImpl implements BoardService {
 
     private List<String> getSaveFileUrlList(Board board, CorrectionPostRequestDto request){
         List<BoardFile> dbBoardFileList = boardFileRepository.findByBoardId(board.getId());
-        List<String> requestFileUrlList = request.getFileUrl();
+        List<String> requestFileUrlList = request.getFileUrlList();
         List<String> addFileList = new ArrayList<>();
 
         if(CollectionUtils.isEmpty(dbBoardFileList)) { // db에 url 이 없다면,
