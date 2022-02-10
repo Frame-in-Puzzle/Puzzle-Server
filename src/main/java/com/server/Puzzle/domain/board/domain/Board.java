@@ -38,21 +38,21 @@ public class Board extends BaseTimeEntity {
 
     @OneToMany(
             mappedBy = "board",
-            cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
+            cascade = CascadeType.REMOVE,
             orphanRemoval = true
     )
     private List<BoardField> boardFields;
 
     @OneToMany(
             mappedBy = "board",
-            cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
+            cascade = CascadeType.REMOVE,
             orphanRemoval = true
     )
     private List<BoardLanguage> boardLanguages;
 
     @OneToMany(
             mappedBy = "board",
-            cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
+            cascade = CascadeType.REMOVE,
             orphanRemoval = true
     )
     private List<BoardFile> boardFiles;

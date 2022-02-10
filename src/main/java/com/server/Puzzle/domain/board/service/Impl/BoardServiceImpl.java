@@ -6,6 +6,7 @@ import com.server.Puzzle.domain.board.domain.BoardFile;
 import com.server.Puzzle.domain.board.domain.BoardLanguage;
 import com.server.Puzzle.domain.board.dto.request.CorrectionPostRequestDto;
 import com.server.Puzzle.domain.board.dto.request.PostRequestDto;
+import com.server.Puzzle.domain.board.dto.response.GetAllResponseDto;
 import com.server.Puzzle.domain.board.enumType.Purpose;
 import com.server.Puzzle.domain.board.enumType.Status;
 import com.server.Puzzle.domain.board.repository.BoardFieldRepository;
@@ -19,6 +20,8 @@ import com.server.Puzzle.global.enumType.Language;
 import com.server.Puzzle.global.util.AwsS3Util;
 import com.server.Puzzle.global.util.CurrentUserUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -153,6 +156,25 @@ public class BoardServiceImpl implements BoardService {
         }
 
         return board;
+    }
+
+    @Override
+    public Page<GetAllResponseDto> getAllPost(Pageable pageable) {
+        Page<GetAllResponseDto> response = boardRepository.findAll(pageable).map(
+                board -> GetAllResponseDto.builder()
+                        .title(board.getTitle())
+                        .status(board.getStatus())
+                        .createDateTime(board.getCreatedDate())
+                        .image_url(
+                                boardFileRepository.findByBoardId(board.getId()).stream()
+                                        .map(boardFile -> boardFile.getUrl())
+                                        .findFirst()
+                                        .orElse(null)
+                        )
+                        .build()
+        );
+
+        return response;
     }
 
     private List<String> getSaveFileUrlList(Board board, CorrectionPostRequestDto request){
