@@ -6,8 +6,8 @@ import com.server.Puzzle.domain.board.domain.BoardFile;
 import com.server.Puzzle.domain.board.domain.BoardLanguage;
 import com.server.Puzzle.domain.board.dto.request.CorrectionPostRequestDto;
 import com.server.Puzzle.domain.board.dto.request.PostRequestDto;
-import com.server.Puzzle.domain.board.dto.response.GetAllResponseDto;
-import com.server.Puzzle.domain.board.dto.response.GetResponseDto;
+import com.server.Puzzle.domain.board.dto.response.GetAllPostResponseDto;
+import com.server.Puzzle.domain.board.dto.response.GetPostResponseDto;
 import com.server.Puzzle.domain.board.enumType.Purpose;
 import com.server.Puzzle.domain.board.enumType.Status;
 import com.server.Puzzle.domain.board.repository.BoardFieldRepository;
@@ -161,9 +161,9 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public Page<GetAllResponseDto> getAllPost(Pageable pageable) {
-        Page<GetAllResponseDto> response = boardRepository.findAll(pageable).map(
-                board -> GetAllResponseDto.builder()
+    public Page<GetAllPostResponseDto> getAllPost(Pageable pageable) {
+        Page<GetAllPostResponseDto> response = boardRepository.findAll(pageable).map(
+                board -> GetAllPostResponseDto.builder()
                         .title(board.getTitle())
                         .status(board.getStatus())
                         .createDateTime(board.getCreatedDate())
@@ -179,9 +179,9 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public GetResponseDto getPost(Long id) {
-        GetResponseDto response = boardRepository.findById(id).map(
-                board -> GetResponseDto.builder()
+    public GetPostResponseDto getPost(Long id) {
+        GetPostResponseDto response = boardRepository.findById(id).map(
+                board -> GetPostResponseDto.builder()
                         .id(id)
                         .title(board.getTitle())
                         .contents(board.getContents())
