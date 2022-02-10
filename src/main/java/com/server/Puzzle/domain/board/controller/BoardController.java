@@ -2,8 +2,8 @@ package com.server.Puzzle.domain.board.controller;
 
 import com.server.Puzzle.domain.board.dto.request.CorrectionPostRequestDto;
 import com.server.Puzzle.domain.board.dto.request.PostRequestDto;
-import com.server.Puzzle.domain.board.dto.response.GetAllResponseDto;
-import com.server.Puzzle.domain.board.dto.response.GetResponseDto;
+import com.server.Puzzle.domain.board.dto.response.GetAllPostResponseDto;
+import com.server.Puzzle.domain.board.dto.response.GetPostResponseDto;
 import com.server.Puzzle.domain.board.service.BoardService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -54,7 +54,7 @@ public class BoardController {
     })
     @ResponseStatus( HttpStatus.OK )
     @GetMapping
-    public Page<GetAllResponseDto> getAllPost(@PageableDefault(size = 12) Pageable pageable) {
+    public Page<GetAllPostResponseDto> getAllPost(@PageableDefault(size = 12) Pageable pageable) {
         return boardService.getAllPost(pageable);
     }
 
@@ -63,7 +63,7 @@ public class BoardController {
     })
     @ResponseStatus( HttpStatus.OK )
     @GetMapping("/{id}")
-    public GetResponseDto getPost(@PathVariable("id") Long id) {
+    public GetPostResponseDto getPost(@PathVariable("id") Long id) {
         return boardService.getPost(id);
     }
 }
