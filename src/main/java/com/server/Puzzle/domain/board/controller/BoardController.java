@@ -3,6 +3,7 @@ package com.server.Puzzle.domain.board.controller;
 import com.server.Puzzle.domain.board.dto.request.CorrectionPostRequestDto;
 import com.server.Puzzle.domain.board.dto.request.PostRequestDto;
 import com.server.Puzzle.domain.board.dto.response.GetAllResponseDto;
+import com.server.Puzzle.domain.board.dto.response.GetResponseDto;
 import com.server.Puzzle.domain.board.service.BoardService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -57,4 +58,12 @@ public class BoardController {
         return boardService.getAllPost(pageable);
     }
 
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "로그인 성공 후 access_token", required = false, dataType = "String", paramType = "header")
+    })
+    @ResponseStatus( HttpStatus.OK )
+    @GetMapping("/{id}")
+    public GetResponseDto getPost(@PathVariable("id") Long id) {
+        return boardService.getPost(id);
+    }
 }
