@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -34,6 +35,27 @@ public class Board extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "board_status", nullable = false)
     private Status status;
+
+    @OneToMany(
+            mappedBy = "board",
+            cascade = CascadeType.REMOVE,
+            orphanRemoval = true
+    )
+    private List<BoardField> boardFields;
+
+    @OneToMany(
+            mappedBy = "board",
+            cascade = CascadeType.REMOVE,
+            orphanRemoval = true
+    )
+    private List<BoardLanguage> boardLanguages;
+
+    @OneToMany(
+            mappedBy = "board",
+            cascade = CascadeType.REMOVE,
+            orphanRemoval = true
+    )
+    private List<BoardFile> boardFiles;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
