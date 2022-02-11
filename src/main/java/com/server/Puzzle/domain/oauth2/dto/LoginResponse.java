@@ -8,7 +8,7 @@ import lombok.Getter;
 @Builder
 @AllArgsConstructor
 public class LoginResponse {
-    private String name;
+    private String githubId;
     private String email;
     private String accessToken;
     private String refreshToken;
