@@ -1,18 +1,19 @@
 package com.server.Puzzle.domain.user.dto;
 
-import com.server.Puzzle.global.enumType.Field;
+import com.server.Puzzle.domain.board.enumType.Status;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 
-
+@Builder
 @AllArgsConstructor
 @Getter
 public class MyBoardResponse {
     private String title;
-    private Field field;
     private LocalDateTime date;
     private String contents;
-    private String imageUrl;
+    private Status status;
+    private String files;
 }
