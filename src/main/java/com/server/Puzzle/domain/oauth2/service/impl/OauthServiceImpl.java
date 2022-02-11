@@ -47,7 +47,7 @@ public class OauthServiceImpl implements OauthService {
         user.updateRefreshToken(refreshToken);
 
         return LoginResponse.builder()
-                .name(user.getName())
+                .githubId(user.getGithubId())
                 .email(user.getEmail())
                 .accessToken("Bearer " + accessToken)
                 .refreshToken("Bearer " + refreshToken)
@@ -55,8 +55,9 @@ public class OauthServiceImpl implements OauthService {
     }
 
     private User saveOrUpdate(UserProfile userProfile) {
-        User user = userRepository.findByOauthId(userProfile.getOauthId())
+        User user = userRepository.findByOauthId(userProfile.getOauthIdx())
                 .map(entity -> entity
+                        .updateGithubId(entity.getGithubId())
                         .updateName(entity.getName())
                         .updateEmail(entity.getEmail())
                         .updateImageUrl(entity.getImageUrl()))
