@@ -54,15 +54,13 @@ public class ProfileServiceImpl implements ProfileService {
         User user = userRepository.findByGithubId(githubId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다"));
         return boardRepository.findBoardsByUser(user, pageable)
-                .map(
-                board -> MyBoardResponse.builder()
+                .map(board -> MyBoardResponse.builder()
                         .title(board.getTitle())
                         .contents(board.getContents())
                         .date(board.getCreatedDate())
                         .status(board.getStatus())
                         .files(
-                                board.getBoardFiles().stream()
-                                .map(BoardFile::getUrl)
+                                board.getBoardFiles().stream().map(BoardFile::getUrl)
                                         .findFirst()
                                         .orElse(null))
                         .build());
