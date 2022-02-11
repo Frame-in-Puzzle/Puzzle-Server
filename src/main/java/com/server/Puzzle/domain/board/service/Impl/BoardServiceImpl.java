@@ -6,7 +6,8 @@ import com.server.Puzzle.domain.board.domain.BoardFile;
 import com.server.Puzzle.domain.board.domain.BoardLanguage;
 import com.server.Puzzle.domain.board.dto.request.CorrectionPostRequestDto;
 import com.server.Puzzle.domain.board.dto.request.PostRequestDto;
-import com.server.Puzzle.domain.board.dto.response.GetAllResponseDto;
+import com.server.Puzzle.domain.board.dto.response.GetAllPostResponseDto;
+import com.server.Puzzle.domain.board.dto.response.GetPostResponseDto;
 import com.server.Puzzle.domain.board.enumType.Purpose;
 import com.server.Puzzle.domain.board.enumType.Status;
 import com.server.Puzzle.domain.board.repository.BoardFieldRepository;
@@ -28,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -159,20 +161,49 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public Page<GetAllResponseDto> getAllPost(Pageable pageable) {
-        Page<GetAllResponseDto> response = boardRepository.findAll(pageable).map(
-                board -> GetAllResponseDto.builder()
+    public Page<GetAllPostResponseDto> getAllPost(Pageable pageable) {
+        Page<GetAllPostResponseDto> response = boardRepository.findAll(pageable).map(
+                board -> GetAllPostResponseDto.builder()
                         .title(board.getTitle())
                         .status(board.getStatus())
                         .createDateTime(board.getCreatedDate())
                         .image_url(
-                                boardFileRepository.findByBoardId(board.getId()).stream()
+                                board.getBoardFiles().stream()
                                         .map(boardFile -> boardFile.getUrl())
-                                        .findFirst()
-                                        .orElse(null)
+                                        .findFirst().orElse(null)
                         )
                         .build()
         );
+
+        return response;
+    }
+
+    @Override
+    public GetPostResponseDto getPost(Long id) {
+        GetPostResponseDto response = boardRepository.findById(id).map(
+                board -> GetPostResponseDto.builder()
+                        .id(id)
+                        .title(board.getTitle())
+                        .contents(board.getContents())
+                        .purpose(board.getPurpose())
+                        .status(board.getStatus())
+                        .fields(
+                                board.getBoardFields().stream()
+                                .map(boardField -> boardField.getField())
+                                .collect(Collectors.toList())
+                        )
+                        .languages(
+                                board.getBoardLanguages().stream()
+                                .map(boardLanguage -> boardLanguage.getLanguage())
+                                .collect(Collectors.toList())
+                        )
+                        .files(
+                                board.getBoardFiles().stream()
+                                .map(boardFile -> boardFile.getUrl())
+                                .collect(Collectors.toList())
+                        )
+                        .build()
+        ).orElseThrow(() -> new IllegalArgumentException("게시물을 찾을 수 없습니다"));
 
         return response;
     }

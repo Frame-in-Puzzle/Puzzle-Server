@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class GetAllResponseDto {
+public class GetAllPostResponseDto {
 
     private String title;
     private Status status;
