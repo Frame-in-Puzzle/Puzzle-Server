@@ -10,8 +10,9 @@ import java.util.Collections;
 @Getter
 @Builder
 public class UserProfile {
-    private final String oauthId;
+    private final String oauthIdx;
     private final String email;
+    private final String githubId;
     private final String name;
     private final String imageUrl;
     private final String bio;
@@ -19,9 +20,10 @@ public class UserProfile {
 
     public User toUser() {
         return User.builder()
-                .oauthId(oauthId)
+                .oauthId(oauthIdx)
                 .email(email)
                 .name(name)
+                .githubId(githubId)
                 .imageUrl(imageUrl)
                 .bio(bio)
                 .roles(Collections.singletonList(Role.USER))
