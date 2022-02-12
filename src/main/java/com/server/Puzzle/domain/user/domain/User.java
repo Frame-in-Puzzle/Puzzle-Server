@@ -33,8 +33,8 @@ public class User extends BaseTimeEntity implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "oauth_id")
-    private String oauthId;
+    @Column(name = "oauth_idx")
+    private String oauthIdx;
 
     @Column(name = "user_email", unique = true, nullable = true)
     private String email;

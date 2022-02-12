@@ -20,7 +20,7 @@ public class UserProfile {
 
     public User toUser() {
         return User.builder()
-                .oauthId(oauthIdx)
+                .oauthIdx(oauthIdx)
                 .email(email)
                 .name(name)
                 .githubId(githubId)
