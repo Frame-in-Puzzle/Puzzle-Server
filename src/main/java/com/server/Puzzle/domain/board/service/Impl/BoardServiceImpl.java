@@ -203,9 +203,25 @@ public class BoardServiceImpl implements BoardService {
                                 .collect(Collectors.toList())
                         )
                         .build()
-        ).orElseThrow(() -> new IllegalArgumentException("게시물을 찾을 수 없습니다"));
+        ).orElseThrow(() -> new IllegalArgumentException("게시물을 찾을 수 없습니다."));
 
         return response;
+    }
+
+    @Override
+    public void deletePost(Long id) {
+        Board board = boardRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("게시물을 찾을 수 없습니다."));
+
+        if(board.getUser() == currentUserUtil.getCurrentUser()){
+            List<BoardFile> boardFiles = board.getBoardFiles();
+            for (BoardFile boardFile : boardFiles) {
+                awsS3Util.deleteS3(boardFile.getUrl().substring(61));
+            }
+            boardRepository.deleteById(id);
+        } else {
+            throw new IllegalArgumentException("게시물을 삭제할 수 있는 권한이 없습니다.");
+        }
     }
 
     private List<String> getSaveFileUrlList(Board board, CorrectionPostRequestDto request){

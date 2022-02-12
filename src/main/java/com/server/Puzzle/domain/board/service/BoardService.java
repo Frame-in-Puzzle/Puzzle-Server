@@ -15,4 +15,5 @@ public interface BoardService {
     Board correctionPost(Long id, CorrectionPostRequestDto request);
     Page<GetAllPostResponseDto> getAllPost(Pageable pageable);
     GetPostResponseDto getPost(Long id);
+    void deletePost(Long id);
 }

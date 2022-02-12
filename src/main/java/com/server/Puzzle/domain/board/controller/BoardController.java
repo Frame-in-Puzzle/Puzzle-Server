@@ -66,4 +66,13 @@ public class BoardController {
     public GetPostResponseDto getPost(@PathVariable("id") Long id) {
         return boardService.getPost(id);
     }
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "로그인 성공 후 access_token", required = false, dataType = "String", paramType = "header")
+    })
+    @ResponseStatus( HttpStatus.OK )
+    @DeleteMapping("/{id}")
+    public void deletePost(@PathVariable("id") Long id){
+        boardService.deletePost(id);
+    }
 }
