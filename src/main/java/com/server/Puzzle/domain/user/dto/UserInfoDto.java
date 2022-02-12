@@ -4,6 +4,7 @@ import com.server.Puzzle.domain.user.domain.User;
 import com.server.Puzzle.global.enumType.Field;
 import com.server.Puzzle.global.enumType.Language;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -19,6 +20,7 @@ public class UserInfoDto {
      private Language language;
      private String url;
 
+     @Builder
      public UserInfoDto(User user) {
           this.name = user.getName();
           this.imageUrl = user.getImageUrl();

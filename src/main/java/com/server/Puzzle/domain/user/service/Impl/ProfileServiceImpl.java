@@ -27,17 +27,15 @@ public class ProfileServiceImpl implements ProfileService {
         User user = userRepository.findByGithubId(githubId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다"));
 
-        UserInfoDto userInfo = new UserInfoDto(user);
-        return userInfo;
+        return UserInfoDto.builder()
+                .user(user)
+                .build();
     }
 
     @Transactional
     @Override
     public void profileUpdate(UserInfoDto userInfo) {
-        String name = currentUserUtil.getCurrentUser().getName();
-        
-        User user = userRepository.findByName(name)
-                .orElseThrow(() -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다"));
+        User user = currentUserUtil.getCurrentUser();
 
         user
                 .updateName(userInfo.getName())
