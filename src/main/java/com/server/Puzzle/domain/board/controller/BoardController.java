@@ -4,7 +4,11 @@ import com.server.Puzzle.domain.board.dto.request.CorrectionPostRequestDto;
 import com.server.Puzzle.domain.board.dto.request.PostRequestDto;
 import com.server.Puzzle.domain.board.dto.response.GetAllPostResponseDto;
 import com.server.Puzzle.domain.board.dto.response.GetPostResponseDto;
+import com.server.Puzzle.domain.board.enumType.Purpose;
+import com.server.Puzzle.domain.board.enumType.Status;
 import com.server.Puzzle.domain.board.service.BoardService;
+import com.server.Puzzle.global.enumType.Field;
+import com.server.Puzzle.global.enumType.Language;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +18,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RequestMapping("/v1/api/board")
@@ -74,5 +80,18 @@ public class BoardController {
     @DeleteMapping("/{id}")
     public void deletePost(@PathVariable("id") Long id){
         boardService.deletePost(id);
+    }
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "로그인 성공 후 access_token", required = false, dataType = "String", paramType = "header")
+    })
+    @ResponseStatus( HttpStatus.OK )
+    @GetMapping("/filter")
+    public void getPostByTag(@RequestParam Purpose purpose,
+                             @RequestParam List<Field> field,
+                             @RequestParam List<Language> language,
+                             @RequestParam Status status)
+    {
+        boardService.getPostByTag(purpose, field, language, status);
     }
 }
