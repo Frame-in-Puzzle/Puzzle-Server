@@ -24,7 +24,7 @@ public class BoardField extends BaseTimeEntity {
     private Board board;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "field", nullable = false)
+    @Column(name = "board_field", nullable = false)
     private Field field;
 
 }
