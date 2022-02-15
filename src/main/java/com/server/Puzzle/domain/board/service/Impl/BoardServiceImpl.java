@@ -7,6 +7,7 @@ import com.server.Puzzle.domain.board.domain.BoardLanguage;
 import com.server.Puzzle.domain.board.dto.request.CorrectionPostRequestDto;
 import com.server.Puzzle.domain.board.dto.request.PostRequestDto;
 import com.server.Puzzle.domain.board.dto.response.GetAllPostResponseDto;
+import com.server.Puzzle.domain.board.dto.response.GetPostByTagResponseDto;
 import com.server.Puzzle.domain.board.dto.response.GetPostResponseDto;
 import com.server.Puzzle.domain.board.enumType.Purpose;
 import com.server.Puzzle.domain.board.enumType.Status;
@@ -222,6 +223,13 @@ public class BoardServiceImpl implements BoardService {
         } else {
             throw new IllegalArgumentException("게시물을 삭제할 수 있는 권한이 없습니다.");
         }
+    }
+
+    @Override
+    public List<GetPostByTagResponseDto> getPostByTag(Purpose purpose, List<Field> field, List<Language> language, Status status,Pageable pageable) {
+        List<GetPostByTagResponseDto> response = boardRepository.findBoardByTag(purpose, field, language, status, pageable);
+
+        return response;
     }
 
     private List<String> getSaveFileUrlList(Board board, CorrectionPostRequestDto request){
