@@ -3,6 +3,7 @@ package com.server.Puzzle.domain.board.controller;
 import com.server.Puzzle.domain.board.dto.request.CorrectionPostRequestDto;
 import com.server.Puzzle.domain.board.dto.request.PostRequestDto;
 import com.server.Puzzle.domain.board.dto.response.GetAllPostResponseDto;
+import com.server.Puzzle.domain.board.dto.response.GetPostByTagResponseDto;
 import com.server.Puzzle.domain.board.dto.response.GetPostResponseDto;
 import com.server.Puzzle.domain.board.enumType.Purpose;
 import com.server.Puzzle.domain.board.enumType.Status;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -87,11 +89,19 @@ public class BoardController {
     })
     @ResponseStatus( HttpStatus.OK )
     @GetMapping("/filter")
-    public void getPostByTag(@RequestParam Purpose purpose,
-                             @RequestParam List<Field> field,
-                             @RequestParam List<Language> language,
-                             @RequestParam Status status)
+    public List<GetPostByTagResponseDto> getPostByTag(@RequestParam Purpose purpose,
+                                                      @RequestParam List<Field> field,
+                                                      @RequestParam(defaultValue = "NULL") List<Language> language,
+                                                      @RequestParam Status status,
+                                                      @PageableDefault(size = 12) Pageable pageable)
     {
-        boardService.getPostByTag(purpose, field, language, status);
+        return boardService.getPostByTag(purpose, field, language, status, pageable);
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public String handleMissingParams(MissingServletRequestParameterException ex) {
+        String name = ex.getParameterName();
+        System.out.println(name + " parameter is missing");
+        return name + " parameter is missing";
     }
 }
