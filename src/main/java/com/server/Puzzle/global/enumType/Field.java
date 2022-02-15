@@ -8,5 +8,15 @@ public enum Field {
     AI,         // 인공지능
     GAME,       // 게임
     IOS,        // iOS
-    ANDROID     // 안드로이드
+    ANDROID,     // 안드로이드
+
+    // *** ALL *** //
+    FRONTEND_ALL,
+    BACKEND_ALL,
+    EMBEDDED_ALL,
+    AI_ALL,
+    GAME_ALL,
+    IOS_ALL,
+    ANDROID_ALL,
+
 }
