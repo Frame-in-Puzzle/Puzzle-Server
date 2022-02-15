@@ -18,7 +18,6 @@ import static com.server.Puzzle.domain.board.domain.QBoard.board;
 import static com.server.Puzzle.domain.board.domain.QBoardField.boardField;
 import static com.server.Puzzle.domain.board.domain.QBoardLanguage.boardLanguage;
 
-
 @RequiredArgsConstructor
 @Repository
 public class BoardCustomRepositoryImpl implements BoardCustomRepository{
@@ -39,7 +38,6 @@ public class BoardCustomRepositoryImpl implements BoardCustomRepository{
                         .fetch();
 
                 for (Long aLong : dbresult) {
-                    System.out.println("[ Field ] 에서의 boardIDHashSet 값" + boardIdHashSet);
                     boardIdHashSet.add(aLong);
                 }
             }
@@ -52,12 +50,9 @@ public class BoardCustomRepositoryImpl implements BoardCustomRepository{
                     .fetch();
 
             for (Long aLong : dbresult) {
-                System.out.println("[ Language ] 에서의 boardIDHashSet 값 = " + boardIdHashSet);
                 boardIdHashSet.add(aLong);
             }
         }
-
-        System.out.println("boardIdHashSet = " + boardIdHashSet);
 
         List<Board> boards = jpaQueryFactory.selectFrom(board)
                 .where(
@@ -68,8 +63,6 @@ public class BoardCustomRepositoryImpl implements BoardCustomRepository{
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
-
-        System.out.println("boards = " + boards);
 
         return boards.stream()
                 .map(b -> new GetPostByTagResponseDto(
