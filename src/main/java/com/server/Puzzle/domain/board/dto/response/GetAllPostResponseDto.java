@@ -1,15 +1,11 @@
 package com.server.Puzzle.domain.board.dto.response;
 
 import com.server.Puzzle.domain.board.enumType.Status;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 public class GetAllPostResponseDto {
