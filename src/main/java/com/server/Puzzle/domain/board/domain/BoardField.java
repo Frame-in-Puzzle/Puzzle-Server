@@ -1,11 +1,14 @@
 package com.server.Puzzle.domain.board.domain;
 
-
 import com.server.Puzzle.global.entity.BaseTimeEntity;
 import com.server.Puzzle.global.enumType.Field;
+import lombok.*;
 
 import javax.persistence.*;
 
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder @Getter
 @Entity @Table(name = "Board_Field")
 public class BoardField extends BaseTimeEntity {
 
@@ -17,7 +20,8 @@ public class BoardField extends BaseTimeEntity {
     @JoinColumn(name = "board_id", nullable = false)
     private Board board;
 
-    @Column(name = "field", nullable = false)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "board_field", nullable = false)
     private Field field;
 
 }

@@ -3,6 +3,7 @@ package com.server.Puzzle.service.user;
 import com.server.Puzzle.domain.user.domain.User;
 import com.server.Puzzle.global.enumType.Field;
 import com.server.Puzzle.domain.user.repository.UserRepository;
+import com.server.Puzzle.global.enumType.Language;
 import com.server.Puzzle.global.enumType.Role;
 import com.server.Puzzle.global.util.CurrentUserUtil;
 import org.junit.jupiter.api.DisplayName;
@@ -33,19 +34,20 @@ public class UserServiceTest {
     void getCurrentUserTest() {
         //given
         User user = User.builder()
-                .oauthId("68847615")
+                .oauthIdx("68847615")
                 .email("hyunin0102@gmail.com")
                 .name("홍현인")
                 .imageUrl("https://avatars.githubusercontent.com/u/68847615?v=4")
                 .bio("한줄소개")
                 .field(Field.BACKEND)
+                .language(Language.JAVA)
                 .roles(List.of(Role.USER))
                 .url("https://github.com/honghyunin")
                 .isFirstVisit(true)
+                .githubId("honghyunin")
                 .build();
 
         userRepository.save(user);
-
         //when
         UsernamePasswordAuthenticationToken token =
                 new UsernamePasswordAuthenticationToken(user.getName(), "password", user.getRoles());
