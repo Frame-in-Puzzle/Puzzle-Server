@@ -28,17 +28,27 @@ public class BoardCustomRepositoryImpl implements BoardCustomRepository{
     public List<GetPostByTagResponseDto> findBoardByTag(Purpose purpose, List<Field> field, List<Language> language, Status status, Pageable pageable) {
         HashSet<Long> boardIdHashSet = new HashSet<>();
 
-        for (Field f : field) {
-            String name = f.name();
+        if (field.get(0) == Field.ALL){
+            List<Long> dbresult = jpaQueryFactory.from(boardField)
+                    .select(boardField.board.id)
+                    .fetch();
 
-            if(name.substring(name.length() - 3).equals("ALL")){
-                List<Long> dbresult = jpaQueryFactory.from(boardField)
-                        .select(boardField.board.id)
-                        .where(boardField.field.eq(Field.valueOf(name.substring(0,name.length() - 4))))
-                        .fetch();
+            for (Long aLong : dbresult) {
+                boardIdHashSet.add(aLong);
+            }
+        } else {
+            for (Field f : field) {
+                String name = f.name();
 
-                for (Long aLong : dbresult) {
-                    boardIdHashSet.add(aLong);
+                if(name.substring(name.length() - 3).equals("ALL")){
+                    List<Long> dbresult = jpaQueryFactory.from(boardField)
+                            .select(boardField.board.id)
+                            .where(boardField.field.eq(Field.valueOf(name.substring(0,name.length() - 4))))
+                            .fetch();
+
+                    for (Long aLong : dbresult) {
+                        boardIdHashSet.add(aLong);
+                    }
                 }
             }
         }
