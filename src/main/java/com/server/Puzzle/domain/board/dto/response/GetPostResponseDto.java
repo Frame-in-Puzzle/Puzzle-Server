@@ -1,4 +1,4 @@
-package com.server.Puzzle.domain.board.dto.request;
+package com.server.Puzzle.domain.board.dto.response;
 
 import com.server.Puzzle.domain.board.enumType.Purpose;
 import com.server.Puzzle.domain.board.enumType.Status;
@@ -8,19 +8,19 @@ import lombok.*;
 
 import java.util.List;
 
-@AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Getter
-public class PostRequestDto {
+public class GetPostResponseDto {
 
+    private Long id;
     private String title;
     private String contents;
     private Purpose purpose;
     private Status status;
-    private List<Field> fieldList;
-    private List<Language> languageList;
-    private List<String> fileUrlList;
+    private List<Field> fields;
+    private List<Language> languages;
+    private List<String> files;
 
 }
-

@@ -4,15 +4,13 @@ import com.server.Puzzle.domain.board.enumType.Purpose;
 import com.server.Puzzle.domain.board.enumType.Status;
 import com.server.Puzzle.domain.user.domain.User;
 import com.server.Puzzle.global.entity.BaseTimeEntity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder @Getter
 @Entity @Table(name = "Board")
 public class Board extends BaseTimeEntity {
@@ -34,6 +32,27 @@ public class Board extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "board_status", nullable = false)
     private Status status;
+
+    @OneToMany(
+            mappedBy = "board",
+            cascade = CascadeType.REMOVE,
+            orphanRemoval = true
+    )
+    private List<BoardField> boardFields;
+
+    @OneToMany(
+            mappedBy = "board",
+            cascade = CascadeType.REMOVE,
+            orphanRemoval = true
+    )
+    private List<BoardLanguage> boardLanguages;
+
+    @OneToMany(
+            mappedBy = "board",
+            cascade = CascadeType.REMOVE,
+            orphanRemoval = true
+    )
+    private List<BoardFile> boardFiles;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)

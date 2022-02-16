@@ -33,11 +33,14 @@ public class User extends BaseTimeEntity implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "oauth_id")
-    private String oauthId;
+    @Column(name = "oauth_idx")
+    private String oauthIdx;
 
     @Column(name = "user_email", unique = true, nullable = true)
     private String email;
+
+    @Column(name = "github_id", unique = true, nullable = false)
+    private String githubId;
 
     @Column(name = "user_name", nullable = false)
     private String name;
@@ -70,6 +73,10 @@ public class User extends BaseTimeEntity implements UserDetails {
     @Column(name = "is_first_visit")
     private boolean isFirstVisit;
 
+    public User updateGithubId(String githubId) {
+        this.githubId = githubId != null ? githubId : this.githubId;
+        return this;
+    }
     public User updateName(String name){
         this.name = name != null ? name : this.name;
         return this;

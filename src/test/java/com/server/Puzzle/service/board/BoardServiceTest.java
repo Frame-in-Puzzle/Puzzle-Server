@@ -39,7 +39,7 @@ public class BoardServiceTest {
     void currentUser() {
         // given // when
         User user = User.builder()
-                .oauthId("1234")
+                .oauthIdx("1234")
                 .email("developerjun0615@gmail.com")
                 .name("노경준")
                 .field(Field.BACKEND)

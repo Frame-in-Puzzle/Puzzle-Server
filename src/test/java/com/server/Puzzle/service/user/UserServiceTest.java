@@ -33,7 +33,7 @@ public class UserServiceTest {
     void getCurrentUserTest() {
         //given
         User user = User.builder()
-                .oauthId("68847615")
+                .oauthIdx("68847615")
                 .email("hyunin0102@gmail.com")
                 .name("홍현인")
                 .imageUrl("https://avatars.githubusercontent.com/u/68847615?v=4")
