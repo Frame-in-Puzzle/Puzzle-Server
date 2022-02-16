@@ -11,6 +11,7 @@ public enum Field {
     ANDROID,     // 안드로이드
 
     // *** ALL *** //
+    ALL,
     FRONTEND_ALL,
     BACKEND_ALL,
     EMBEDDED_ALL,
