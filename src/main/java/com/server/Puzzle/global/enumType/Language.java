@@ -7,5 +7,7 @@ public enum Language {
     PYTHON, C, CPP,                                         // 임베디드
     PYTORCH, TENSORFLOW,                                    // 인공지능
     UNITY, CSHARP, UNREALENGINE,                            // 게임
-    KOTLIN                                                  // 안드로이드
+    KOTLIN,                                                  // 안드로이드
+
+    NULL
 }

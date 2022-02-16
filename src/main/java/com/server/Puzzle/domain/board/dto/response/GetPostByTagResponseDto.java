@@ -5,14 +5,16 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Builder
-@AllArgsConstructor
 @Getter
-public class GetAllPostResponseDto {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
+public class GetPostByTagResponseDto {
 
+    private Long boardId;
     private String title;
     private Status status;
-    private LocalDateTime createDateTime;
-    private String image_url;
+    private LocalDateTime createdDate;
+    private String fileUrl;
 
 }

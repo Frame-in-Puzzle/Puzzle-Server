@@ -1,17 +1,15 @@
 package com.server.Puzzle.domain.board.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.server.Puzzle.global.entity.BaseTimeEntity;
+import lombok.*;
 
 import javax.persistence.*;
 
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder @Getter
 @Entity @Table(name = "Board_File")
-public class BoardFile {
+public class BoardFile extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "board_file_id")

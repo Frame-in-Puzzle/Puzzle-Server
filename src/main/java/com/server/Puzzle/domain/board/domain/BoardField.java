@@ -2,15 +2,12 @@ package com.server.Puzzle.domain.board.domain;
 
 import com.server.Puzzle.global.entity.BaseTimeEntity;
 import com.server.Puzzle.global.enumType.Field;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder @Getter
 @Entity @Table(name = "Board_Field")
 public class BoardField extends BaseTimeEntity {
@@ -24,7 +21,7 @@ public class BoardField extends BaseTimeEntity {
     private Board board;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "field", nullable = false)
+    @Column(name = "board_field", nullable = false)
     private Field field;
 
 }
