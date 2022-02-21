@@ -7,6 +7,7 @@ import com.server.Puzzle.domain.user.dto.MyBoardResponse;
 import com.server.Puzzle.domain.user.dto.UserInfoDto;
 import com.server.Puzzle.domain.user.repository.UserRepository;
 import com.server.Puzzle.domain.user.service.ProfileService;
+import com.server.Puzzle.global.exception.CustomException;
 import com.server.Puzzle.global.util.CurrentUserUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -14,6 +15,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+
+import static com.server.Puzzle.global.exception.ErrorCode.USER_NOT_FOUND;
 
 @RequiredArgsConstructor
 @Service
@@ -25,7 +28,7 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     public UserInfoDto getProfile(String githubId) {
         User user = userRepository.findByGithubId(githubId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다"));
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
         return UserInfoDto.builder()
                 .user(user)
@@ -50,7 +53,7 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     public Page<MyBoardResponse> getMyBoard(String githubId, Pageable pageable) {
         User user = userRepository.findByGithubId(githubId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다"));
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         return boardRepository.findBoardsByUser(user, pageable)
                 .map(board -> MyBoardResponse.builder()
                         .title(board.getTitle())

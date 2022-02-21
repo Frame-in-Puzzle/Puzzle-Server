@@ -99,9 +99,7 @@ public class BoardController {
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
-    public String handleMissingParams(MissingServletRequestParameterException ex) {
-        String name = ex.getParameterName();
-        System.out.println(name + " parameter is missing");
-        return name + " parameter is missing";
+    public ResponseEntity<ErrorResponse> handleMissingParams() {
+        return ErrorResponse.toResponseEntity(PARAMETER_IS_MISSING);
     }
 }
