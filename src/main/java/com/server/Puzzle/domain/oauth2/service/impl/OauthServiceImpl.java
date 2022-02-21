@@ -41,7 +41,7 @@ public class OauthServiceImpl implements OauthService {
         // 유저 DB에 저장
         User user = saveOrUpdate(userProfile);
 
-        String accessToken = jwtTokenProvider.createToken(String.valueOf(user.getName()), user.getRoles());
+        String accessToken = jwtTokenProvider.createToken(String.valueOf(user.getGithubId()), user.getRoles());
         String refreshToken = jwtTokenProvider.createRefreshToken();
 
         user.updateRefreshToken(refreshToken);
