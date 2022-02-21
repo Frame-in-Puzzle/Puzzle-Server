@@ -19,6 +19,7 @@ import com.server.Puzzle.domain.board.service.BoardService;
 import com.server.Puzzle.domain.user.domain.User;
 import com.server.Puzzle.global.enumType.Field;
 import com.server.Puzzle.global.enumType.Language;
+import com.server.Puzzle.global.exception.CustomException;
 import com.server.Puzzle.global.util.AwsS3Util;
 import com.server.Puzzle.global.util.CurrentUserUtil;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.server.Puzzle.global.exception.ErrorCode.*;
 
 @RequiredArgsConstructor
 @Service
@@ -113,8 +116,8 @@ public class BoardServiceImpl implements BoardService {
         List<Language> languageList = request.getLanguageList();
 
         Board board = boardRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("게시물을 찾을 수 없습니다."));
-        if(board.getUser() != currentUserUtil.getCurrentUser()) throw new IllegalArgumentException("게시물을 수정할 권한이 없습니다.");
+                .orElseThrow(() -> new CustomException(BOARD_NOT_FOUND));
+        if(board.getUser() != currentUserUtil.getCurrentUser()) throw new CustomException(BOARD_NOT_HAVE_PERMISSION_TO_MODIFY);
 
         board
                 .updateTitle(title)
@@ -204,7 +207,7 @@ public class BoardServiceImpl implements BoardService {
                                 .collect(Collectors.toList())
                         )
                         .build()
-        ).orElseThrow(() -> new IllegalArgumentException("게시물을 찾을 수 없습니다."));
+        ).orElseThrow(() -> new CustomException(BOARD_NOT_FOUND));
 
         return response;
     }
@@ -212,7 +215,7 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public void deletePost(Long id) {
         Board board = boardRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("게시물을 찾을 수 없습니다."));
+                .orElseThrow(() -> new CustomException(BOARD_NOT_FOUND));
 
         if(board.getUser() == currentUserUtil.getCurrentUser()){
             List<BoardFile> boardFiles = board.getBoardFiles();
@@ -221,7 +224,7 @@ public class BoardServiceImpl implements BoardService {
             }
             boardRepository.deleteById(id);
         } else {
-            throw new IllegalArgumentException("게시물을 삭제할 수 있는 권한이 없습니다.");
+            throw new CustomException(BOARD_NOT_HAVE_PERMISSION_TO_DELETE);
         }
     }
 
