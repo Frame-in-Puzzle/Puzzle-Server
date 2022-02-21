@@ -1,5 +1,6 @@
 package com.server.Puzzle.domain.user.domain;
 
+import com.server.Puzzle.domain.board.domain.Board;
 import com.server.Puzzle.global.entity.BaseTimeEntity;
 import com.server.Puzzle.global.enumType.Field;
 import com.server.Puzzle.global.enumType.Language;
@@ -17,8 +18,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static javax.persistence.EnumType.STRING;
 
 @Getter
 @Entity
@@ -72,6 +71,14 @@ public class User extends BaseTimeEntity implements UserDetails {
 
     @Column(name = "is_first_visit")
     private boolean isFirstVisit;
+
+
+    @OneToMany(
+            mappedBy = "user",
+            cascade = CascadeType.REMOVE,
+            orphanRemoval = true
+    )
+    private List<Board> board;
 
     public User updateGithubId(String githubId) {
         this.githubId = githubId != null ? githubId : this.githubId;
