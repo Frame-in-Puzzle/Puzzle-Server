@@ -10,6 +10,9 @@ import com.server.Puzzle.domain.board.enumType.Status;
 import com.server.Puzzle.domain.board.service.BoardService;
 import com.server.Puzzle.global.enumType.Field;
 import com.server.Puzzle.global.enumType.Language;
+import com.server.Puzzle.global.response.ResponseService;
+import com.server.Puzzle.global.response.result.CommonResult;
+import com.server.Puzzle.global.response.result.SingleResult;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import lombok.RequiredArgsConstructor;
@@ -29,14 +32,16 @@ import java.util.List;
 public class BoardController {
 
     private final BoardService boardService;
+    private final ResponseService responseService;
 
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header")
     })
     @ResponseStatus( HttpStatus.OK )
     @PostMapping("/")
-    public void post(@RequestBody PostRequestDto request){
+    public CommonResult post(@RequestBody PostRequestDto request){
         boardService.post(request);
+        return responseService.getSuccessResult();
     }
 
     @ApiImplicitParams({
@@ -44,8 +49,8 @@ public class BoardController {
     })
     @ResponseStatus( HttpStatus.OK )
     @PostMapping("/create-url")
-    public String createUrl(@RequestPart MultipartFile files) {
-        return boardService.createUrl(files);
+    public SingleResult<String> createUrl(@RequestPart MultipartFile files) {
+        return responseService.getSingleResult(boardService.createUrl(files));
     }
 
     @ApiImplicitParams({
@@ -53,8 +58,9 @@ public class BoardController {
     })
     @ResponseStatus( HttpStatus.OK )
     @PutMapping("/{id}")
-    public void correctionPost(@PathVariable("id") Long id, @RequestBody CorrectionPostRequestDto request){
+    public CommonResult correctionPost(@PathVariable("id") Long id, @RequestBody CorrectionPostRequestDto request){
         boardService.correctionPost(id, request);
+        return responseService.getSuccessResult();
     }
 
     @ApiImplicitParams({
@@ -62,8 +68,8 @@ public class BoardController {
     })
     @ResponseStatus( HttpStatus.OK )
     @GetMapping
-    public Page<GetAllPostResponseDto> getAllPost(@PageableDefault(size = 12) Pageable pageable) {
-        return boardService.getAllPost(pageable);
+    public SingleResult<Page<GetAllPostResponseDto>> getAllPost(@PageableDefault(size = 12) Pageable pageable) {
+        return responseService.getSingleResult(boardService.getAllPost(pageable));
     }
 
     @ApiImplicitParams({
@@ -71,8 +77,8 @@ public class BoardController {
     })
     @ResponseStatus( HttpStatus.OK )
     @GetMapping("/{id}")
-    public GetPostResponseDto getPost(@PathVariable("id") Long id) {
-        return boardService.getPost(id);
+    public SingleResult<GetPostResponseDto> getPost(@PathVariable("id") Long id) {
+        return responseService.getSingleResult(boardService.getPost(id));
     }
 
     @ApiImplicitParams({
@@ -80,8 +86,9 @@ public class BoardController {
     })
     @ResponseStatus( HttpStatus.OK )
     @DeleteMapping("/{id}")
-    public void deletePost(@PathVariable("id") Long id){
+    public CommonResult deletePost(@PathVariable("id") Long id){
         boardService.deletePost(id);
+        return responseService.getSuccessResult();
     }
 
     @ApiImplicitParams({
@@ -89,13 +96,13 @@ public class BoardController {
     })
     @ResponseStatus( HttpStatus.OK )
     @GetMapping("/filter")
-    public List<GetPostByTagResponseDto> getPostByTag(@RequestParam Purpose purpose,
+    public SingleResult<List<GetPostByTagResponseDto>> getPostByTag(@RequestParam Purpose purpose,
                                                       @RequestParam List<Field> field,
                                                       @RequestParam(defaultValue = "NULL") List<Language> language,
                                                       @RequestParam Status status,
                                                       @PageableDefault(size = 12) Pageable pageable)
     {
-        return boardService.getPostByTag(purpose, field, language, status, pageable);
+        return responseService.getSingleResult(boardService.getPostByTag(purpose, field, language, status, pageable));
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
