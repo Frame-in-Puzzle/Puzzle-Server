@@ -23,6 +23,6 @@ public enum ErrorCode {
     /* 400 BAD_REQUEST : 잘못된 요청 */
     PARAMETER_IS_MISSING(BAD_REQUEST, "잘못된 경로로 접근하였습니다");
 
-    private final HttpStatus httpStatus;
+    private final int status;
     private final String detail;
 }
