@@ -117,7 +117,7 @@ public class BoardServiceImpl implements BoardService {
 
         Board board = boardRepository.findById(id)
                 .orElseThrow(() -> new CustomException(BOARD_NOT_FOUND));
-        if(board.getUser() != currentUserUtil.getCurrentUser()) throw new CustomException(BOARD_NOT_HAVE_PERMISSION_TO_MODIFY);
+        if(board.getUser() != currentUserUtil.getCurrentUser()) throw new CustomException(BOARD_NOT_HAVE_PERMISSION);
 
         board
                 .updateTitle(title)
@@ -224,7 +224,7 @@ public class BoardServiceImpl implements BoardService {
             }
             boardRepository.deleteById(id);
         } else {
-            throw new CustomException(BOARD_NOT_HAVE_PERMISSION_TO_DELETE);
+            throw new CustomException(BOARD_NOT_HAVE_PERMISSION);
         }
     }
 
