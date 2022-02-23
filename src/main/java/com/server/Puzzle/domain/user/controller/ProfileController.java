@@ -41,7 +41,7 @@ public class ProfileController {
     @PutMapping("/update")
     public ResponseEntity profileUpdate(@RequestBody UserInfoDto userInfo) {
         profileService.profileUpdate(userInfo);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok("Success");
     }
 
     @ApiImplicitParams({
