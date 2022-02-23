@@ -1,5 +1,6 @@
 package com.server.Puzzle.domain.board.domain;
 
+import com.server.Puzzle.domain.attend.domain.Attend;
 import com.server.Puzzle.domain.board.enumType.Purpose;
 import com.server.Puzzle.domain.board.enumType.Status;
 import com.server.Puzzle.domain.user.domain.User;
@@ -54,6 +55,13 @@ public class Board extends BaseTimeEntity {
     )
     private List<BoardFile> boardFiles;
 
+    @OneToMany(
+            mappedBy = "board",
+            cascade = CascadeType.REMOVE,
+            orphanRemoval = true
+    )
+    private List<Attend> attends;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
@@ -76,5 +84,10 @@ public class Board extends BaseTimeEntity {
     public Board updateStatus(Status status) {
         this.status = status;
         return this;
+    }
+
+    public boolean isAttended(String githubId){
+        return this.getAttends().stream()
+                .anyMatch(b -> b.getGithubId().equals(githubId));
     }
 }
