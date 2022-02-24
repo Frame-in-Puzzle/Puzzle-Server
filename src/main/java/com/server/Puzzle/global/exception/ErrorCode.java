@@ -18,7 +18,8 @@ public enum ErrorCode {
     UNAUTHORIZED_USER(401, "Unauthorized User"),
     EXPIRED_TOKEN(401, "Token is Expired"),
     INVALID_TOKEN(401, "Invalid Token"),
-    PARAMETER_IS_MISSING(400, "Parameter is Missing");
+    PARAMETER_IS_MISSING(400, "Parameter is Missing"),
+    IS_ALREADY_ATTEND(400,"Is Already Attend");
 
     private final int status;
     private final String detail;
