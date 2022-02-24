@@ -10,15 +10,15 @@ import java.time.format.DateTimeFormatter;
 @Builder
 @Getter
 public class ErrorResponse {
-    private final String formatNow = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 HH시 mm분 ss초"));
+    private final String formatNow = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd / HH : mm : ss "));
     private final int status;
     private final String message;
 
     public static ResponseEntity<ErrorResponse> toResponseEntity(ErrorCode errorCode) {
         return ResponseEntity
-                .status(errorCode.getHttpStatus())
+                .status(errorCode.getStatus())
                 .body(ErrorResponse.builder()
-                        .status(errorCode.getHttpStatus().value())
+                        .status(errorCode.getStatus())
                         .message(errorCode.getDetail())
                         .build()
                 );
