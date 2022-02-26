@@ -19,8 +19,6 @@ public class CurrentUserUtil {
 
     public User getCurrentUser() {
         String name = null;
-        if(SecurityContextHolder.getContext().getAuthentication() == null)
-            throw new CustomException(UNAUTHORIZED_USER);
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         if(principal instanceof UserDetails) {
