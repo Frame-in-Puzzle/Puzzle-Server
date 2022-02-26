@@ -14,6 +14,7 @@ import com.server.Puzzle.global.exception.ErrorResponse;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -27,6 +28,7 @@ import java.util.List;
 
 import static com.server.Puzzle.global.exception.ErrorCode.PARAMETER_IS_MISSING;
 
+@Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/v1/api/board")
 @RestController
@@ -105,8 +107,9 @@ public class BoardController {
         return ResponseEntity.ok(boardService.getPostByTag(purpose, field, language, status, pageable));
     }
 
-    @ExceptionHandler(MissingServletRequestParameterException.class)
-    public ResponseEntity<ErrorResponse> handleMissingParams() {
+    @ExceptionHandler(value = { MissingServletRequestParameterException.class })
+    public ResponseEntity<ErrorResponse> handleMissingParams(MissingServletRequestParameterException e) {
+        log.error("Parameter is Missing throw CustomException : {}", e.getMessage(), e);
         return ErrorResponse.toResponseEntity(PARAMETER_IS_MISSING);
     }
 }
