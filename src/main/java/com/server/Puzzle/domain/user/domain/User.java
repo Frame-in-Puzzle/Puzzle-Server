@@ -109,11 +109,6 @@ public class User extends BaseTimeEntity implements UserDetails {
         return this;
     }
 
-    public User updateLanguage(Language language){
-        this.language = language != null ? language : this.language;
-        return this;
-    }
-
     public User updateBio(String bio){
         this.bio = bio != null ? bio : this.bio;
         return this;
