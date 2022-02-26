@@ -47,8 +47,13 @@ public class User extends BaseTimeEntity implements UserDetails {
     @Column(name = "user_field", nullable = true)
     private Field field; //분야
 
-    @Column(name = "language", nullable = true)
-    private Language language; // 세부언어
+    @OneToMany(
+            mappedBy = "user",
+            cascade = CascadeType.REMOVE,
+            orphanRemoval = true
+    )
+    @Column(name = "language_id")
+    private List<UserLanguage> language; // 세부언어
 
     @Enumerated(EnumType.STRING)
     @Column(name = "Role")
