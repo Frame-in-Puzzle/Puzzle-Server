@@ -3,13 +3,14 @@ package com.server.Puzzle.global.security.jwt;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.server.Puzzle.global.exception.ErrorCode;
 import com.server.Puzzle.global.exception.ErrorResponse;
-import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import org.apache.http.entity.ContentType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -26,10 +27,8 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws IOException {
         try {
             chain.doFilter(req, res);
-        } catch (ExpiredJwtException ex) {
+        } catch (JwtException | ServletException ex) {
             setErrorResponse(EXPIRED_TOKEN, res);
-        } catch (Exception e) {
-            setErrorResponse(UNKNOWN_ERROR, res);
         }
     }
 
