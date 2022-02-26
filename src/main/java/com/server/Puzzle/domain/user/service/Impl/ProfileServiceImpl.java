@@ -3,10 +3,14 @@ package com.server.Puzzle.domain.user.service.Impl;
 import com.server.Puzzle.domain.board.domain.BoardFile;
 import com.server.Puzzle.domain.board.repository.BoardRepository;
 import com.server.Puzzle.domain.user.domain.User;
+import com.server.Puzzle.domain.user.domain.UserLanguage;
 import com.server.Puzzle.domain.user.dto.MyBoardResponse;
 import com.server.Puzzle.domain.user.dto.UserInfoDto;
+import com.server.Puzzle.domain.user.dto.UserUpdateDto;
+import com.server.Puzzle.domain.user.repository.UserLanguageRepository;
 import com.server.Puzzle.domain.user.repository.UserRepository;
 import com.server.Puzzle.domain.user.service.ProfileService;
+import com.server.Puzzle.global.enumType.Language;
 import com.server.Puzzle.global.exception.CustomException;
 import com.server.Puzzle.global.util.CurrentUserUtil;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +20,8 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 
+import java.util.List;
+
 import static com.server.Puzzle.global.exception.ErrorCode.USER_NOT_FOUND;
 
 @RequiredArgsConstructor
@@ -24,6 +30,7 @@ public class ProfileServiceImpl implements ProfileService {
     private final CurrentUserUtil currentUserUtil;
     private final UserRepository userRepository;
     private final BoardRepository boardRepository;
+    private final UserLanguageRepository userLanguageRepo;
 
     @Override
     public UserInfoDto getProfile(String githubId) {
@@ -37,8 +44,19 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Transactional
     @Override
-    public void profileUpdate(UserInfoDto userInfo) {
+    public void profileUpdate(UserUpdateDto userInfo) {
         User user = currentUserUtil.getCurrentUser();
+
+        List<Language> languageList = userInfo.getLanguage();
+
+        userLanguageRepo.deleteAllByUserId(user.getId());
+
+        for (Language language : languageList) {
+            userLanguageRepo.save(UserLanguage.builder()
+                    .user(user)
+                    .language(language)
+                    .build());
+        }
 
         user
                 .updateName(userInfo.getName())
@@ -46,7 +64,6 @@ public class ProfileServiceImpl implements ProfileService {
                 .updateImageUrl(userInfo.getImageUrl())
                 .updateBio(userInfo.getBio())
                 .updateUrl(userInfo.getUrl())
-                .updateLanguage(userInfo.getLanguage())
                 .updateField(userInfo.getField());
     }
 
