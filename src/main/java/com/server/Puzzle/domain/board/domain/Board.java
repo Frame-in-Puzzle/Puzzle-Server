@@ -1,6 +1,7 @@
 package com.server.Puzzle.domain.board.domain;
 
 import com.server.Puzzle.domain.attend.domain.Attend;
+import com.server.Puzzle.domain.attend.domain.AttendStatus;
 import com.server.Puzzle.domain.board.enumType.Purpose;
 import com.server.Puzzle.domain.board.enumType.Status;
 import com.server.Puzzle.domain.user.domain.User;
@@ -89,5 +90,19 @@ public class Board extends BaseTimeEntity {
     public boolean isAttended(User currentUser){
         return this.getAttends().stream()
                 .anyMatch(b -> b.getUser().equals(currentUser));
+    }
+
+    public boolean isAuthor(User currentUser){
+        return this.getUser().equals(currentUser);
+    }
+
+    public void updateAttendStatus(Long attendId, AttendStatus attendStatus){
+        this.getAttends().stream()
+                .filter(a ->
+                        a.getId().equals(attendId)
+                )
+                .findFirst()
+                .orElseThrow()
+                .updateAttendStatus(attendStatus);
     }
 }
