@@ -86,8 +86,8 @@ public class Board extends BaseTimeEntity {
         return this;
     }
 
-    public boolean isAttended(String githubId){
+    public boolean isAttended(User currentUser){
         return this.getAttends().stream()
-                .anyMatch(b -> b.getGithubId().equals(githubId));
+                .anyMatch(b -> b.getUser().equals(currentUser));
     }
 }
