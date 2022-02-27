@@ -34,7 +34,7 @@ public class User extends BaseTimeEntity implements UserDetails {
     @Column(name = "oauth_idx")
     private String oauthIdx;
 
-    @Column(name = "user_email", unique = true, nullable = true)
+    @Column(name = "user_email", unique = false, nullable = true)
     private String email;
 
     @Column(name = "github_id", unique = true, nullable = false)
