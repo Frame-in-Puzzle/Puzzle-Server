@@ -34,13 +34,11 @@ public class ProfileServiceImpl implements ProfileService {
     private final UserLanguageRepository userLanguageRepo;
 
     @Override
-    public UserInfoDto getProfile(String githubId) {
-        User user = userRepository.findByGithubId(githubId)
-                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+    public UserResponseDto getProfile(String githubId) {
 
-        return UserInfoDto.builder()
-                .user(user)
-                .build();
+        UserResponseDto user = userRepository.findByUser(githubId);
+
+        return user;
     }
 
     @Transactional
