@@ -32,4 +32,12 @@ public class Attend extends BaseTimeEntity {
             orphanRemoval = true
     )
     private List<AttendLanguage> languages;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "attend_status")
+    private AttendStatus attendStatus;
+
+    public void updateAttendStatus(AttendStatus attendStatus){
+        this.attendStatus = attendStatus;
+    }
 }
