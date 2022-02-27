@@ -55,7 +55,7 @@ public class OauthServiceImpl implements OauthService {
     }
 
     private User saveOrUpdate(UserProfile userProfile) {
-        User user = userRepository.findByOauthIdx(userProfile.getOauthIdx())
+        User user = userRepository.findByGithubId(userProfile.getGithubId())
                 .map(entity -> entity
                         .updateGithubId(entity.getGithubId())
                         .updateName(entity.getName())
