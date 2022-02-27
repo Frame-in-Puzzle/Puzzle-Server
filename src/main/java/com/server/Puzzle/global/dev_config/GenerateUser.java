@@ -45,8 +45,8 @@ public class GenerateUser {
                 User.builder()
                         .id(1L)
                         .email("hyunin0102@gmail.com")
-                        .name("홍현인")
-                        .imageUrl("imageurl")
+                        .name("hyunin")
+                        .imageUrl("https://avatars.githubusercontent.com/u/68847615?v=4")
                         .githubId("honghyunin")
                         .bio("상메")
                         .isFirstVisit(true)
@@ -54,7 +54,7 @@ public class GenerateUser {
                         .userLanguages(null)
                         .url("github.com/honghyunin")
                         .roles(singletonList(Role.USER))
-                        .oauthIdx("543221")
+                        .oauthIdx(null)
                         .refreshToken(null)
                         .build());
 
@@ -82,7 +82,7 @@ public class GenerateUser {
                         .userLanguages(null)
                         .url("github.com/KyungJunNoh")
                         .roles(singletonList(Role.USER))
-                        .oauthIdx("54351")
+                        .oauthIdx(null)
                         .refreshToken(null)
                         .build());
 
