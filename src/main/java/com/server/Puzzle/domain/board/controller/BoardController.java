@@ -13,7 +13,6 @@ import com.server.Puzzle.global.enumType.Language;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -64,7 +63,7 @@ public class BoardController {
             @ApiImplicitParam(name = "Authorization", value = "로그인 성공 후 access_token", required = false, dataType = "String", paramType = "header")
     })
     @ResponseStatus( HttpStatus.OK )
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<Page<GetAllPostResponseDto>> getAllPost(@PageableDefault(size = 12) Pageable pageable) {
         return ResponseEntity.ok(boardService.getAllPost(pageable));
     }
