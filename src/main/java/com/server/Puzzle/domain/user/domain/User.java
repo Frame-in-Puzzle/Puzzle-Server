@@ -3,7 +3,6 @@ package com.server.Puzzle.domain.user.domain;
 import com.server.Puzzle.domain.board.domain.Board;
 import com.server.Puzzle.global.entity.BaseTimeEntity;
 import com.server.Puzzle.global.enumType.Field;
-import com.server.Puzzle.global.enumType.Language;
 import com.server.Puzzle.global.enumType.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -52,8 +51,7 @@ public class User extends BaseTimeEntity implements UserDetails {
             cascade = CascadeType.REMOVE,
             orphanRemoval = true
     )
-    @Column(name = "language_id")
-    private List<UserLanguage> language; // 세부언어
+    private List<UserLanguage> userLanguages; // 세부언어
 
     @Enumerated(EnumType.STRING)
     @Column(name = "Role")
@@ -83,7 +81,7 @@ public class User extends BaseTimeEntity implements UserDetails {
             cascade = CascadeType.REMOVE,
             orphanRemoval = true
     )
-    private List<Board> board;
+    private List<Board> boards;
 
     public User updateGithubId(String githubId) {
         this.githubId = githubId != null ? githubId : this.githubId;
