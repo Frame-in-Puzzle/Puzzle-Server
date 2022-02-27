@@ -1,12 +1,14 @@
 package com.server.Puzzle.domain.user.dto;
 
 import com.server.Puzzle.domain.user.domain.User;
+import com.server.Puzzle.domain.user.domain.UserLanguage;
 import com.server.Puzzle.global.enumType.Field;
-import com.server.Puzzle.global.enumType.Language;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -17,7 +19,7 @@ public class UserInfoDto {
      private String imageUrl;
      private String bio;
      private Field field;
-     private Language language;
+     private List<UserLanguage> language;
      private String url;
 
      @Builder

@@ -2,6 +2,7 @@ package com.server.Puzzle.domain.user.controller;
 
 import com.server.Puzzle.domain.user.dto.MyBoardResponse;
 import com.server.Puzzle.domain.user.dto.UserInfoDto;
+import com.server.Puzzle.domain.user.dto.UserUpdateDto;
 import com.server.Puzzle.domain.user.service.ProfileService;
 import com.server.Puzzle.global.util.CurrentUserUtil;
 import io.swagger.annotations.ApiImplicitParam;
@@ -33,7 +34,7 @@ public class ProfileController {
             @ApiImplicitParam(name = "Authorization", value = "로그인 성공 후 토큰", required = true, dataType = "String", paramType = "header")
     })
     @PutMapping("/update")
-    public ResponseEntity profileUpdate(@RequestBody UserInfoDto userInfo) {
+    public ResponseEntity profileUpdate(@RequestBody UserUpdateDto userInfo) {
         profileService.profileUpdate(userInfo);
         return ResponseEntity.ok("Success");
     }
@@ -41,7 +42,7 @@ public class ProfileController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization", value = "로그인 성공 후 토큰", required = true, dataType = "String", paramType = "header")
     })
-    @GetMapping("/board/{githubId}")
+    @GetMapping("/{githubId}/board")
     public ResponseEntity<Page<MyBoardResponse>> getMyBoard(@PageableDefault(page = 10) Pageable pageable, @PathVariable String githubId) {
         return ResponseEntity.ok().body(profileService.getMyBoard(githubId, pageable));
     }

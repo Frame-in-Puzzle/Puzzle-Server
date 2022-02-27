@@ -18,7 +18,7 @@ public class UserController {
             @ApiImplicitParam(name = "Authorization", value = "로그인 성공 후 토큰", required = true, dataType = "String", paramType = "header")
     })
     @ResponseStatus( HttpStatus.OK )
-    @DeleteMapping("logout")
+    @DeleteMapping("/logout")
     public ResponseEntity logout() {
         userService.logout();
         return ResponseEntity.ok("Success");
@@ -28,7 +28,7 @@ public class UserController {
             @ApiImplicitParam(name = "Authorization", value = "로그인 성공 후 토큰", required = true, dataType = "String", paramType = "header")
     })
     @ResponseStatus( HttpStatus.OK )
-    @DeleteMapping("delete")
+    @DeleteMapping("/delete")
     public ResponseEntity delete() {
         userService.delete();
         return ResponseEntity.ok("Success");
