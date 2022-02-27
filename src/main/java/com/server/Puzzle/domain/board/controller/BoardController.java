@@ -10,22 +10,19 @@ import com.server.Puzzle.domain.board.enumType.Status;
 import com.server.Puzzle.domain.board.service.BoardService;
 import com.server.Puzzle.global.enumType.Field;
 import com.server.Puzzle.global.enumType.Language;
-import com.server.Puzzle.global.exception.ErrorResponse;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-
-import static com.server.Puzzle.global.exception.ErrorCode.PARAMETER_IS_MISSING;
 
 @RequiredArgsConstructor
 @RequestMapping("/v1/api/board")
@@ -103,10 +100,5 @@ public class BoardController {
                                                                       @PageableDefault(size = 12) Pageable pageable)
     {
         return ResponseEntity.ok(boardService.getPostByTag(purpose, field, language, status, pageable));
-    }
-
-    @ExceptionHandler(MissingServletRequestParameterException.class)
-    public ResponseEntity<ErrorResponse> handleMissingParams() {
-        return ErrorResponse.toResponseEntity(PARAMETER_IS_MISSING);
     }
 }
