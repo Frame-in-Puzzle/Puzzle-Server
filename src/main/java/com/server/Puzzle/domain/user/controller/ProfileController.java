@@ -3,7 +3,6 @@ package com.server.Puzzle.domain.user.controller;
 import com.server.Puzzle.domain.user.dto.MyBoardResponse;
 import com.server.Puzzle.domain.user.dto.UserInfoDto;
 import com.server.Puzzle.domain.user.service.ProfileService;
-import com.server.Puzzle.global.exception.CustomException;
 import com.server.Puzzle.global.util.CurrentUserUtil;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -14,16 +13,11 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Objects;
-
-import static com.server.Puzzle.global.exception.ErrorCode.UNAUTHORIZED_USER;
-
 @RequiredArgsConstructor
 @RequestMapping("/v1/api/profile")
 @RestController
 public class ProfileController {
 
-    private final CurrentUserUtil currentUserUtil;
     private final ProfileService profileService;
 
     @ApiImplicitParams({
@@ -49,8 +43,6 @@ public class ProfileController {
     })
     @GetMapping("/board/{githubId}")
     public ResponseEntity<Page<MyBoardResponse>> getMyBoard(@PageableDefault(page = 10) Pageable pageable, @PathVariable String githubId) {
-        if(!Objects.equals(currentUserUtil.getCurrentUser().getGithubId(), githubId))
-            throw new CustomException(UNAUTHORIZED_USER);
         return ResponseEntity.ok().body(profileService.getMyBoard(githubId, pageable));
     }
 }
