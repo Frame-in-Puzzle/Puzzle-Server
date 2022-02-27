@@ -75,7 +75,6 @@ public class User extends BaseTimeEntity implements UserDetails {
     @Column(name = "is_first_visit")
     private boolean isFirstVisit;
 
-
     @OneToMany(
             mappedBy = "user",
             cascade = CascadeType.REMOVE,
