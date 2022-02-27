@@ -2,6 +2,8 @@ package com.server.Puzzle.domain.attend.service.Impl;
 
 import com.server.Puzzle.domain.attend.domain.Attend;
 import com.server.Puzzle.domain.attend.domain.AttendLanguage;
+import com.server.Puzzle.domain.attend.domain.AttendStatus;
+import com.server.Puzzle.domain.attend.dto.request.PatchAttendRequest;
 import com.server.Puzzle.domain.attend.dto.response.GetAllAttendResponse;
 import com.server.Puzzle.domain.attend.repository.AttendLanguageRepository;
 import com.server.Puzzle.domain.attend.repository.AttendRepository;
@@ -16,6 +18,7 @@ import com.server.Puzzle.global.util.CurrentUserUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -40,6 +43,7 @@ public class AttendServiceImpl implements AttendService {
                 Attend.builder()
                         .board(board)
                         .user(currentUser)
+                        .attendStatus(AttendStatus.WAIT)
                         .build()
         );
 
@@ -60,5 +64,18 @@ public class AttendServiceImpl implements AttendService {
                 .orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
 
         return attendRepository.findAllByBoardId(boardId);
+    }
+
+    @Transactional
+    @Override
+    public void patchAttend(Long boardId, PatchAttendRequest patchAttendRequest) {
+        User currentUser = currentUserUtil.getCurrentUser();
+
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
+
+        if (!board.isAuthor(currentUser)) throw new CustomException(ErrorCode.ATTEND_PATCH_PERMISSION_DENIED);
+
+        board.updateAttendStatus(patchAttendRequest.getAttendId(), patchAttendRequest.getAttendStatus());
     }
 }

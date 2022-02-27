@@ -32,7 +32,8 @@ public class AttendCustomRepositoryImpl implements AttendCustomRepository{
                                 .collect(Collectors.toList()),
                         a.getUser().getName(),
                         a.getUser().getGithubId(),
-                        a.getUser().getImageUrl()
+                        a.getUser().getImageUrl(),
+                        a.getAttendStatus()
                 ))
                 .collect(Collectors.toList());
     }
