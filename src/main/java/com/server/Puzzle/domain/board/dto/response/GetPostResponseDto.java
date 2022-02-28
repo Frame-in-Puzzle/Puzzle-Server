@@ -19,6 +19,8 @@ public class GetPostResponseDto {
     private String contents;
     private Purpose purpose;
     private Status status;
+    private String name;
+    private String githubId;
     private List<Field> fields;
     private List<Language> languages;
     private List<String> files;
