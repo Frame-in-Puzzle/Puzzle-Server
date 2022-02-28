@@ -16,7 +16,9 @@ public enum ErrorCode {
     INVALID_TOKEN(401, "Invalid Token"),
     PARAMETER_IS_MISSING(400, "Parameter is Missing"),
     IS_ALREADY_ATTEND(400,"Is Already Attend"),
-    ATTEND_PATCH_PERMISSION_DENIED(401, "Attend Patch Permission Denied");
+    ATTEND_PATCH_PERMISSION_DENIED(401, "Attend Patch Permission Denied"),
+    ATTEND_NOT_FOUND(404, "Attend Not Found"),
+    ATTEND_DELETE_PERMISSION_DENIED(401, "Attend Delete Permission Denied");
 
     private final int status;
     private final String detail;
