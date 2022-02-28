@@ -232,8 +232,8 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public List<GetPostByTagResponseDto> getPostByTag(Purpose purpose, List<Field> field, List<Language> language, Status status,Pageable pageable) {
-        List<GetPostByTagResponseDto> response = boardRepository.findBoardByTag(purpose, field, language, status, pageable);
+    public Page<GetPostByTagResponseDto> getPostByTag(Purpose purpose, List<Field> field, List<Language> language, Status status, Pageable pageable) {
+        Page<GetPostByTagResponseDto> response = boardRepository.findBoardByTag(purpose, field, language, status, pageable);
 
         return response;
     }
