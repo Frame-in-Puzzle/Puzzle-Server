@@ -78,4 +78,20 @@ public class AttendServiceImpl implements AttendService {
 
         board.updateAttendStatus(patchAttendRequest.getAttendId(), patchAttendRequest.getAttendStatus());
     }
+
+    @Override
+    public void deleteAttend(Long boardId, Long attendId) {
+        User currentUser = currentUserUtil.getCurrentUser();
+
+        boardRepository.findById(boardId)
+                .orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
+
+        Attend attend = attendRepository.findById(attendId)
+                .orElseThrow(() -> new CustomException(ErrorCode.ATTEND_NOT_FOUND));
+
+        if (!attend.getUser().equals(currentUser)) throw new CustomException(ErrorCode.ATTEND_DELETE_PERMISSION_DENIED);
+
+        attendRepository.deleteById(attend.getId());
+    }
+
 }
