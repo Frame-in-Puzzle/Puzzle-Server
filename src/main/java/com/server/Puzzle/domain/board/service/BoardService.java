@@ -23,5 +23,5 @@ public interface BoardService {
     Page<GetAllPostResponseDto> getAllPost(Pageable pageable);
     GetPostResponseDto getPost(Long id);
     void deletePost(Long id);
-    List<GetPostByTagResponseDto> getPostByTag(Purpose purpose, List<Field> field, List<Language> language, Status status, Pageable pageable);
+    Page<GetPostByTagResponseDto> getPostByTag(Purpose purpose, List<Field> field, List<Language> language, Status status, Pageable pageable);
 }

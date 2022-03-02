@@ -1,8 +1,8 @@
 package com.server.Puzzle.domain.user.domain;
 
+import com.server.Puzzle.domain.board.domain.Board;
 import com.server.Puzzle.global.entity.BaseTimeEntity;
 import com.server.Puzzle.global.enumType.Field;
-import com.server.Puzzle.global.enumType.Language;
 import com.server.Puzzle.global.enumType.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,8 +17,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static javax.persistence.EnumType.STRING;
 
 @Getter
 @Entity
@@ -36,7 +34,7 @@ public class User extends BaseTimeEntity implements UserDetails {
     @Column(name = "oauth_idx")
     private String oauthIdx;
 
-    @Column(name = "user_email", unique = true, nullable = true)
+    @Column(name = "user_email", unique = false, nullable = true)
     private String email;
 
     @Column(name = "github_id", unique = true, nullable = false)
@@ -48,8 +46,12 @@ public class User extends BaseTimeEntity implements UserDetails {
     @Column(name = "user_field", nullable = true)
     private Field field; //분야
 
-    @Column(name = "language", nullable = true)
-    private Language language; // 세부언어
+    @OneToMany(
+            mappedBy = "user",
+            cascade = CascadeType.REMOVE,
+            orphanRemoval = true
+    )
+    private List<UserLanguage> userLanguages; // 세부언어
 
     @Enumerated(EnumType.STRING)
     @Column(name = "Role")
@@ -73,6 +75,13 @@ public class User extends BaseTimeEntity implements UserDetails {
     @Column(name = "is_first_visit")
     private boolean isFirstVisit;
 
+    @OneToMany(
+            mappedBy = "user",
+            cascade = CascadeType.REMOVE,
+            orphanRemoval = true
+    )
+    private List<Board> boards;
+
     public User updateGithubId(String githubId) {
         this.githubId = githubId != null ? githubId : this.githubId;
         return this;
@@ -94,11 +103,6 @@ public class User extends BaseTimeEntity implements UserDetails {
 
     public User updateField(Field field){
         this.field = field != null ? field : this.field;
-        return this;
-    }
-
-    public User updateLanguage(Language language){
-        this.language = language != null ? language : this.language;
         return this;
     }
 

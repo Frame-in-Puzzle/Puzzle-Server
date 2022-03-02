@@ -14,8 +14,8 @@ public class OauthController {
     private final OauthServiceImpl oauthServiceImpl;
 
     @PostMapping("/login/github")
-    public ResponseEntity<LoginResponse> login(@RequestBody OauthCode code) {
+    public ResponseEntity<LoginResponse> login(@RequestBody OauthCode code)  {
         LoginResponse loginResponse = oauthServiceImpl.login(code);
-        return ResponseEntity.ok().body(loginResponse);
+        return ResponseEntity.ok(loginResponse);
     }
 }

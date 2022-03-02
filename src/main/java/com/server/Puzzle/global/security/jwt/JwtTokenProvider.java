@@ -34,8 +34,8 @@ public class JwtTokenProvider {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
-    public String createToken(String name, List<Role> roles) {
-        Claims claims = Jwts.claims().setSubject(name);
+    public String createToken(String githubId, List<Role> roles) {
+        Claims claims = Jwts.claims().setSubject(githubId);
         claims.put("auth", roles.stream()
                 .map(GrantedAuthority::getAuthority)
                 .filter(Objects::nonNull).collect(Collectors.toList()));

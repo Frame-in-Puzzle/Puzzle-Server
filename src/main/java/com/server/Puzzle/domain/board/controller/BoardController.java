@@ -16,8 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.MissingServletRequestParameterException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,75 +32,49 @@ public class BoardController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header")
     })
-    @ResponseStatus( HttpStatus.OK )
     @PostMapping("/")
-    public void post(@RequestBody PostRequestDto request){
+    public ResponseEntity<String> post(@RequestBody PostRequestDto request){
         boardService.post(request);
+        return ResponseEntity.ok("Success");
     }
 
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "Authorization", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header")
-    })
-    @ResponseStatus( HttpStatus.OK )
     @PostMapping("/create-url")
-    public String createUrl(@RequestPart MultipartFile files) {
-        return boardService.createUrl(files);
+    public ResponseEntity<String> createUrl(@RequestPart MultipartFile files) {
+        return ResponseEntity.ok(boardService.createUrl(files));
     }
 
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header")
     })
-    @ResponseStatus( HttpStatus.OK )
     @PutMapping("/{id}")
-    public void correctionPost(@PathVariable("id") Long id, @RequestBody CorrectionPostRequestDto request){
+    public ResponseEntity<String> correctionPost(@PathVariable("id") Long id, @RequestBody CorrectionPostRequestDto request){
         boardService.correctionPost(id, request);
+        return ResponseEntity.ok("Success");
     }
 
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "Authorization", value = "로그인 성공 후 access_token", required = false, dataType = "String", paramType = "header")
-    })
-    @ResponseStatus( HttpStatus.OK )
-    @GetMapping
-    public Page<GetAllPostResponseDto> getAllPost(@PageableDefault(size = 12) Pageable pageable) {
-        return boardService.getAllPost(pageable);
+    @GetMapping("/all")
+    public ResponseEntity<Page<GetAllPostResponseDto>> getAllPost(@PageableDefault(size = 12) Pageable pageable) {
+        return ResponseEntity.ok(boardService.getAllPost(pageable));
     }
 
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "Authorization", value = "로그인 성공 후 access_token", required = false, dataType = "String", paramType = "header")
-    })
-    @ResponseStatus( HttpStatus.OK )
     @GetMapping("/{id}")
-    public GetPostResponseDto getPost(@PathVariable("id") Long id) {
-        return boardService.getPost(id);
+    public ResponseEntity<GetPostResponseDto> getPost(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(boardService.getPost(id));
     }
 
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "Authorization", value = "로그인 성공 후 access_token", required = false, dataType = "String", paramType = "header")
-    })
-    @ResponseStatus( HttpStatus.OK )
     @DeleteMapping("/{id}")
-    public void deletePost(@PathVariable("id") Long id){
+    public ResponseEntity<String> deletePost(@PathVariable("id") Long id){
         boardService.deletePost(id);
+        return ResponseEntity.ok("Success");
     }
 
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "Authorization", value = "로그인 성공 후 access_token", required = false, dataType = "String", paramType = "header")
-    })
-    @ResponseStatus( HttpStatus.OK )
     @GetMapping("/filter")
-    public List<GetPostByTagResponseDto> getPostByTag(@RequestParam Purpose purpose,
-                                                      @RequestParam List<Field> field,
-                                                      @RequestParam(defaultValue = "NULL") List<Language> language,
-                                                      @RequestParam Status status,
-                                                      @PageableDefault(size = 12) Pageable pageable)
+    public ResponseEntity<Page<GetPostByTagResponseDto>> getPostByTag(@RequestParam Purpose purpose,
+                                                                      @RequestParam List<Field> field,
+                                                                      @RequestParam(defaultValue = "NULL") List<Language> language,
+                                                                      @RequestParam Status status,
+                                                                      @PageableDefault(size = 12) Pageable pageable)
     {
-        return boardService.getPostByTag(purpose, field, language, status, pageable);
-    }
-
-    @ExceptionHandler(MissingServletRequestParameterException.class)
-    public String handleMissingParams(MissingServletRequestParameterException ex) {
-        String name = ex.getParameterName();
-        System.out.println(name + " parameter is missing");
-        return name + " parameter is missing";
+        return ResponseEntity.ok(boardService.getPostByTag(purpose, field, language, status, pageable));
     }
 }
