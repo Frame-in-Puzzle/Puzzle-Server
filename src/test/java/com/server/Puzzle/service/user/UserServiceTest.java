@@ -43,7 +43,7 @@ public class UserServiceTest {
                 .roles(List.of(Role.USER))
                 .url("https://github.com/honghyunin")
                 .isFirstVisit(true)
-                .githubId("honghyunin")
+                .githubId("honghyunin12")
                 .build();
 
         userRepository.save(user);
