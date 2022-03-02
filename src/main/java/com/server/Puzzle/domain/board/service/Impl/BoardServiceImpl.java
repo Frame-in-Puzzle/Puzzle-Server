@@ -168,6 +168,7 @@ public class BoardServiceImpl implements BoardService {
     public Page<GetAllPostResponseDto> getAllPost(Pageable pageable) {
         Page<GetAllPostResponseDto> response = boardRepository.findAll(pageable).map(
                 board -> GetAllPostResponseDto.builder()
+                        .boardId(board.getId())
                         .title(board.getTitle())
                         .status(board.getStatus())
                         .createDateTime(board.getCreatedDate())
@@ -191,6 +192,8 @@ public class BoardServiceImpl implements BoardService {
                         .contents(board.getContents())
                         .purpose(board.getPurpose())
                         .status(board.getStatus())
+                        .name(board.getUser().getName())
+                        .githubId(board.getUser().getGithubId())
                         .fields(
                                 board.getBoardFields().stream()
                                 .map(boardField -> boardField.getField())
@@ -229,8 +232,8 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public List<GetPostByTagResponseDto> getPostByTag(Purpose purpose, List<Field> field, List<Language> language, Status status,Pageable pageable) {
-        List<GetPostByTagResponseDto> response = boardRepository.findBoardByTag(purpose, field, language, status, pageable);
+    public Page<GetPostByTagResponseDto> getPostByTag(Purpose purpose, List<Field> field, List<Language> language, Status status, Pageable pageable) {
+        Page<GetPostByTagResponseDto> response = boardRepository.findBoardByTag(purpose, field, language, status, pageable);
 
         return response;
     }

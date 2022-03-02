@@ -1,5 +1,6 @@
 package com.server.Puzzle.domain.board.repository;
 
+import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.server.Puzzle.domain.board.domain.Board;
 import com.server.Puzzle.domain.board.dto.response.GetPostByTagResponseDto;
@@ -8,6 +9,8 @@ import com.server.Puzzle.domain.board.enumType.Status;
 import com.server.Puzzle.global.enumType.Field;
 import com.server.Puzzle.global.enumType.Language;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
@@ -25,7 +28,7 @@ public class BoardCustomRepositoryImpl implements BoardCustomRepository{
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<GetPostByTagResponseDto> findBoardByTag(Purpose purpose, List<Field> field, List<Language> language, Status status, Pageable pageable) {
+    public Page<GetPostByTagResponseDto> findBoardByTag(Purpose purpose, List<Field> field, List<Language> language, Status status, Pageable pageable) {
         HashSet<Long> boardIdHashSet = new HashSet<>();
 
         if (field.get(0) == Field.ALL){
@@ -64,7 +67,7 @@ public class BoardCustomRepositoryImpl implements BoardCustomRepository{
             }
         }
 
-        List<Board> boards = jpaQueryFactory.selectFrom(board)
+        QueryResults<Board> results = jpaQueryFactory.selectFrom(board)
                 .where(
                         board.id.in(boardIdHashSet),
                         board.purpose.eq(purpose),
@@ -72,9 +75,9 @@ public class BoardCustomRepositoryImpl implements BoardCustomRepository{
                 )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .fetch();
+                .fetchResults();
 
-        return boards.stream()
+        List<GetPostByTagResponseDto> content = results.getResults().stream()
                 .map(b -> new GetPostByTagResponseDto(
                         b.getId(),
                         b.getTitle(),
@@ -85,6 +88,8 @@ public class BoardCustomRepositoryImpl implements BoardCustomRepository{
                                 .findFirst().orElse(null)
                 ))
                 .collect(Collectors.toList());
+
+        return new PageImpl<>(content, pageable, results.getTotal());
     }
 
 }

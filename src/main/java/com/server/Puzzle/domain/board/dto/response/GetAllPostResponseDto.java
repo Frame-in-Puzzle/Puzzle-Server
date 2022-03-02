@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @Getter
 public class GetAllPostResponseDto {
 
+    private Long boardId;
     private String title;
     private Status status;
     private LocalDateTime createDateTime;
