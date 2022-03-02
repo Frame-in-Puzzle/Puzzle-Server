@@ -1,9 +1,9 @@
 package com.server.Puzzle.service.user;
 
 import com.server.Puzzle.domain.user.domain.User;
+import com.server.Puzzle.domain.user.repository.UserLanguageRepository;
 import com.server.Puzzle.global.enumType.Field;
 import com.server.Puzzle.domain.user.repository.UserRepository;
-import com.server.Puzzle.global.enumType.Language;
 import com.server.Puzzle.global.enumType.Role;
 import com.server.Puzzle.global.util.CurrentUserUtil;
 import org.junit.jupiter.api.DisplayName;
@@ -40,7 +40,6 @@ public class UserServiceTest {
                 .imageUrl("https://avatars.githubusercontent.com/u/68847615?v=4")
                 .bio("한줄소개")
                 .field(Field.BACKEND)
-                .language(Language.JAVA)
                 .roles(List.of(Role.USER))
                 .url("https://github.com/honghyunin")
                 .isFirstVisit(true)
@@ -58,7 +57,6 @@ public class UserServiceTest {
         User currentUser = currentUserUtil.getCurrentUser();
 
         // then
-        assertEquals("홍현인", currentUser.getName());
-        assertEquals("hyunin0102@gmail.com", currentUser.getEmail());
+        assertEquals("honghyunin12", currentUser.getGithubId());
     }
 }
