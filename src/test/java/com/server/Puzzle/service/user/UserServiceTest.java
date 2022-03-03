@@ -49,7 +49,7 @@ public class UserServiceTest {
         userRepository.save(user);
         //when
         UsernamePasswordAuthenticationToken token =
-                new UsernamePasswordAuthenticationToken(user.getName(), "password", user.getRoles());
+                new UsernamePasswordAuthenticationToken(user.getGithubId(), "password", user.getRoles());
 
         SecurityContext securityContext = SecurityContextHolder.getContext();
         securityContext.setAuthentication(token);

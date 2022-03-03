@@ -53,7 +53,7 @@ public class BoardServiceTest {
         userRepository.save(user);
 
         UsernamePasswordAuthenticationToken token
-                = new UsernamePasswordAuthenticationToken(user.getName(),"password",List.of(Role.USER));
+                = new UsernamePasswordAuthenticationToken(user.getGithubId(),"password",List.of(Role.USER));
         SecurityContext securityContext = SecurityContextHolder.getContext();
         securityContext.setAuthentication(token);
 
