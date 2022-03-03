@@ -8,7 +8,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import static com.server.Puzzle.global.exception.ErrorCode.UNAUTHORIZED_USER;
 import static com.server.Puzzle.global.exception.ErrorCode.USER_NOT_FOUND;
 
 @Component
@@ -26,7 +25,8 @@ public class CurrentUserUtil {
         } else{
             name = principal.toString();
         }
-        return userRepository.findByName(name)
+
+        return userRepository.findByGithubId(name)
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
     }
 }

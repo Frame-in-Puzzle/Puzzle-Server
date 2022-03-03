@@ -132,7 +132,7 @@ public class User extends BaseTimeEntity implements UserDetails {
 
     @Override
     public String getUsername() {
-        return this.name;
+        return this.githubId;
     }
 
     @Override
