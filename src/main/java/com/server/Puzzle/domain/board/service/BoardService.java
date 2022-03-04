@@ -17,7 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface BoardService {
-    Board post(PostRequestDto request);
+    void post(PostRequestDto request);
     String createUrl(MultipartFile files);
     Board correctionPost(Long id, CorrectionPostRequestDto request);
     Page<GetAllPostResponseDto> getAllPost(Pageable pageable);
