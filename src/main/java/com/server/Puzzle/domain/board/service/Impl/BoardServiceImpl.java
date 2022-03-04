@@ -48,7 +48,7 @@ public class BoardServiceImpl implements BoardService {
     private final BoardLanguageRepository boardLanguageRepository;
 
     @Override
-    public Board post(PostRequestDto request) {
+    public void post(PostRequestDto request) {
         String title = request.getTitle();
         String contents = request.getContents();
         Purpose purpose = request.getPurpose();
@@ -94,8 +94,6 @@ public class BoardServiceImpl implements BoardService {
                             .build()
             );
         }
-
-        return board;
     }
 
     @Override
