@@ -15,6 +15,7 @@ import com.server.Puzzle.global.enumType.Language;
 import com.server.Puzzle.global.enumType.Role;
 import com.server.Puzzle.global.util.CurrentUserUtil;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -193,7 +194,7 @@ public class BoardServiceTest {
                 .status(Status.RECRUITMENT)
                 .fieldList(List.of(Field.BACKEND,Field.FRONTEND))
                 .languageList(List.of(Language.JAVA,Language.TS))
-                .fileUrlList(List.of("google.com","naver.com"))
+                .fileUrlList(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
                 .build();
 
         // when
@@ -205,5 +206,30 @@ public class BoardServiceTest {
 
         // then
         assertThat(boardRepository.findById(findBoard.getId()).get().getTitle()).isEqualTo(postRequestDto.getTitle());
+    }
+
+    @Disabled
+    @Test
+    @DisplayName("게시물 삭제 테스트")
+    void deletePost(){
+        // then
+        PostRequestDto postRequestDto = PostRequestDto.builder()
+                .title("title")
+                .contents("contents")
+                .purpose(Purpose.PROJECT)
+                .status(Status.RECRUITMENT)
+                .fieldList(List.of(Field.BACKEND,Field.FRONTEND))
+                .languageList(List.of(Language.JAVA,Language.TS))
+                .fileUrlList(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
+                .build();
+
+        boardService.post(postRequestDto);
+
+        // when
+        Long boardId = boardRepository.findAll().get(0).getId();
+        boardService.deletePost(boardId);
+
+        // then
+        assertThat(boardRepository.findById(boardId)).isNull();
     }
 }
