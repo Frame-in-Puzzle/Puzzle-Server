@@ -143,9 +143,6 @@ public class BoardServiceTest {
 
         boardService.post(postRequestDto);
 
-        em.clear();
-        em.close();
-
         Long boardId = boardRepository.findAll().get(0).getId();
 
         // when
