@@ -3,6 +3,7 @@ package com.server.Puzzle.service.board;
 import com.server.Puzzle.domain.board.domain.Board;
 import com.server.Puzzle.domain.board.dto.request.CorrectionPostRequestDto;
 import com.server.Puzzle.domain.board.dto.request.PostRequestDto;
+import com.server.Puzzle.domain.board.dto.response.GetAllPostResponseDto;
 import com.server.Puzzle.domain.board.enumType.Purpose;
 import com.server.Puzzle.domain.board.enumType.Status;
 import com.server.Puzzle.domain.board.repository.BoardRepository;
@@ -18,6 +19,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -152,6 +155,31 @@ public class BoardServiceTest {
 
         // then
         assertThat(correctionBoard.getTitle()).isEqualTo("correctionTitle");
+    }
+
+    @Test
+    @DisplayName("게시물 전체 조회 테스트")
+    void getAllPostTest(){
+        // given
+        PostRequestDto postRequestDto = PostRequestDto.builder()
+                .title("title")
+                .contents("contents")
+                .purpose(Purpose.PROJECT)
+                .status(Status.RECRUITMENT)
+                .fieldList(List.of(Field.BACKEND,Field.FRONTEND))
+                .languageList(List.of(Language.JAVA,Language.TS))
+                .fileUrlList(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
+                .build();
+
+        for (int i = 0; i < 12; i++){
+            boardService.post(postRequestDto);
+        }
+
+        // when
+        Page<GetAllPostResponseDto> allPost = boardService.getAllPost(PageRequest.of(1, 12));
+
+        // then
+        assertThat(allPost.getSize()).isEqualTo(12);
     }
 
     @Test
