@@ -1,6 +1,7 @@
 package com.server.Puzzle.service.board;
 
 import com.server.Puzzle.domain.board.domain.Board;
+import com.server.Puzzle.domain.board.dto.request.CorrectionPostRequestDto;
 import com.server.Puzzle.domain.board.dto.request.PostRequestDto;
 import com.server.Puzzle.domain.board.enumType.Purpose;
 import com.server.Puzzle.domain.board.enumType.Status;
@@ -114,6 +115,47 @@ public class BoardServiceTest {
                 .map(b -> b.getUrl())
                 .collect(Collectors.toList())
         ).isEqualTo(postRequestDto.getFileUrlList());
+    }
+
+    @Test
+    @DisplayName("게시물 수정 테스트")
+    void correctionPostTest(){
+        // given
+        PostRequestDto postRequestDto = PostRequestDto.builder()
+                .title("title")
+                .contents("contents")
+                .purpose(Purpose.PROJECT)
+                .status(Status.RECRUITMENT)
+                .fieldList(List.of(Field.BACKEND,Field.FRONTEND))
+                .languageList(List.of(Language.JAVA,Language.TS))
+                .fileUrlList(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
+                .build();
+
+        CorrectionPostRequestDto correctionPostRequestDto = CorrectionPostRequestDto.builder()
+                .title("correctionTitle")
+                .contents("correctionContents")
+                .purpose(Purpose.PROJECT)
+                .status(Status.RECRUITMENT)
+                .fileUrlList(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
+                .fieldList(List.of(Field.AI,Field.ANDROID))
+                .languageList(List.of(Language.PYTORCH, Language.KOTLIN))
+                .build();
+
+        boardService.post(postRequestDto);
+
+        em.clear();
+        em.close();
+
+        Long boardId = boardRepository.findAll().get(0).getId();
+        System.out.println("boardId = " + boardId);
+
+        // when
+        boardService.correctionPost(boardId, correctionPostRequestDto);
+
+        Board correctionBoard = boardRepository.findAll().get(0);
+
+        // then
+        assertThat(correctionBoard.getTitle()).isEqualTo("correctionTitle");
     }
 
     @Test
