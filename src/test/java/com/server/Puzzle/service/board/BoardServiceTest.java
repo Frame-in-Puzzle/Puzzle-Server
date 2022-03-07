@@ -137,8 +137,8 @@ public class BoardServiceTest {
                 .purpose(Purpose.PROJECT)
                 .status(Status.RECRUITMENT)
                 .fileUrlList(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
-                .fieldList(List.of(Field.AI,Field.ANDROID))
                 .languageList(List.of(Language.PYTORCH, Language.KOTLIN))
+                .fieldList(List.of(Field.AI,Field.ANDROID))
                 .build();
 
         boardService.post(postRequestDto);
@@ -147,7 +147,6 @@ public class BoardServiceTest {
         em.close();
 
         Long boardId = boardRepository.findAll().get(0).getId();
-        System.out.println("boardId = " + boardId);
 
         // when
         boardService.correctionPost(boardId, correctionPostRequestDto);
