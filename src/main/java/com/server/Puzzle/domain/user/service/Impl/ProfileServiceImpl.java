@@ -36,6 +36,9 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     public UserResponseDto getProfile(String githubId) {
 
+        userRepository.findByGithubId(githubId)
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
         UserResponseDto user = userRepository.findByUser(githubId);
 
         return user;
