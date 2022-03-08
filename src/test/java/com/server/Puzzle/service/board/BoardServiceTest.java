@@ -276,7 +276,14 @@ public class BoardServiceTest {
         em.flush();
 
         // when
-        Page<GetPostByTagResponseDto> post = boardService.getPostByTag(Purpose.PROJECT, List.of(Field.BACKEND), List.of(Language.JAVA), Status.RECRUITMENT, PageRequest.of(0, 12));
+        Page<GetPostByTagResponseDto> post = boardService.getPostByTag(
+                Purpose.PROJECT,
+                List.of(Field.BACKEND),
+                List.of(Language.JAVA),
+                Status.RECRUITMENT,
+                PageRequest.of(0, 12)
+        );
+
 
         // then
         assertThat(post.getContent().get(0).getTitle()).isEqualTo("title1");
