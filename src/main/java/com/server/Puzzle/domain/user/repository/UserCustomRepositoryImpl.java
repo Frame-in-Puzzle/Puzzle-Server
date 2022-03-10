@@ -35,6 +35,7 @@ public class UserCustomRepositoryImpl implements UserCustomRepository{
                 .name(user.getName())
                 .email(user.getEmail())
                 .imageUrl(user.getImageUrl())
+                .field(user.getField())
                 .bio(user.getBio())
                 .language(languages)
                 .url(user.getUrl())

@@ -15,5 +15,5 @@ public class MyBoardResponse {
     private LocalDateTime date;
     private String contents;
     private Status status;
-    private String files;
+    private String thumbnail;
 }

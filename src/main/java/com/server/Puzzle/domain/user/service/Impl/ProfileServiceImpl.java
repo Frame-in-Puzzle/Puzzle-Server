@@ -81,7 +81,7 @@ public class ProfileServiceImpl implements ProfileService {
                         .contents(board.getContents())
                         .date(board.getCreatedDate())
                         .status(board.getStatus())
-                        .files(
+                        .thumbnail(
                                 board.getBoardFiles().stream().map(BoardFile::getUrl)
                                         .findFirst()
                                         .orElse(null))
