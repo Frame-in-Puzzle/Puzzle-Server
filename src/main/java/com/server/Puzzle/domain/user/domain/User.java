@@ -117,6 +117,11 @@ public class User extends BaseTimeEntity implements UserDetails {
         return this;
     }
 
+    public User updateIsFirstVisited(Boolean isFirstVisited){
+        this.isFirstVisited = isFirstVisited ? true : false;
+        return this;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<String> rolesConvertString = this.roles.stream().map(Enum::name).collect(Collectors.toList());
