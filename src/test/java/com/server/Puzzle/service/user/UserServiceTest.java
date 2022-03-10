@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
+import java.util.Optional;
 
 @SpringBootTest
 @Transactional
@@ -76,5 +77,14 @@ public class UserServiceTest {
         User user = userRepository.findByName(currentUser.getName())
                 .orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND));
         assertEquals(user.getRefreshToken(), null);
+    }
+
+    @Test
+    void 회원탈퇴_테스트() {
+        User currentUser = currentUserUtil.getCurrentUser();
+
+        userService.delete();
+
+        assertEquals(userRepository.findByGithubId(currentUser.getGithubId()), Optional.empty());
     }
 }
