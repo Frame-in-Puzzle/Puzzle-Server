@@ -74,7 +74,7 @@ public class User extends BaseTimeEntity implements UserDetails {
     private String refreshToken;
 
     @Column(name = "is_first_visit")
-    private boolean isFirstVisit;
+    private boolean isFirstVisited;
 
     @OneToMany(
             mappedBy = "user",

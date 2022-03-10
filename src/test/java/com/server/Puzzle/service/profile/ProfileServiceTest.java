@@ -60,7 +60,7 @@ public class ProfileServiceTest {
                 .field(Field.BACKEND)
                 .roles(List.of(Role.USER))
                 .url("https://github.com/honghyunin")
-                .isFirstVisit(true)
+                .isFirstVisited(true)
                 .githubId("honghyunin12")
                 .build();
 

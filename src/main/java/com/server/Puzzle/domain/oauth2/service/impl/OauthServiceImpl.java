@@ -49,6 +49,7 @@ public class OauthServiceImpl implements OauthService {
         return LoginResponse.builder()
                 .githubId(user.getGithubId())
                 .email(user.getEmail())
+                .isFirstVisited(user.isFirstVisited())
                 .accessToken("Bearer " + accessToken)
                 .refreshToken("Bearer " + refreshToken)
                 .build();

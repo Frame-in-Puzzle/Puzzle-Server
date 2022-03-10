@@ -49,7 +49,7 @@ public class UserServiceTest {
                 .field(Field.BACKEND)
                 .roles(List.of(Role.USER))
                 .url("https://github.com/honghyunin")
-                .isFirstVisit(true)
+                .isFirstVisited(true)
                 .refreshToken("refreshToken")
                 .githubId("honghyunin12")
                 .build();
