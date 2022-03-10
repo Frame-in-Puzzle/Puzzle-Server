@@ -4,6 +4,7 @@ import com.server.Puzzle.domain.board.domain.Board;
 import com.server.Puzzle.domain.board.dto.request.CorrectionPostRequestDto;
 import com.server.Puzzle.domain.board.dto.request.PostRequestDto;
 import com.server.Puzzle.domain.board.dto.response.GetAllPostResponseDto;
+import com.server.Puzzle.domain.board.dto.response.GetPostByTagResponseDto;
 import com.server.Puzzle.domain.board.enumType.Purpose;
 import com.server.Puzzle.domain.board.enumType.Status;
 import com.server.Puzzle.domain.board.repository.BoardRepository;
@@ -231,5 +232,60 @@ public class BoardServiceTest {
 
         // then
         assertThat(boardRepository.findById(boardId)).isNull();
+    }
+
+    @Test
+    @DisplayName("태그로 게시물을 조회하는 테스트")
+    void getPostByTagTest() {
+        // given
+        PostRequestDto postRequestDto1 = PostRequestDto.builder()
+                .title("title1")
+                .contents("contents1")
+                .purpose(Purpose.PROJECT)
+                .status(Status.RECRUITMENT)
+                .fieldList(List.of(Field.BACKEND,Field.FRONTEND))
+                .languageList(List.of(Language.JAVA,Language.TS))
+                .fileUrlList(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
+                .build();
+
+        PostRequestDto postRequestDto2 = PostRequestDto.builder()
+                .title("title2")
+                .contents("contents2")
+                .purpose(Purpose.SERVICE)
+                .status(Status.RECRUITMENT)
+                .fieldList(List.of(Field.BACKEND,Field.FRONTEND))
+                .languageList(List.of(Language.SPRINGBOOT,Language.REACT))
+                .fileUrlList(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
+                .build();
+
+        PostRequestDto postRequestDto3 = PostRequestDto.builder()
+                .title("title3")
+                .contents("contents3")
+                .purpose(Purpose.STUDY)
+                .status(Status.RECRUITMENT)
+                .fieldList(List.of(Field.AI,Field.GAME))
+                .languageList(List.of(Language.PYTORCH,Language.UNITY))
+                .fileUrlList(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
+                .build();
+
+        boardService.post(postRequestDto1);
+        boardService.post(postRequestDto2);
+        boardService.post(postRequestDto3);
+
+        em.clear();
+        em.flush();
+
+        // when
+        Page<GetPostByTagResponseDto> post = boardService.getPostByTag(
+                Purpose.PROJECT,
+                List.of(Field.BACKEND),
+                List.of(Language.JAVA),
+                Status.RECRUITMENT,
+                PageRequest.of(0, 12)
+        );
+
+
+        // then
+        assertThat(post.getContent().get(0).getTitle()).isEqualTo("title1");
     }
 }
