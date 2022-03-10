@@ -39,7 +39,7 @@ public class OauthServiceImpl implements OauthService {
         // 유저 정보 가져오기
         UserProfile userProfile = getUserProfile(tokenResponse);
         // 유저 DB에 저장
-        User user = saveOrUpdate(userProfile);
+        User user = save(userProfile);
 
         String accessToken = jwtTokenProvider.createToken(String.valueOf(user.getGithubId()), user.getRoles());
         String refreshToken = jwtTokenProvider.createRefreshToken();
@@ -55,13 +55,12 @@ public class OauthServiceImpl implements OauthService {
                 .build();
     }
 
-    private User saveOrUpdate(UserProfile userProfile) {
+    private User save(UserProfile userProfile) {
+        Boolean bool = !userRepository.existsByGithubId(userProfile.getGithubId());
+        userProfile.setFirstVisited(bool);
+
         User user = userRepository.findByGithubId(userProfile.getGithubId())
-                .map(entity -> entity
-                        .updateGithubId(entity.getGithubId())
-                        .updateName(entity.getName())
-                        .updateEmail(entity.getEmail())
-                        .updateImageUrl(entity.getImageUrl()))
+                .map(u -> u.updateIsFirstVisited(bool))
                 .orElseGet(userProfile::toUser);
         return userRepository.save(user);
     }
