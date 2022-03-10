@@ -16,7 +16,7 @@ public class UserProfile {
     private final String name;
     private final String imageUrl;
     private final String bio;
-    private final boolean isFirstVisit;
+    private final boolean isFirstVisited;
 
     public User toUser() {
         return User.builder()
@@ -27,7 +27,7 @@ public class UserProfile {
                 .imageUrl(imageUrl)
                 .bio(bio)
                 .roles(Collections.singletonList(Role.USER))
-                .isFirstVisit(true)
+                .isFirstVisited(true)
                 .build();
     }
 }
