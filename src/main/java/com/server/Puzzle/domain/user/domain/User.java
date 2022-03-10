@@ -43,6 +43,7 @@ public class User extends BaseTimeEntity implements UserDetails {
     @Column(name = "user_name", nullable = false)
     private String name;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "user_field", nullable = true)
     private Field field; //분야
 

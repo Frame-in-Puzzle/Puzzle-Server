@@ -1,11 +1,14 @@
 package com.server.Puzzle.service.user;
 
 import com.server.Puzzle.domain.user.domain.User;
-import com.server.Puzzle.domain.user.repository.UserLanguageRepository;
+import com.server.Puzzle.domain.user.service.Impl.UserServiceImpl;
 import com.server.Puzzle.global.enumType.Field;
 import com.server.Puzzle.domain.user.repository.UserRepository;
 import com.server.Puzzle.global.enumType.Role;
+import com.server.Puzzle.global.exception.ErrorCode;
+import com.server.Puzzle.global.exception.collection.UserNotFoundException;
 import com.server.Puzzle.global.util.CurrentUserUtil;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +32,11 @@ public class UserServiceTest {
     @Autowired
     CurrentUserUtil currentUserUtil;
 
+    @Autowired
+    UserServiceImpl userService;
+
     @DisplayName("로그인한 유저를 확인하는 테스트")
-    @Test
+    @BeforeEach
     void getCurrentUserTest() {
         //given
         User user = User.builder()
@@ -43,6 +49,7 @@ public class UserServiceTest {
                 .roles(List.of(Role.USER))
                 .url("https://github.com/honghyunin")
                 .isFirstVisit(true)
+                .refreshToken("refreshToken")
                 .githubId("honghyunin12")
                 .build();
 
@@ -58,5 +65,16 @@ public class UserServiceTest {
 
         // then
         assertEquals("honghyunin12", currentUser.getGithubId());
+    }
+
+    @Test
+    void 로그아웃_테스트() {
+        userService.logout();
+
+        User currentUser = currentUserUtil.getCurrentUser();
+
+        User user = userRepository.findByName(currentUser.getName())
+                .orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND));
+        assertEquals(user.getRefreshToken(), null);
     }
 }
