@@ -117,8 +117,8 @@ public class User extends BaseTimeEntity implements UserDetails {
         return this;
     }
 
-    public User updateIsFirstVisited(Boolean isFirstVisited){
-        this.isFirstVisited = isFirstVisited ? true : false;
+    public User updateIsFirstVisited(boolean isFirstVisited){
+        this.isFirstVisited = isFirstVisited;
         return this;
     }
 
