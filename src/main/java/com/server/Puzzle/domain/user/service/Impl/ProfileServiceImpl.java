@@ -67,6 +67,7 @@ public class ProfileServiceImpl implements ProfileService {
                 .updateImageUrl(userInfo.getImageUrl())
                 .updateBio(userInfo.getBio())
                 .updateUrl(userInfo.getUrl())
+                .updateIsFirstVisited(false)
                 .updateField(userInfo.getField());
     }
 
