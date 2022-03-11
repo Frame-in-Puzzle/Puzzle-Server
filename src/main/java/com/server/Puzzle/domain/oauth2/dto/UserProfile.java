@@ -7,7 +7,6 @@ import lombok.*;
 import java.util.Collections;
 
 @Builder
-@Setter
 @Getter
 public class UserProfile {
     private String oauthIdx;
@@ -27,7 +26,7 @@ public class UserProfile {
                 .imageUrl(imageUrl)
                 .bio(bio)
                 .roles(Collections.singletonList(Role.USER))
-                .isFirstVisited(this.isFirstVisited)
+                .isFirstVisited(true)
                 .build();
     }
 }
