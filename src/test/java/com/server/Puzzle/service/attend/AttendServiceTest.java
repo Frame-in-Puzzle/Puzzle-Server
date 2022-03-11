@@ -1,6 +1,7 @@
 package com.server.Puzzle.service.attend;
 
 import com.server.Puzzle.domain.attend.domain.Attend;
+import com.server.Puzzle.domain.attend.dto.response.GetAllAttendResponse;
 import com.server.Puzzle.domain.attend.repository.AttendRepository;
 import com.server.Puzzle.domain.attend.service.AttendService;
 import com.server.Puzzle.domain.board.domain.Board;
@@ -114,4 +115,37 @@ public class AttendServiceTest {
         // then
         assertThat(attend).isNotNull();
     }
+
+    @Test
+    @DisplayName("프로젝트 참가 신청 전체 조회 테스트")
+    void findAllAttend(){
+        // given
+        PostRequestDto postRequestDto = PostRequestDto.builder()
+                .title("title")
+                .contents("contents")
+                .purpose(Purpose.PROJECT)
+                .status(Status.RECRUITMENT)
+                .fieldList(List.of(Field.BACKEND,Field.FRONTEND))
+                .languageList(List.of(Language.JAVA,Language.TS))
+                .fileUrlList(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
+                .build();
+
+        boardService.post(postRequestDto);
+
+        em.clear();
+        em.close();
+
+        Board board = boardRepository.findAll().get(0);
+        attendService.requestAttend(board.getId());
+
+        em.clear();
+        em.close();
+
+        // when
+        List<GetAllAttendResponse> allAttend = attendService.findAllAttend(board.getId());
+
+        // then
+        assertThat(allAttend).isNotNull();
+    }
+
 }
