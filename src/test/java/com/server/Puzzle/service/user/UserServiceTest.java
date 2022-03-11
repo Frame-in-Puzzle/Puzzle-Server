@@ -1,9 +1,13 @@
 package com.server.Puzzle.service.user;
 
+import com.server.Puzzle.domain.oauth2.dto.UserProfile;
 import com.server.Puzzle.domain.user.domain.User;
+import com.server.Puzzle.domain.user.dto.UserUpdateDto;
+import com.server.Puzzle.domain.user.service.Impl.ProfileServiceImpl;
 import com.server.Puzzle.domain.user.service.Impl.UserServiceImpl;
 import com.server.Puzzle.global.enumType.Field;
 import com.server.Puzzle.domain.user.repository.UserRepository;
+import com.server.Puzzle.global.enumType.Language;
 import com.server.Puzzle.global.enumType.Role;
 import com.server.Puzzle.global.exception.ErrorCode;
 import com.server.Puzzle.global.exception.collection.UserNotFoundException;
@@ -18,6 +22,9 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+
+import static com.server.Puzzle.global.enumType.Language.SPRINGBOOT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
@@ -35,6 +42,12 @@ public class UserServiceTest {
 
     @Autowired
     UserServiceImpl userService;
+
+    @Autowired
+    ProfileServiceImpl profileService;
+
+    @Autowired
+    EntityManager em;
 
     @DisplayName("로그인한 유저를 확인하는 테스트")
     @BeforeEach
@@ -86,5 +99,32 @@ public class UserServiceTest {
         userService.delete();
 
         assertEquals(userRepository.findByGithubId(currentUser.getGithubId()), Optional.empty());
+    }
+    
+    @Test
+    void 방문_테스트() {
+        User currentUser = currentUserUtil.getCurrentUser();
+
+        assertEquals(currentUser.isFirstVisited(), true);
+
+        UserUpdateDto user = UserUpdateDto.builder()
+                .email("hyunin0102@gmail.com")
+                .name("홍현인")
+                .imageUrl("https://avatars.githubusercontent.com/u/68847615?v=4")
+                .bio("상메")
+                .field(Field.BACKEND)
+                .language(List.of(Language.JAVA, SPRINGBOOT))
+                .url("github.com/honghyunin")
+                .build();
+
+        profileService.profileUpdate(user);
+
+        em.flush();
+        em.clear();
+
+        User user1 = userRepository.findByName(user.getName())
+                .orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND));
+
+        assertEquals(user1.isFirstVisited(), false);
     }
 }
