@@ -56,11 +56,7 @@ public class OauthServiceImpl implements OauthService {
     }
 
     private User save(UserProfile userProfile) {
-        Boolean bool = !userRepository.existsByGithubId(userProfile.getGithubId());
-        userProfile.setFirstVisited(bool);
-
         User user = userRepository.findByGithubId(userProfile.getGithubId())
-                .map(u -> u.updateIsFirstVisited(bool))
                 .orElseGet(userProfile::toUser);
         return userRepository.save(user);
     }
