@@ -71,7 +71,7 @@ public class AttendServiceTest {
                 .bio("성실한 개발자입니다")
                 .url("https://github.com/KyungJunNoh")
                 .imageUrl("https://avatars.githubusercontent.com/u/68670670?v=4")
-                .isFirstVisit(false)
+                .isFirstVisited(false)
                 .build();
 
         userRepository.save(user);
