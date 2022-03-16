@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @Getter
-public class MyBoardResponse {
+public class UserBoardResponse {
     private String title;
     private LocalDateTime date;
     private String contents;
