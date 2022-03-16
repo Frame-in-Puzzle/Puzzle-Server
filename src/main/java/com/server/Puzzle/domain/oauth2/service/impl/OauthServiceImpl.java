@@ -24,8 +24,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Map;
 
-import static com.server.Puzzle.global.exception.ErrorCode.IS_ALREADY_USER;
-
 @RequiredArgsConstructor
 @Service
 public class OauthServiceImpl implements OauthService {
