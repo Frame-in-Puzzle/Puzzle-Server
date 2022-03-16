@@ -24,8 +24,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Map;
 
-import static com.server.Puzzle.global.exception.ErrorCode.IS_ALREADY_USER;
-
 @RequiredArgsConstructor
 @Service
 public class OauthServiceImpl implements OauthService {
@@ -43,9 +41,6 @@ public class OauthServiceImpl implements OauthService {
         UserProfile userProfile = getUserProfile(tokenResponse);
         // 유저 DB에 저장
         User user = save(userProfile);
-
-        if(!user.isFirstVisited())
-            throw new CustomException(IS_ALREADY_USER);
 
         String accessToken = jwtTokenProvider.createToken(String.valueOf(user.getGithubId()), user.getRoles());
         String refreshToken = jwtTokenProvider.createRefreshToken();
