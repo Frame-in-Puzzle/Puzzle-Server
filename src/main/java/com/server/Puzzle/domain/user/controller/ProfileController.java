@@ -20,9 +20,6 @@ public class ProfileController {
 
     private final ProfileService profileService;
 
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "Authorization", value = "로그인 성공 후 토큰", required = true, dataType = "String", paramType = "header")
-    })
     @GetMapping("/{githubId}")
     public ResponseEntity<UserResponseDto> getProfile(@PathVariable String githubId) {
         UserResponseDto profile = profileService.getProfile(githubId);
@@ -38,9 +35,6 @@ public class ProfileController {
         return ResponseEntity.ok("Success");
     }
 
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "Authorization", value = "로그인 성공 후 토큰", required = true, dataType = "String", paramType = "header")
-    })
     @GetMapping("/{githubId}/board")
     public ResponseEntity<Page<MyBoardResponse>> getMyBoard(@PageableDefault(page = 10) Pageable pageable, @PathVariable String githubId) {
         return ResponseEntity.ok().body(profileService.getMyBoard(githubId, pageable));
