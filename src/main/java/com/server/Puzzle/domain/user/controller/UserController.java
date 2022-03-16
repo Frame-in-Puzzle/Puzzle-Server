@@ -1,5 +1,6 @@
 package com.server.Puzzle.domain.user.controller;
 
+import com.server.Puzzle.domain.user.dto.UserUpdateDto;
 import com.server.Puzzle.domain.user.service.UserService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -31,6 +32,15 @@ public class UserController {
     @DeleteMapping("/delete")
     public ResponseEntity delete() {
         userService.delete();
+        return ResponseEntity.ok("Success");
+    }
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "로그인 성공 후 토큰", required = true, dataType = "String", paramType = "header")
+    })
+    @PutMapping("/register")
+    public ResponseEntity infoRegister(@RequestBody UserUpdateDto userInfo) {
+        userService.infoRegister(userInfo);
         return ResponseEntity.ok("Success");
     }
 }
