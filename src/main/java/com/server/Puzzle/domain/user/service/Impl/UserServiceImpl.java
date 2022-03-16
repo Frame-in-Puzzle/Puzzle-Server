@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void infoRegister(UserUpdateDto userInfo) {
+    public void infoRegistration(UserUpdateDto userInfo) {
         User user = currentUserUtil.getCurrentUser();
 
         if(!user.isFirstVisited())
