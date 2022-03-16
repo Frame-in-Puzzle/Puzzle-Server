@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
-@RequestMapping("/v1/api/oauth")
+@RequestMapping("/api/oauth")
 @RestController()
 public class OauthController {
     private final OauthServiceImpl oauthServiceImpl;
