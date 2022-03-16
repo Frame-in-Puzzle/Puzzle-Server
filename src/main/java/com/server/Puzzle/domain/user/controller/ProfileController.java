@@ -1,6 +1,6 @@
 package com.server.Puzzle.domain.user.controller;
 
-import com.server.Puzzle.domain.user.dto.MyBoardResponse;
+import com.server.Puzzle.domain.user.dto.UserBoardResponse;
 import com.server.Puzzle.domain.user.dto.UserResponseDto;
 import com.server.Puzzle.domain.user.dto.UserUpdateDto;
 import com.server.Puzzle.domain.user.service.ProfileService;
@@ -36,7 +36,7 @@ public class ProfileController {
     }
 
     @GetMapping("/{githubId}/board")
-    public ResponseEntity<Page<MyBoardResponse>> getMyBoard(@PageableDefault(page = 10) Pageable pageable, @PathVariable String githubId) {
-        return ResponseEntity.ok().body(profileService.getMyBoard(githubId, pageable));
+    public ResponseEntity<Page<UserBoardResponse>> getUserBoard(@PageableDefault(page = 10) Pageable pageable, @PathVariable String githubId) {
+        return ResponseEntity.ok().body(profileService.getUserBoard(githubId, pageable));
     }
 }
