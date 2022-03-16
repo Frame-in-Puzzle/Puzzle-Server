@@ -6,6 +6,7 @@ import com.server.Puzzle.global.enumType.Field;
 import com.server.Puzzle.global.enumType.Language;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Builder
@@ -21,6 +22,7 @@ public class GetPostResponseDto {
     private Status status;
     private String name;
     private String githubId;
+    private LocalDateTime createdAt;
     private List<Field> fields;
     private List<Language> languages;
     private List<String> files;
