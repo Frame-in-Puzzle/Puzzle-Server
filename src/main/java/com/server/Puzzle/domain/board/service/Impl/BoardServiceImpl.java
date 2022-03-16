@@ -192,6 +192,7 @@ public class BoardServiceImpl implements BoardService {
                         .status(board.getStatus())
                         .name(board.getUser().getName())
                         .githubId(board.getUser().getGithubId())
+                        .createdAt(board.getCreatedDate())
                         .fields(
                                 board.getBoardFields().stream()
                                 .map(boardField -> boardField.getField())
