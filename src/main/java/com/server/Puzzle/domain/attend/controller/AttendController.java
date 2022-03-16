@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RequestMapping("/v1/api/attend")
+@RequestMapping("/api/attend")
 @RequiredArgsConstructor
 @RestController
 public class AttendController {
