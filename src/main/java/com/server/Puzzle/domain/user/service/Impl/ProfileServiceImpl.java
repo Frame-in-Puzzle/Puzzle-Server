@@ -4,7 +4,7 @@ import com.server.Puzzle.domain.board.domain.BoardFile;
 import com.server.Puzzle.domain.board.repository.BoardRepository;
 import com.server.Puzzle.domain.user.domain.User;
 import com.server.Puzzle.domain.user.domain.UserLanguage;
-import com.server.Puzzle.domain.user.dto.MyBoardResponse;
+import com.server.Puzzle.domain.user.dto.UserBoardResponse;
 import com.server.Puzzle.domain.user.dto.UserResponseDto;
 import com.server.Puzzle.domain.user.dto.UserUpdateDto;
 import com.server.Puzzle.domain.user.repository.UserLanguageRepository;
@@ -72,12 +72,12 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public Page<MyBoardResponse> getMyBoard(String githubId, Pageable pageable) {
+    public Page<UserBoardResponse> getUserBoard(String githubId, Pageable pageable) {
 
         User user = userRepository.findByGithubId(githubId)
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         return boardRepository.findBoardsByUser(user, pageable)
-                .map(board -> MyBoardResponse.builder()
+                .map(board -> UserBoardResponse.builder()
                         .title(board.getTitle())
                         .contents(board.getContents())
                         .date(board.getCreatedDate())
