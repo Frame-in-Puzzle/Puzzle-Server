@@ -38,9 +38,9 @@ public class UserController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization", value = "로그인 성공 후 토큰", required = true, dataType = "String", paramType = "header")
     })
-    @PutMapping("/register")
+    @PutMapping("/registration")
     public ResponseEntity infoRegister(@RequestBody UserUpdateDto userInfo) {
-        userService.infoRegister(userInfo);
+        userService.infoRegistration(userInfo);
         return ResponseEntity.ok("Success");
     }
 }
