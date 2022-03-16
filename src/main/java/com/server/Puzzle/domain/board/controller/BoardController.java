@@ -23,7 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RequiredArgsConstructor
-@RequestMapping("/v1/api/board")
+@RequestMapping("/api/board")
 @RestController
 public class BoardController {
 
@@ -32,7 +32,7 @@ public class BoardController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header")
     })
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<String> post(@RequestBody PostRequestDto request){
         boardService.post(request);
         return ResponseEntity.ok("Success");
