@@ -183,7 +183,7 @@ public class AttendServiceTest {
                 .build();
 
         // when
-        attendService.patchAttend(board.getId(), patchAttendRequest);
+        attendService.patchAttend(patchAttendRequest);
 
         // then
         assertThat(attendRepository.findById(patchAttendRequest.getAttendId()).get().getAttendStatus()).isEqualTo(AttendStatus.ACCEPT);
