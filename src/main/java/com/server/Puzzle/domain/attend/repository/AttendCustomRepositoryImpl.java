@@ -3,6 +3,7 @@ package com.server.Puzzle.domain.attend.repository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.server.Puzzle.domain.attend.domain.Attend;
 import com.server.Puzzle.domain.attend.dto.response.GetAllAttendResponse;
+import com.server.Puzzle.domain.board.domain.Board;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.server.Puzzle.domain.attend.domain.QAttend.attend;
+import static com.server.Puzzle.domain.board.domain.QBoard.board;
 
 
 @RequiredArgsConstructor
@@ -36,5 +38,15 @@ public class AttendCustomRepositoryImpl implements AttendCustomRepository{
                         a.getAttendStatus()
                 ))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Board findBoardByAttendId(Long attendId) {
+        Board result = jpaQueryFactory.select(board)
+                .from(attend)
+                .where(attend.id.eq(attendId))
+                .fetchOne();
+
+        return result;
     }
 }
