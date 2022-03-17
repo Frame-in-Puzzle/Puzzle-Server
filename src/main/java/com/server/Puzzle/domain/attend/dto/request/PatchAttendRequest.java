@@ -1,10 +1,9 @@
 package com.server.Puzzle.domain.attend.dto.request;
 
 import com.server.Puzzle.domain.attend.domain.AttendStatus;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
 @Getter
