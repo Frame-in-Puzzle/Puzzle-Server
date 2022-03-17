@@ -68,11 +68,10 @@ public class AttendServiceImpl implements AttendService {
 
     @Transactional
     @Override
-    public void patchAttend(Long boardId, PatchAttendRequest patchAttendRequest) {
+    public void patchAttend(PatchAttendRequest patchAttendRequest) {
         User currentUser = currentUserUtil.getCurrentUser();
 
-        Board board = boardRepository.findById(boardId)
-                .orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
+        Board board = attendRepository.findBoardByAttendId(patchAttendRequest.getAttendId());
 
         if (!board.isAuthor(currentUser)) throw new CustomException(ErrorCode.ATTEND_PATCH_PERMISSION_DENIED);
 
