@@ -9,6 +9,5 @@ import lombok.*;
 @Getter
 public class PatchAttendRequest {
 
-    private Long attendId;
     private AttendStatus attendStatus;
 }
