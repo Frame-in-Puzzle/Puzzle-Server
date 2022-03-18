@@ -178,14 +178,13 @@ public class AttendServiceTest {
         em.close();
 
         PatchAttendRequest patchAttendRequest = PatchAttendRequest.builder()
-                .attendId(attendId)
                 .attendStatus(AttendStatus.ACCEPT)
                 .build();
 
         // when
-        attendService.patchAttend(board.getId(), patchAttendRequest);
+        attendService.patchAttend(attendId, patchAttendRequest);
 
         // then
-        assertThat(attendRepository.findById(patchAttendRequest.getAttendId()).get().getAttendStatus()).isEqualTo(AttendStatus.ACCEPT);
+        assertThat(attendRepository.findById(attendId).get().getAttendStatus()).isEqualTo(AttendStatus.ACCEPT);
     }
 }
