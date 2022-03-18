@@ -10,7 +10,7 @@ public interface AttendService {
 
     List<GetAllAttendResponse> findAllAttend(Long boardId);
 
-    void patchAttend(PatchAttendRequest patchAttendRequest);
+    void patchAttend(Long attendId, PatchAttendRequest patchAttendRequest);
 
     void deleteAttend(Long boardId, Long attendId);
 }
