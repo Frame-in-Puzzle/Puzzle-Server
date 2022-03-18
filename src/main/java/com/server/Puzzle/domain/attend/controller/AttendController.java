@@ -36,9 +36,9 @@ public class AttendController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header")
     })
-    @PatchMapping("/board")
-    public ResponseEntity<String> patchAttend(@RequestBody PatchAttendRequest patchAttendRequest){
-        attendService.patchAttend(patchAttendRequest);
+    @PatchMapping("/{attendId}")
+    public ResponseEntity<String> patchAttend(@PathVariable Long attendId, @RequestBody PatchAttendRequest patchAttendRequest){
+        attendService.patchAttend(attendId, patchAttendRequest);
         return ResponseEntity.ok("Success");
     }
 
