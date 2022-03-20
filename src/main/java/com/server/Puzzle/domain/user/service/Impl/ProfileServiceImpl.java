@@ -78,6 +78,7 @@ public class ProfileServiceImpl implements ProfileService {
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         return boardRepository.findBoardsByUser(user, pageable)
                 .map(board -> UserBoardResponse.builder()
+                        .boardId(board.getId())
                         .title(board.getTitle())
                         .contents(board.getContents())
                         .date(board.getCreatedDate())

@@ -1,6 +1,8 @@
 package com.server.Puzzle.service.attend;
 
 import com.server.Puzzle.domain.attend.domain.Attend;
+import com.server.Puzzle.domain.attend.domain.AttendStatus;
+import com.server.Puzzle.domain.attend.dto.request.PatchAttendRequest;
 import com.server.Puzzle.domain.attend.dto.response.GetAllAttendResponse;
 import com.server.Puzzle.domain.attend.repository.AttendRepository;
 import com.server.Puzzle.domain.attend.service.AttendService;
@@ -118,7 +120,7 @@ public class AttendServiceTest {
 
     @Test
     @DisplayName("프로젝트 참가 신청 전체 조회 테스트")
-    void findAllAttend(){
+    void getAllAttend(){
         // given
         PostRequestDto postRequestDto = PostRequestDto.builder()
                 .title("title")
@@ -148,4 +150,41 @@ public class AttendServiceTest {
         assertThat(allAttend).isNotNull();
     }
 
+    @Test
+    @DisplayName("프로젝트 참가 신청 수정 테스트")
+    void patchAttend() {
+        // given
+        PostRequestDto postRequestDto = PostRequestDto.builder()
+                .title("title")
+                .contents("contents")
+                .purpose(Purpose.PROJECT)
+                .status(Status.RECRUITMENT)
+                .fieldList(List.of(Field.BACKEND,Field.FRONTEND))
+                .languageList(List.of(Language.JAVA,Language.TS))
+                .fileUrlList(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
+                .build();
+
+        boardService.post(postRequestDto);
+
+        em.clear();
+        em.close();
+
+        Board board = boardRepository.findAll().get(0);
+
+        attendService.requestAttend(board.getId());
+        Long attendId = attendRepository.findAll().get(0).getId();
+
+        em.clear();
+        em.close();
+
+        PatchAttendRequest patchAttendRequest = PatchAttendRequest.builder()
+                .attendStatus(AttendStatus.ACCEPT)
+                .build();
+
+        // when
+        attendService.patchAttend(attendId, patchAttendRequest);
+
+        // then
+        assertThat(attendRepository.findById(attendId).get().getAttendStatus()).isEqualTo(AttendStatus.ACCEPT);
+    }
 }
