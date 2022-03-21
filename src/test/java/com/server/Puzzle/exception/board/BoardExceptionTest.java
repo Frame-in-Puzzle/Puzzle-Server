@@ -15,7 +15,6 @@ import com.server.Puzzle.global.exception.CustomException;
 import com.server.Puzzle.global.exception.ErrorCode;
 import com.server.Puzzle.global.util.CurrentUserUtil;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -45,7 +44,6 @@ public class BoardExceptionTest {
     private CurrentUserUtil currentUserUtil;
 
     @BeforeEach
-    @DisplayName("로그인_되어있는_유저를_확인()")
     void 로그인_되어있는_유저를_확인() {
         // given // when
         User user = User.builder()
@@ -75,7 +73,6 @@ public class BoardExceptionTest {
     }
 
     @Test
-    @DisplayName("게시글을_찾을_수_없습니다()")
     void 게시글을_찾을_수_없습니다(){
         // given
         PostRequestDto postRequestDto = PostRequestDto.builder()

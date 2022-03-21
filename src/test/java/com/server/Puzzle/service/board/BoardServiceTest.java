@@ -17,7 +17,6 @@ import com.server.Puzzle.global.enumType.Role;
 import com.server.Puzzle.global.util.CurrentUserUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -51,7 +50,6 @@ public class BoardServiceTest {
     private EntityManager em;
 
     @BeforeEach
-    @DisplayName("로그인_되어있는_유저를_확인()")
     void 로그인_되어있는_유저를_확인() {
         // given // when
         User user = User.builder()
@@ -81,7 +79,6 @@ public class BoardServiceTest {
     }
 
     @Test
-    @DisplayName("게시물_등록()")
     void 게시물_등록(){
         // given
         PostRequestDto postRequestDto = PostRequestDto.builder()
@@ -123,7 +120,6 @@ public class BoardServiceTest {
     }
 
     @Test
-    @DisplayName("게시물_수정()")
     void 게시물_수정(){
         // given
         PostRequestDto postRequestDto = PostRequestDto.builder()
@@ -160,8 +156,7 @@ public class BoardServiceTest {
     }
 
     @Test
-    @DisplayName("게시물_전체_조회()")
-    void getAllPostTest(){
+    void 게시물_전체_조회(){
         // given
         PostRequestDto postRequestDto = PostRequestDto.builder()
                 .title("title")
@@ -185,7 +180,6 @@ public class BoardServiceTest {
     }
 
     @Test
-    @DisplayName("게시물_단일_조회()")
     void 게시물_단일_조회(){
         // given
         PostRequestDto postRequestDto = PostRequestDto.builder()
@@ -210,7 +204,6 @@ public class BoardServiceTest {
 
     @Disabled
     @Test
-    @DisplayName("게시물_삭제()")
     void 게시물_삭제(){
         // then
         PostRequestDto postRequestDto = PostRequestDto.builder()
@@ -234,7 +227,6 @@ public class BoardServiceTest {
     }
 
     @Test
-    @DisplayName("게시글_태그_조회()")
     void 게시글_태그_조회() {
         // given
         PostRequestDto postRequestDto1 = PostRequestDto.builder()
