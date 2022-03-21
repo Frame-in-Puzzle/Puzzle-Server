@@ -8,16 +8,18 @@ import com.server.Puzzle.domain.user.repository.UserRepository;
 import com.server.Puzzle.domain.user.service.UserService;
 import com.server.Puzzle.global.enumType.Language;
 import com.server.Puzzle.global.exception.CustomException;
+import com.server.Puzzle.global.security.jwt.JwtTokenProvider;
 import com.server.Puzzle.global.util.CurrentUserUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import static com.server.Puzzle.global.exception.ErrorCode.IS_ALREADY_USER;
-import static com.server.Puzzle.global.exception.ErrorCode.USER_NOT_FOUND;
+import static com.server.Puzzle.global.exception.ErrorCode.*;
 
 @RequiredArgsConstructor
 @Service
@@ -25,6 +27,7 @@ public class UserServiceImpl implements UserService {
     private final CurrentUserUtil currentUserUtil;
     private final UserRepository userRepository;
     private final UserLanguageRepository userLanguageRepo;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional
     @Override
@@ -69,6 +72,36 @@ public class UserServiceImpl implements UserService {
                 .updateUrl(userInfo.getUrl())
                 .updateIsFirstVisited(false)
                 .updateField(userInfo.getField());
+    }
+
+    @Transactional
+    @Override
+    public Map<String, String> reissueToken(String refreshToken) {
+
+        User currentUser = currentUserUtil.getCurrentUser();
+
+        User user = userRepository.findByGithubId(currentUser.getGithubId())
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+        if (user.getRefreshToken() == null) {
+            throw new CustomException(NOT_LOGGED_IN);
+        }
+
+        if(!(user.getRefreshToken().equals(refreshToken) && jwtTokenProvider.validateToken(refreshToken))) {
+            throw new CustomException(UNABLE_TO_ISSUANCE_REFRESHTOKEN);
+        }
+
+        Map<String, String> map = new HashMap<>();
+
+        String newAccessToken = jwtTokenProvider.createToken(user.getGithubId(), user.getRoles());
+        String newRefreshToken = jwtTokenProvider.createRefreshToken();
+
+        user.updateRefreshToken(newRefreshToken);
+
+        map.put("RefreshToken", "Bearer " + newRefreshToken);
+        map.put("AccessToken", "Bearer " + newAccessToken);
+
+        return map;
     }
 
 

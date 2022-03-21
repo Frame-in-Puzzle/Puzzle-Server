@@ -25,14 +25,12 @@ import static java.util.Collections.singletonList;
 @Component
 @Profile({"oauth"})
 public class GenerateUser {
-
     private final UserRepository userRepository;
     private final UserLanguageRepository userLanguageRepo;
     private final JwtTokenProvider jwtTokenProvider;
 
     @PostConstruct
     private void genereateUserAccount() {
-
         User hyunin = createHyuninAccount();
         User kyungjun = createKyungjunAccount();
 
@@ -40,7 +38,6 @@ public class GenerateUser {
     }
 
     private User createHyuninAccount() {
-
         User user = userRepository.save(
                 User.builder()
                         .id(1L)
@@ -68,7 +65,6 @@ public class GenerateUser {
     }
 
     private User createKyungjunAccount() {
-
         User user = userRepository.save(
                 User.builder()
                         .id(2L)
@@ -96,7 +92,6 @@ public class GenerateUser {
     }
 
     private void createUserLanguage(List<Language> languages, User user) {
-
         for (Language language : languages) {
             userLanguageRepo.save(UserLanguage.builder()
                     .user(user)
@@ -106,7 +101,6 @@ public class GenerateUser {
     }
 
     private void loggingAccess(User...users) {
-
         log.info("======================================= Access Token =======================================");
         for(User user: users) {
             log.info("{} {} : \"Bearer {}\"", user.getRoles(), user.getGithubId(), jwtTokenProvider.createToken(user.getGithubId(), user.getRoles()));
