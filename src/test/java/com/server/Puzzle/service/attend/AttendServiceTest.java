@@ -18,9 +18,7 @@ import com.server.Puzzle.global.enumType.Field;
 import com.server.Puzzle.global.enumType.Language;
 import com.server.Puzzle.global.enumType.Role;
 import com.server.Puzzle.global.util.CurrentUserUtil;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -61,7 +59,6 @@ public class AttendServiceTest {
     private EntityManager em;
 
     @BeforeEach
-    @DisplayName("로그인_되어있는_유저를_확인()")
     void 로그인_되어있는_유저를_확인() {
         // given // when
         User user = User.builder()
@@ -91,7 +88,6 @@ public class AttendServiceTest {
     }
 
     @Test
-    @DisplayName("프로젝트_참가_신청()")
     void 프로젝트_참가_신청(){
         // given
         PostRequestDto postRequestDto = PostRequestDto.builder()
@@ -119,7 +115,6 @@ public class AttendServiceTest {
     }
 
     @Test
-    @DisplayName("프로젝트_참가_신청_전체_조회()")
     void 프로젝트_참가_신청_전체_조회(){
         // given
         PostRequestDto postRequestDto = PostRequestDto.builder()
@@ -149,7 +144,6 @@ public class AttendServiceTest {
     }
 
     @Test
-    @DisplayName("프로젝트_참가_신청_수정()")
     void 프로젝트_참가_신청_수정() {
         // given
         PostRequestDto postRequestDto = PostRequestDto.builder()
@@ -185,7 +179,6 @@ public class AttendServiceTest {
     }
 
     @Test
-    @DisplayName("프로젝트_참가_신청_취소()")
     void 프로젝트_참가_신청_취소(){
         // given
         PostRequestDto postRequestDto = PostRequestDto.builder()
