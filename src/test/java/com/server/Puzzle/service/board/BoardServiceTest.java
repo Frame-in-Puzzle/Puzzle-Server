@@ -96,8 +96,8 @@ public class BoardServiceTest {
 
         // when
         boardService.post(postRequestDto);
-        em.flush();
         em.clear();
+
         Board board = boardRepository.findAll().get(0);
 
         // then
@@ -202,7 +202,6 @@ public class BoardServiceTest {
         boardService.post(postRequestDto);
         Board findBoard = boardRepository.findAll().get(0);
 
-        em.flush();
         em.clear();
 
         // then
@@ -273,7 +272,6 @@ public class BoardServiceTest {
         boardService.post(postRequestDto3);
 
         em.clear();
-        em.flush();
 
         // when
         Page<GetPostByTagResponseDto> post = boardService.getPostByTag(

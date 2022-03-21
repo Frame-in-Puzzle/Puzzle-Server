@@ -18,6 +18,7 @@ import com.server.Puzzle.global.enumType.Field;
 import com.server.Puzzle.global.enumType.Language;
 import com.server.Puzzle.global.enumType.Role;
 import com.server.Puzzle.global.util.CurrentUserUtil;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -106,7 +107,6 @@ public class AttendServiceTest {
         boardService.post(postRequestDto);
 
         em.clear();
-        em.close();
 
         // when
         Board board = boardRepository.findAll().get(0);
@@ -135,13 +135,11 @@ public class AttendServiceTest {
         boardService.post(postRequestDto);
 
         em.clear();
-        em.close();
 
         Board board = boardRepository.findAll().get(0);
         attendService.requestAttend(board.getId());
 
         em.clear();
-        em.close();
 
         // when
         List<GetAllAttendResponse> allAttend = attendService.findAllAttend(board.getId());
@@ -167,7 +165,6 @@ public class AttendServiceTest {
         boardService.post(postRequestDto);
 
         em.clear();
-        em.close();
 
         Board board = boardRepository.findAll().get(0);
 
@@ -175,7 +172,6 @@ public class AttendServiceTest {
         Long attendId = attendRepository.findAll().get(0).getId();
 
         em.clear();
-        em.close();
 
         PatchAttendRequest patchAttendRequest = PatchAttendRequest.builder()
                 .attendStatus(AttendStatus.ACCEPT)
@@ -187,4 +183,37 @@ public class AttendServiceTest {
         // then
         assertThat(attendRepository.findById(attendId).get().getAttendStatus()).isEqualTo(AttendStatus.ACCEPT);
     }
+
+    @Test
+    @DisplayName("프로젝트 참가 신청 취소 / 삭제 테스트")
+    void deleteAttend(){
+        // given
+        PostRequestDto postRequestDto = PostRequestDto.builder()
+                .title("title")
+                .contents("contents")
+                .purpose(Purpose.PROJECT)
+                .status(Status.RECRUITMENT)
+                .fieldList(List.of(Field.BACKEND,Field.FRONTEND))
+                .languageList(List.of(Language.JAVA,Language.TS))
+                .fileUrlList(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
+                .build();
+
+        boardService.post(postRequestDto);
+
+        em.clear();
+
+        Board board = boardRepository.findAll().get(0);
+
+        attendService.requestAttend(board.getId());
+        Long attendId = attendRepository.findAll().get(0).getId();
+
+        em.clear();
+
+        // when
+        attendService.deleteAttend(attendId);
+
+        // then
+        assertThat(attendRepository.findById(attendId).isEmpty()).isTrue();
+    }
+
 }
