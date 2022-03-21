@@ -73,7 +73,7 @@ public class BoardExceptionTest {
     }
 
     @Test
-    void 게시글을_찾을_수_없습니다(){
+    void correctionPost_에서_게시글을_찾을_수_없습니다(){
         // given
         PostRequestDto postRequestDto = PostRequestDto.builder()
                 .title("title")
@@ -105,5 +105,30 @@ public class BoardExceptionTest {
         });
 
         assertEquals("게시글을 찾을 수 없습니다.", customException.getErrorCode().getDetail());
+    }
+
+    @Test
+    void getPost_에서_게시글을_찾을_수_없습니다(){
+        // given
+        PostRequestDto postRequestDto = PostRequestDto.builder()
+                .title("title")
+                .contents("contents")
+                .purpose(Purpose.PROJECT)
+                .status(Status.RECRUITMENT)
+                .fieldList(List.of(Field.BACKEND,Field.FRONTEND))
+                .languageList(List.of(Language.JAVA,Language.TS))
+                .fileUrlList(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
+                .build();
+
+        boardService.post(postRequestDto);
+
+        Long boardId = boardRepository.findAll().get(0).getId() + 1L;
+
+        // when // then
+        CustomException customException = assertThrows(new CustomException(ErrorCode.BOARD_NOT_FOUND).getClass(), () -> {
+            boardService.getPost(boardId);
+        });
+
+        assertEquals("게시글을 찾을 수 없습니다.",customException.getErrorCode().getDetail());
     }
 }
