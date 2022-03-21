@@ -1,6 +1,5 @@
 package com.server.Puzzle.service.user;
 
-import com.server.Puzzle.domain.oauth2.dto.UserProfile;
 import com.server.Puzzle.domain.user.domain.User;
 import com.server.Puzzle.domain.user.dto.UserUpdateDto;
 import com.server.Puzzle.domain.user.service.Impl.ProfileServiceImpl;
@@ -9,8 +8,10 @@ import com.server.Puzzle.global.enumType.Field;
 import com.server.Puzzle.domain.user.repository.UserRepository;
 import com.server.Puzzle.global.enumType.Language;
 import com.server.Puzzle.global.enumType.Role;
+import com.server.Puzzle.global.exception.CustomException;
 import com.server.Puzzle.global.exception.ErrorCode;
 import com.server.Puzzle.global.exception.collection.UserNotFoundException;
+import com.server.Puzzle.global.security.jwt.JwtTokenProvider;
 import com.server.Puzzle.global.util.CurrentUserUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -26,8 +27,10 @@ import javax.persistence.EntityManager;
 
 import static com.server.Puzzle.global.enumType.Language.SPRINGBOOT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @SpringBootTest
@@ -48,6 +51,9 @@ public class UserServiceTest {
 
     @Autowired
     EntityManager em;
+
+    @Autowired
+    JwtTokenProvider jwtTokenProvider;
 
     @DisplayName("로그인한 유저를 확인하는 테스트")
     @BeforeEach
@@ -74,11 +80,6 @@ public class UserServiceTest {
 
         SecurityContext securityContext = SecurityContextHolder.getContext();
         securityContext.setAuthentication(token);
-
-        User currentUser = currentUserUtil.getCurrentUser();
-
-        // then
-        assertEquals("honghyunin12", currentUser.getGithubId());
     }
 
     @Test
@@ -126,5 +127,45 @@ public class UserServiceTest {
                 .orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND));
 
         assertEquals(user1.isFirstVisited(), false);
+    }
+
+    @Test
+    void 리프레쉬_토큰_재발급() {
+        User currentUser = currentUserUtil.getCurrentUser();
+
+        String refreshToken = jwtTokenProvider.createRefreshToken();
+
+        currentUser.updateRefreshToken(refreshToken);
+
+        em.flush();
+        em.clear();
+
+        User user = userRepository.findByGithubId(currentUser.getGithubId())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        Map<String, String> map;
+
+        map = userService.reissuanceToken(user.getRefreshToken());
+
+        assertEquals(map.get("RefreshToken").substring(7), user.getRefreshToken());
+    }
+
+    @Test
+    @DisplayName("로그아웃 상태에서 리프레쉬 토큰 재발급")
+    void 로그아웃_상태에서_리프레쉬_토큰_재발급() {
+        User user = currentUserUtil.getCurrentUser();
+
+        user.updateRefreshToken(null);
+
+        em.flush();
+        em.clear();
+
+        String refreshToken = jwtTokenProvider.createRefreshToken();
+
+        Map<String, String> map = null;
+
+        assertThrows(CustomException.class, () ->{
+            userService.reissuanceToken(refreshToken);
+        });
     }
 }
