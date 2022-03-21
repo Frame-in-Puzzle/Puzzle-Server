@@ -8,5 +8,5 @@ public interface UserService {
     void logout();
     void delete();
     void infoRegistration(UserUpdateDto userinfo);
-    Map<String, String> reissuanceToken(String refreshToken);
+    Map<String, String> reissueToken(String refreshToken);
 }
