@@ -12,7 +12,6 @@ import com.server.Puzzle.global.enumType.Language;
 import com.server.Puzzle.global.enumType.Role;
 import com.server.Puzzle.global.util.CurrentUserUtil;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,12 +21,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.server.Puzzle.global.enumType.Language.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static com.server.Puzzle.global.enumType.Language.JAVA;
+import static com.server.Puzzle.global.enumType.Language.SPRINGBOOT;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Transactional
 @SpringBootTest
@@ -48,8 +47,7 @@ public class ProfileServiceTest {
     EntityManager em;
 
     @BeforeEach
-    @DisplayName("로그인한 유저를 확인하는 테스트")
-    void getCurrentUserTest() {
+    void 로그인한_유저확인() {
         //given
         User user = User.builder()
                 .oauthIdx("68847615")
@@ -73,11 +71,6 @@ public class ProfileServiceTest {
 
         SecurityContext securityContext = SecurityContextHolder.getContext();
         securityContext.setAuthentication(token);
-
-        User currentUser = currentUserUtil.getCurrentUser();
-
-        // then
-        assertEquals("honghyunin12", currentUser.getGithubId());
     }
 
     private void createUserLanguage(User user, Language...languages) {
