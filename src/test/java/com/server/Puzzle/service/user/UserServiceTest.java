@@ -2,10 +2,10 @@ package com.server.Puzzle.service.user;
 
 import com.server.Puzzle.domain.user.domain.User;
 import com.server.Puzzle.domain.user.dto.UserUpdateDto;
+import com.server.Puzzle.domain.user.repository.UserRepository;
 import com.server.Puzzle.domain.user.service.Impl.ProfileServiceImpl;
 import com.server.Puzzle.domain.user.service.Impl.UserServiceImpl;
 import com.server.Puzzle.global.enumType.Field;
-import com.server.Puzzle.domain.user.repository.UserRepository;
 import com.server.Puzzle.global.enumType.Language;
 import com.server.Puzzle.global.enumType.Role;
 import com.server.Puzzle.global.exception.CustomException;
@@ -14,7 +14,6 @@ import com.server.Puzzle.global.exception.collection.UserNotFoundException;
 import com.server.Puzzle.global.security.jwt.JwtTokenProvider;
 import com.server.Puzzle.global.util.CurrentUserUtil;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,14 +23,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static com.server.Puzzle.global.enumType.Language.SPRINGBOOT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 @SpringBootTest
 @Transactional
@@ -55,9 +53,8 @@ public class UserServiceTest {
     @Autowired
     JwtTokenProvider jwtTokenProvider;
 
-    @DisplayName("로그인한 유저를 확인하는 테스트")
     @BeforeEach
-    void getCurrentUserTest() {
+    void 로그인한_유저확인() {
         //given
         User user = User.builder()
                 .oauthIdx("68847615")
@@ -83,7 +80,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void 로그아웃_테스트() {
+    void 로그아웃() {
         userService.logout();
 
         User currentUser = currentUserUtil.getCurrentUser();
@@ -94,7 +91,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void 회원탈퇴_테스트() {
+    void 회원탈퇴() {
         User currentUser = currentUserUtil.getCurrentUser();
 
         userService.delete();
@@ -103,7 +100,7 @@ public class UserServiceTest {
     }
     
     @Test
-    void 방문_테스트() {
+    void 방문상태_확인() {
         User currentUser = currentUserUtil.getCurrentUser();
 
         assertEquals(currentUser.isFirstVisited(), true);
@@ -151,7 +148,6 @@ public class UserServiceTest {
     }
 
     @Test
-    @DisplayName("로그아웃 상태에서 리프레쉬 토큰 재발급")
     void 로그아웃_상태에서_리프레쉬_토큰_재발급() {
         User user = currentUserUtil.getCurrentUser();
 
@@ -164,7 +160,7 @@ public class UserServiceTest {
 
         Map<String, String> map = null;
 
-        assertThrows(CustomException.class, () ->{
+        assertThrows(CustomException.class, () -> {
             userService.reissueToken(refreshToken);
         });
     }
