@@ -76,7 +76,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public Map<String, String> reissuanceToken(String refreshToken) {
+    public Map<String, String> reissueToken(String refreshToken) {
 
         User currentUser = currentUserUtil.getCurrentUser();
 
