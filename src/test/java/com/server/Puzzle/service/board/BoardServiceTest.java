@@ -51,8 +51,8 @@ public class BoardServiceTest {
     private EntityManager em;
 
     @BeforeEach
-    @DisplayName("로그인 되어있는 유저를 확인하는 테스트")
-    void currentUser() {
+    @DisplayName("로그인_되어있는_유저를_확인()")
+    void 로그인_되어있는_유저를_확인() {
         // given // when
         User user = User.builder()
                 .oauthIdx("1234")
@@ -81,8 +81,8 @@ public class BoardServiceTest {
     }
 
     @Test
-    @DisplayName("게시물 등록 테스트")
-    void postTest(){
+    @DisplayName("게시물_등록()")
+    void 게시물_등록(){
         // given
         PostRequestDto postRequestDto = PostRequestDto.builder()
                 .title("title")
@@ -123,8 +123,8 @@ public class BoardServiceTest {
     }
 
     @Test
-    @DisplayName("게시물 수정 테스트")
-    void correctionPostTest(){
+    @DisplayName("게시물_수정()")
+    void 게시물_수정(){
         // given
         PostRequestDto postRequestDto = PostRequestDto.builder()
                 .title("title")
@@ -160,7 +160,7 @@ public class BoardServiceTest {
     }
 
     @Test
-    @DisplayName("게시물 전체 조회 테스트")
+    @DisplayName("게시물_전체_조회()")
     void getAllPostTest(){
         // given
         PostRequestDto postRequestDto = PostRequestDto.builder()
@@ -185,8 +185,8 @@ public class BoardServiceTest {
     }
 
     @Test
-    @DisplayName("게시물 단일 조회 테스트")
-    void getPostTest(){
+    @DisplayName("게시물_단일_조회()")
+    void 게시물_단일_조회(){
         // given
         PostRequestDto postRequestDto = PostRequestDto.builder()
                 .title("title")
@@ -210,8 +210,8 @@ public class BoardServiceTest {
 
     @Disabled
     @Test
-    @DisplayName("게시물 삭제 테스트")
-    void deletePost(){
+    @DisplayName("게시물_삭제()")
+    void 게시물_삭제(){
         // then
         PostRequestDto postRequestDto = PostRequestDto.builder()
                 .title("title")
@@ -234,8 +234,8 @@ public class BoardServiceTest {
     }
 
     @Test
-    @DisplayName("태그로 게시물을 조회하는 테스트")
-    void getPostByTagTest() {
+    @DisplayName("게시글_테그_조회()")
+    void 게시글_테그_조회() {
         // given
         PostRequestDto postRequestDto1 = PostRequestDto.builder()
                 .title("title1")
