@@ -61,8 +61,8 @@ public class AttendServiceTest {
     private EntityManager em;
 
     @BeforeEach
-    @DisplayName("로그인 되어있는 유저를 확인하는 테스트")
-    void currentUser() {
+    @DisplayName("로그인_되어있는_유저를_확인()")
+    void 로그인_되어있는_유저를_확인() {
         // given // when
         User user = User.builder()
                 .oauthIdx("1234")
@@ -91,8 +91,8 @@ public class AttendServiceTest {
     }
 
     @Test
-    @DisplayName("프로젝트 참가 신청 테스트")
-    void requestAttendTest(){
+    @DisplayName("프로젝트_참가_신청()")
+    void 프로젝트_참가_신청(){
         // given
         PostRequestDto postRequestDto = PostRequestDto.builder()
                 .title("title")
@@ -119,8 +119,8 @@ public class AttendServiceTest {
     }
 
     @Test
-    @DisplayName("프로젝트 참가 신청 전체 조회 테스트")
-    void getAllAttend(){
+    @DisplayName("프로젝트_참가_신청_전체_조회()")
+    void 프로젝트_참가_신청_전체_조회(){
         // given
         PostRequestDto postRequestDto = PostRequestDto.builder()
                 .title("title")
@@ -149,8 +149,8 @@ public class AttendServiceTest {
     }
 
     @Test
-    @DisplayName("프로젝트 참가 신청 수정 테스트")
-    void patchAttend() {
+    @DisplayName("프로젝트_참가_신청_수정()")
+    void 프로젝트_참가_신청_수정() {
         // given
         PostRequestDto postRequestDto = PostRequestDto.builder()
                 .title("title")
@@ -185,8 +185,8 @@ public class AttendServiceTest {
     }
 
     @Test
-    @DisplayName("프로젝트 참가 신청 취소 / 삭제 테스트")
-    void deleteAttend(){
+    @DisplayName("프로젝트_참가_신청_취소()")
+    void 프로젝트_참가_신청_취소(){
         // given
         PostRequestDto postRequestDto = PostRequestDto.builder()
                 .title("title")
