@@ -234,8 +234,8 @@ public class BoardServiceTest {
     }
 
     @Test
-    @DisplayName("게시글_테그_조회()")
-    void 게시글_테그_조회() {
+    @DisplayName("게시글_태그_조회()")
+    void 게시글_태그_조회() {
         // given
         PostRequestDto postRequestDto1 = PostRequestDto.builder()
                 .title("title1")
