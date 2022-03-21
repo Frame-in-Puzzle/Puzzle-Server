@@ -145,7 +145,7 @@ public class UserServiceTest {
 
         Map<String, String> map;
 
-        map = userService.reissuanceToken(user.getRefreshToken());
+        map = userService.reissueToken(user.getRefreshToken());
 
         assertEquals(map.get("RefreshToken").substring(7), user.getRefreshToken());
     }
@@ -165,7 +165,7 @@ public class UserServiceTest {
         Map<String, String> map = null;
 
         assertThrows(CustomException.class, () ->{
-            userService.reissuanceToken(refreshToken);
+            userService.reissueToken(refreshToken);
         });
     }
 }
