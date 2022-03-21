@@ -107,7 +107,6 @@ public class AttendServiceTest {
         boardService.post(postRequestDto);
 
         em.clear();
-        em.close();
 
         // when
         Board board = boardRepository.findAll().get(0);
@@ -136,13 +135,11 @@ public class AttendServiceTest {
         boardService.post(postRequestDto);
 
         em.clear();
-        em.close();
 
         Board board = boardRepository.findAll().get(0);
         attendService.requestAttend(board.getId());
 
         em.clear();
-        em.close();
 
         // when
         List<GetAllAttendResponse> allAttend = attendService.findAllAttend(board.getId());
@@ -168,7 +165,6 @@ public class AttendServiceTest {
         boardService.post(postRequestDto);
 
         em.clear();
-        em.close();
 
         Board board = boardRepository.findAll().get(0);
 
@@ -176,7 +172,6 @@ public class AttendServiceTest {
         Long attendId = attendRepository.findAll().get(0).getId();
 
         em.clear();
-        em.close();
 
         PatchAttendRequest patchAttendRequest = PatchAttendRequest.builder()
                 .attendStatus(AttendStatus.ACCEPT)
@@ -206,7 +201,6 @@ public class AttendServiceTest {
         boardService.post(postRequestDto);
 
         em.clear();
-        em.close();
 
         Board board = boardRepository.findAll().get(0);
 
@@ -214,7 +208,6 @@ public class AttendServiceTest {
         Long attendId = attendRepository.findAll().get(0).getId();
 
         em.clear();
-        em.close();
 
         // when
         attendService.deleteAttend(attendId);
