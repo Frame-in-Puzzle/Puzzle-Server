@@ -48,13 +48,4 @@ public class UserController {
         userService.infoRegistration(userInfo);
         return ResponseEntity.ok("Success");
     }
-
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "Authorization", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header"),
-            @ApiImplicitParam(name = "RefreshToken", value = "로그인 성공 후 refresh_token", required = false, dataType = "String", paramType = "header")
-    })
-    @GetMapping("/refreshToken")
-    public ResponseEntity<Map<String, String>> reissuanceToken(HttpServletRequest request) {
-        return ResponseEntity.ok().body(userService.reissuanceToken(jwtTokenProvider.resolveRefreshToken(request)));
-    }
 }
