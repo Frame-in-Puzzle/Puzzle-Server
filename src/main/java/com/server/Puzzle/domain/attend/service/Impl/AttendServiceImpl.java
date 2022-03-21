@@ -79,11 +79,8 @@ public class AttendServiceImpl implements AttendService {
     }
 
     @Override
-    public void deleteAttend(Long boardId, Long attendId) {
+    public void deleteAttend(Long attendId) {
         User currentUser = currentUserUtil.getCurrentUser();
-
-        boardRepository.findById(boardId)
-                .orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
 
         Attend attend = attendRepository.findById(attendId)
                 .orElseThrow(() -> new CustomException(ErrorCode.ATTEND_NOT_FOUND));

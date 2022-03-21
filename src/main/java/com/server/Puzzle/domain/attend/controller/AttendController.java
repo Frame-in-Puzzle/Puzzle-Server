@@ -45,9 +45,9 @@ public class AttendController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header")
     })
-    @DeleteMapping("/board/{boardId}")
-    public ResponseEntity<String> deleteAttend(@PathVariable Long boardId, @RequestBody Long attendId) {
-        attendService.deleteAttend(boardId, attendId);
+    @DeleteMapping("/{attendId}")
+    public ResponseEntity<String> deleteAttend(@PathVariable Long attendId) {
+        attendService.deleteAttend(attendId);
         return ResponseEntity.ok("Success");
     }
 }
