@@ -160,7 +160,7 @@ public class BoardExceptionTest {
     }
 
     @Test
-    void deletePost_에서_권한이_없습니다(){
+    void deletePost_에서_처리_권한이_없습니다(){
         // given
         User user = User.builder()
                 .oauthIdx("1234")
