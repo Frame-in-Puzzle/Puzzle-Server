@@ -1,5 +1,6 @@
 package com.server.Puzzle.exception.board;
 
+import com.server.Puzzle.domain.board.domain.Board;
 import com.server.Puzzle.domain.board.dto.request.CorrectionPostRequestDto;
 import com.server.Puzzle.domain.board.dto.request.PostRequestDto;
 import com.server.Puzzle.domain.board.enumType.Purpose;
@@ -12,7 +13,6 @@ import com.server.Puzzle.global.enumType.Field;
 import com.server.Puzzle.global.enumType.Language;
 import com.server.Puzzle.global.enumType.Role;
 import com.server.Puzzle.global.exception.CustomException;
-import com.server.Puzzle.global.exception.ErrorCode;
 import com.server.Puzzle.global.util.CurrentUserUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,6 +25,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import javax.transaction.Transactional;
 import java.util.List;
 
+import static com.server.Puzzle.global.exception.ErrorCode.BOARD_NOT_FOUND;
+import static com.server.Puzzle.global.exception.ErrorCode.BOARD_NOT_HAVE_PERMISSION;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Transactional
@@ -100,7 +102,7 @@ public class BoardExceptionTest {
         Long boardId = boardRepository.findAll().get(0).getId() + 1L;
 
         // when // then
-        CustomException customException = assertThrows(new CustomException(ErrorCode.BOARD_NOT_FOUND).getClass(), () -> {
+        CustomException customException = assertThrows(new CustomException(BOARD_NOT_FOUND).getClass(), () -> {
             boardService.correctionPost(boardId, correctionPostRequestDto);
         });
 
@@ -125,7 +127,7 @@ public class BoardExceptionTest {
         Long boardId = boardRepository.findAll().get(0).getId() + 1L;
 
         // when // then
-        CustomException customException = assertThrows(new CustomException(ErrorCode.BOARD_NOT_FOUND).getClass(), () -> {
+        CustomException customException = assertThrows(new CustomException(BOARD_NOT_FOUND).getClass(), () -> {
             boardService.getPost(boardId);
         });
 
@@ -150,10 +152,45 @@ public class BoardExceptionTest {
         Long boardId = boardRepository.findAll().get(0).getId() + 1L;
 
         // when // then
-        CustomException customException = assertThrows(new CustomException(ErrorCode.BOARD_NOT_FOUND).getClass(), () -> {
+        CustomException customException = assertThrows(new CustomException(BOARD_NOT_FOUND).getClass(), () -> {
             boardService.deletePost(boardId);
         });
 
         assertEquals("게시글을 찾을 수 없습니다.", customException.getErrorCode().getDetail());
+    }
+
+    @Test
+    void deletePost_에서_권한이_없습니다(){
+        // given
+        User user = User.builder()
+                .oauthIdx("1234")
+                .email("hello@gmail.com")
+                .githubId("JUN")
+                .name("노경준")
+                .field(Field.BACKEND)
+                .bio("개발자입니다.")
+                .imageUrl("naver.com")
+                .refreshToken("aldkfja;ljflas;jdfsa")
+                .isFirstVisited(false)
+                .build();
+
+        userRepository.save(user);
+
+        Board board = Board.builder()
+                .title("title")
+                .contents("contents")
+                .purpose(Purpose.PROJECT)
+                .status(Status.RECRUITMENT)
+                .user(user)
+                .build();
+
+        boardRepository.save(board);
+
+        // when
+        CustomException customException = assertThrows(new CustomException(BOARD_NOT_HAVE_PERMISSION).getClass(), () -> {
+            boardService.deletePost(board.getId());
+        });
+
+        assertEquals("해당 요청을 처리할 권한이 존재하지 않습니다.", customException.getErrorCode().getDetail());
     }
 }
