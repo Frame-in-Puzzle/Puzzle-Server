@@ -14,12 +14,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import static com.server.Puzzle.global.exception.ErrorCode.*;
+import static com.server.Puzzle.global.exception.ErrorCode.IS_ALREADY_USER;
+import static com.server.Puzzle.global.exception.ErrorCode.USER_NOT_FOUND;
 
 @RequiredArgsConstructor
 @Service
@@ -73,36 +71,4 @@ public class UserServiceImpl implements UserService {
                 .updateIsFirstVisited(false)
                 .updateField(userInfo.getField());
     }
-
-    @Transactional
-    @Override
-    public Map<String, String> reissueToken(String refreshToken) {
-
-        User currentUser = currentUserUtil.getCurrentUser();
-
-        User user = userRepository.findByGithubId(currentUser.getGithubId())
-                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-
-        if (user.getRefreshToken() == null) {
-            throw new CustomException(NOT_LOGGED_IN);
-        }
-
-        if(!(user.getRefreshToken().equals(refreshToken) && jwtTokenProvider.validateToken(refreshToken))) {
-            throw new CustomException(UNABLE_TO_ISSUANCE_REFRESHTOKEN);
-        }
-
-        Map<String, String> map = new HashMap<>();
-
-        String newAccessToken = jwtTokenProvider.createToken(user.getGithubId(), user.getRoles());
-        String newRefreshToken = jwtTokenProvider.createRefreshToken();
-
-        user.updateRefreshToken(newRefreshToken);
-
-        map.put("RefreshToken", "Bearer " + newRefreshToken);
-        map.put("AccessToken", "Bearer " + newAccessToken);
-
-        return map;
-    }
-
-
 }
