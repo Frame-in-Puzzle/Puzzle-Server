@@ -1,5 +1,6 @@
 package com.server.Puzzle.domain.attend.domain;
 
+import com.server.Puzzle.domain.attend.enumtype.AttendStatus;
 import com.server.Puzzle.domain.board.domain.Board;
 import com.server.Puzzle.domain.user.domain.User;
 import com.server.Puzzle.global.entity.BaseTimeEntity;

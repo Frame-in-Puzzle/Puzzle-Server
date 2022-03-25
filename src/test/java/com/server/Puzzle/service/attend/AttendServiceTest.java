@@ -1,9 +1,9 @@
 package com.server.Puzzle.service.attend;
 
 import com.server.Puzzle.domain.attend.domain.Attend;
-import com.server.Puzzle.domain.attend.domain.AttendStatus;
 import com.server.Puzzle.domain.attend.dto.request.PatchAttendRequest;
 import com.server.Puzzle.domain.attend.dto.response.GetAllAttendResponse;
+import com.server.Puzzle.domain.attend.enumtype.AttendStatus;
 import com.server.Puzzle.domain.attend.repository.AttendRepository;
 import com.server.Puzzle.domain.attend.service.AttendService;
 import com.server.Puzzle.domain.board.domain.Board;

@@ -1,4 +1,4 @@
-package com.server.Puzzle.domain.attend.domain;
+package com.server.Puzzle.domain.attend.enumtype;
 
 public enum AttendStatus {
 

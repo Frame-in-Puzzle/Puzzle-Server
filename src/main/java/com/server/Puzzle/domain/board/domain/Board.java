@@ -1,7 +1,7 @@
 package com.server.Puzzle.domain.board.domain;
 
 import com.server.Puzzle.domain.attend.domain.Attend;
-import com.server.Puzzle.domain.attend.domain.AttendStatus;
+import com.server.Puzzle.domain.attend.enumtype.AttendStatus;
 import com.server.Puzzle.domain.board.enumType.Purpose;
 import com.server.Puzzle.domain.board.enumType.Status;
 import com.server.Puzzle.domain.user.domain.User;
