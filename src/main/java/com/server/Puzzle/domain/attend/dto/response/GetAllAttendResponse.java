@@ -1,6 +1,6 @@
 package com.server.Puzzle.domain.attend.dto.response;
 
-import com.server.Puzzle.domain.attend.domain.AttendStatus;
+import com.server.Puzzle.domain.attend.enumtype.AttendStatus;
 import com.server.Puzzle.global.enumType.Language;
 import lombok.*;
 
