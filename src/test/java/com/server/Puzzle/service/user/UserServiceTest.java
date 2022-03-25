@@ -42,16 +42,19 @@ public class UserServiceTest {
     CurrentUserUtil currentUserUtil;
 
     @Autowired
-    UserServiceImpl userService;
+    TokenService tokenService;
 
     @Autowired
-    ProfileServiceImpl profileService;
+    UserService userService;
 
     @Autowired
-    EntityManager em;
+    ProfileService profileService;
 
     @Autowired
     JwtTokenProvider jwtTokenProvider;
+
+    @Autowired
+    EntityManager em;
 
     @BeforeEach
     void 로그인한_유저확인() {
