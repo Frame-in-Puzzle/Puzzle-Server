@@ -6,7 +6,7 @@ import com.server.Puzzle.domain.user.dto.UserResponseDto;
 import com.server.Puzzle.domain.user.dto.UserUpdateDto;
 import com.server.Puzzle.domain.user.repository.UserLanguageRepository;
 import com.server.Puzzle.domain.user.repository.UserRepository;
-import com.server.Puzzle.domain.user.service.Impl.ProfileServiceImpl;
+import com.server.Puzzle.domain.user.service.ProfileService;
 import com.server.Puzzle.global.enumType.Field;
 import com.server.Puzzle.global.enumType.Language;
 import com.server.Puzzle.global.enumType.Role;
@@ -35,7 +35,7 @@ public class ProfileServiceTest {
     CurrentUserUtil currentUserUtil;
 
     @Autowired
-    ProfileServiceImpl profileService;
+    ProfileService profileService;
 
     @Autowired
     UserRepository userRepository;
