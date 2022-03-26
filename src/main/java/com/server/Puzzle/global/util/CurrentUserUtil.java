@@ -29,4 +29,5 @@ public class CurrentUserUtil {
         return userRepository.findByGithubId(name)
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
     }
+
 }

@@ -10,6 +10,7 @@ import java.time.format.DateTimeFormatter;
 @Builder
 @Getter
 public class ErrorResponse {
+
     private final String formatNow = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd / HH : mm : ss "));
     private final int status;
     private final String message;
@@ -23,4 +24,5 @@ public class ErrorResponse {
                         .build()
                 );
     }
+
 }

@@ -13,6 +13,7 @@ import java.io.IOException;
 
 @Component
 public class JwtTokenFilter extends OncePerRequestFilter { // OncePerRequestFilter 는 요청이 들어올 때마다 실행
+
     private JwtTokenProvider jwtTokenProvider;
 
     public JwtTokenFilter(JwtTokenProvider jwtTokenProvider) {
@@ -31,4 +32,5 @@ public class JwtTokenFilter extends OncePerRequestFilter { // OncePerRequestFilt
 
         filterChain.doFilter(request, response);
     }
+
 }

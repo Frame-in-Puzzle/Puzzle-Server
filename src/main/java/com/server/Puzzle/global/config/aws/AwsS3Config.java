@@ -1,6 +1,5 @@
 package com.server.Puzzle.global.config.aws;
 
-
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3Client;
@@ -11,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class AwsS3Config {
+
     @Value("${cloud.aws.credentials.access-key}")
     private String accessKey;
 
@@ -23,9 +23,11 @@ public class AwsS3Config {
     @Bean
     public AmazonS3Client amazonS3Client() {
         BasicAWSCredentials awsCreds = new BasicAWSCredentials(accessKey, secretKey);
+
         return (AmazonS3Client) AmazonS3ClientBuilder.standard()
                 .withRegion(region)
                 .withCredentials(new AWSStaticCredentialsProvider(awsCreds))
                 .build();
     }
+
 }

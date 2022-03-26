@@ -3,6 +3,7 @@ package com.server.Puzzle.global.enumType;
 import org.springframework.security.core.GrantedAuthority;
 
 public enum Role implements GrantedAuthority{
+
     GUEST("ROLE_GUEST"),
     USER("ROLE_USER");
 
@@ -19,4 +20,5 @@ public enum Role implements GrantedAuthority{
     public String getAuthority() {
         return name();
     }
+
 }
