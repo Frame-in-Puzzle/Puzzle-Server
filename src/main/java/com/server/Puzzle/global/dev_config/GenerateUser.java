@@ -23,7 +23,7 @@ import static java.util.Collections.singletonList;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-@Profile({"oauth"})
+@Profile({"dev"})
 public class GenerateUser {
     private final UserRepository userRepository;
     private final UserLanguageRepository userLanguageRepo;
