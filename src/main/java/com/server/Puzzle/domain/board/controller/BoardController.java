@@ -77,4 +77,5 @@ public class BoardController {
     {
         return ResponseEntity.ok(boardService.getPostByTag(purpose, field, language, status, pageable));
     }
+
 }

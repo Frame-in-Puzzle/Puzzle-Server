@@ -50,4 +50,5 @@ public class AttendController {
         attendService.deleteAttend(attendId);
         return ResponseEntity.ok("Success");
     }
+
 }

@@ -42,6 +42,7 @@ public class JwtTokenProvider {
 
         Date date = new Date();
         Date validity = new Date(date.getTime() + TOKEN_VALIDATION_EXPIREDTIME);
+
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(date)
@@ -85,7 +86,7 @@ public class JwtTokenProvider {
         String bearerToken = request.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7);
-        }else{
+        } else{
             return null;
         }
     }
@@ -101,10 +102,12 @@ public class JwtTokenProvider {
 
     public boolean isTokenExpired(String token) {
         final Date expiration = extractAllClaims(token).getExpiration();
+
         return expiration.before(new Date());
     }
 
     public boolean validateToken(String token) {
         return !isTokenExpired(token);
     }
+
 }

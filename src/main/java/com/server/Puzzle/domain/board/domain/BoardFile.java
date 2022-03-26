@@ -21,4 +21,5 @@ public class BoardFile extends BaseTimeEntity {
 
     @Column(name = "board_file_url")
     private String url;
+
 }

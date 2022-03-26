@@ -52,4 +52,5 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
         String errorResponseEntityToJson = objectMapper.writeValueAsString(errorResponse);
         res.getWriter().write(errorResponseEntityToJson.toString());
     }
+
 }

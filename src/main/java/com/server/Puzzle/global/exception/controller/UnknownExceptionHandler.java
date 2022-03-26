@@ -10,9 +10,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Slf4j
 @RestControllerAdvice
 public class UnknownExceptionHandler {
+
     @ExceptionHandler(value = { Exception.class })
     protected ResponseEntity<ErrorResponse> handleCustomException(Exception e) {
         log.error("UnknownExceptionHandler throw Exception : {}", e.getMessage(), e);
         return ErrorResponse.toResponseEntity(ErrorCode.UNKNOWN_ERROR);
     }
+
 }

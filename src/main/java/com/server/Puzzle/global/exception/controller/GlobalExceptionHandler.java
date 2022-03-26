@@ -25,4 +25,5 @@ public class GlobalExceptionHandler {
         log.error("handleMissingParams throw Exception : {}", e.getMessage(), e);
         return ErrorResponse.toResponseEntity(PARAMETER_IS_MISSING);
     }
+
 }

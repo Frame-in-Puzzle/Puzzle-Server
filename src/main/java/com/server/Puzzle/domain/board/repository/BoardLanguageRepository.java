@@ -6,5 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BoardLanguageRepository extends JpaRepository<BoardLanguage, Long> {
+
     void deleteByBoardId(Long id);
+
 }
