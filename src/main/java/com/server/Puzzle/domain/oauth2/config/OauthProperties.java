@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 @Getter
 @Component
 public class OauthProperties {
+
         @Value("${oauth2.user.github.client-id}")
         private String clientId;
         @Value("${oauth2.user.github.client-secret}")
@@ -17,4 +18,5 @@ public class OauthProperties {
         private String tokenUri;
         @Value("${oauth2.provider.github.user-info-uri}")
         private String userInfoUri;
+
 }

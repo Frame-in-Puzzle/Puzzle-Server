@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OauthTokenResponse {
+
     @JsonProperty("access_token")
     private String accessToken;
 
@@ -18,4 +19,5 @@ public class OauthTokenResponse {
 
     @JsonProperty("token_type")
     private String tokenType;
+
 }

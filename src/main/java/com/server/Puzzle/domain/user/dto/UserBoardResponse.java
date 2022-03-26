@@ -11,10 +11,12 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Getter
 public class UserBoardResponse {
+
     private Long boardId;
     private String title;
     private LocalDateTime date;
     private String contents;
     private Status status;
     private String thumbnail;
+
 }

@@ -24,4 +24,5 @@ public class UserLanguage extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "user_language", nullable = false)
     private Language language;
+
 }

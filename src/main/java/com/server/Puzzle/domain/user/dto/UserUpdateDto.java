@@ -11,6 +11,7 @@ import java.util.List;
 @Builder
 @Getter
 public class UserUpdateDto {
+
     private String name;
     private String email;
     private String imageUrl;
@@ -18,4 +19,5 @@ public class UserUpdateDto {
     private Field field;
     private List<Language> language;
     private String url;
+
 }

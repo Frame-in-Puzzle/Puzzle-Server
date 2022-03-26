@@ -7,6 +7,7 @@ import java.util.Map;
 
 @Component
 public class OauthAttributes {
+
     public UserProfile extract(Map<String, Object> attributes) {
         return UserProfile.builder()
                 .oauthIdx(String.valueOf(attributes.get("id")))
@@ -17,4 +18,5 @@ public class OauthAttributes {
                 .bio((String) attributes.get("bio"))
                 .build();
     }
+
 }

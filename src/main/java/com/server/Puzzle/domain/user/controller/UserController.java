@@ -10,13 +10,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
-
 @RequiredArgsConstructor
 @RequestMapping("/api/user")
 @RestController
 public class UserController {
+
     private final UserService userService;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -48,4 +46,5 @@ public class UserController {
         userService.infoRegistration(userInfo);
         return ResponseEntity.ok("Success");
     }
+
 }
