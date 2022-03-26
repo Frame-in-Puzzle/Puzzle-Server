@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface BoardService {
+
     void post(PostRequestDto request);
     String createUrl(MultipartFile files);
     Board correctionPost(Long id, CorrectionPostRequestDto request);
@@ -24,4 +25,5 @@ public interface BoardService {
     GetPostResponseDto getPost(Long id);
     void deletePost(Long id);
     Page<GetPostByTagResponseDto> getPostByTag(Purpose purpose, List<Field> field, List<Language> language, Status status, Pageable pageable);
+
 }

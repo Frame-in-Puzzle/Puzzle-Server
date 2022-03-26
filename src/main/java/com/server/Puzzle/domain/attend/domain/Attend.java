@@ -41,4 +41,5 @@ public class Attend extends BaseTimeEntity {
     public void updateAttendStatus(AttendStatus attendStatus){
         this.attendStatus = attendStatus;
     }
+
 }

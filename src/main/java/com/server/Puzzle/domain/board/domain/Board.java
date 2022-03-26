@@ -105,4 +105,5 @@ public class Board extends BaseTimeEntity {
                 .orElseThrow()
                 .updateAttendStatus(attendStatus);
     }
+
 }

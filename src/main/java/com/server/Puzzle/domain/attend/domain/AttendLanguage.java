@@ -23,4 +23,5 @@ public class AttendLanguage extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "attend_language_language")
     private Language language;
+
 }
