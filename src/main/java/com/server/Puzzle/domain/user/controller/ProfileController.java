@@ -39,4 +39,5 @@ public class ProfileController {
     public ResponseEntity<Page<UserBoardResponse>> getUserBoard(@PageableDefault(page = 10) Pageable pageable, @PathVariable String githubId) {
         return ResponseEntity.ok().body(profileService.getUserBoard(githubId, pageable));
     }
+
 }

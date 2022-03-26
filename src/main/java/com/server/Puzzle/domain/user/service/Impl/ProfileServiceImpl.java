@@ -76,6 +76,7 @@ public class ProfileServiceImpl implements ProfileService {
 
         User user = userRepository.findByGithubId(githubId)
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
         return boardRepository.findBoardsByUser(user, pageable)
                 .map(board -> UserBoardResponse.builder()
                         .boardId(board.getId())

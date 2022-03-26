@@ -6,5 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserLanguageRepository extends JpaRepository<UserLanguage, Long> {
+
     void deleteAllByUserId(Long id);
+
 }

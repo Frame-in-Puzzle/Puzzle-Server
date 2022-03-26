@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/oauth")
 @RestController()
 public class OauthController {
+
     private final OauthServiceImpl oauthServiceImpl;
 
     @PostMapping("/login/github")
@@ -18,4 +19,5 @@ public class OauthController {
         LoginResponse loginResponse = oauthServiceImpl.login(code);
         return ResponseEntity.ok(loginResponse);
     }
+
 }

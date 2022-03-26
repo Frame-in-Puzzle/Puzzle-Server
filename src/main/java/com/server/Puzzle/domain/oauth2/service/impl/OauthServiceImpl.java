@@ -1,15 +1,14 @@
 package com.server.Puzzle.domain.oauth2.service.impl;
 
-import com.server.Puzzle.domain.oauth2.service.OauthService;
-import com.server.Puzzle.domain.user.domain.User;
 import com.server.Puzzle.domain.oauth2.config.OauthAttributes;
 import com.server.Puzzle.domain.oauth2.config.OauthProperties;
 import com.server.Puzzle.domain.oauth2.dto.LoginResponse;
 import com.server.Puzzle.domain.oauth2.dto.OauthCode;
 import com.server.Puzzle.domain.oauth2.dto.OauthTokenResponse;
 import com.server.Puzzle.domain.oauth2.dto.UserProfile;
+import com.server.Puzzle.domain.oauth2.service.OauthService;
+import com.server.Puzzle.domain.user.domain.User;
 import com.server.Puzzle.domain.user.repository.UserRepository;
-import com.server.Puzzle.global.exception.CustomException;
 import com.server.Puzzle.global.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
@@ -27,6 +26,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Service
 public class OauthServiceImpl implements OauthService {
+
     private final UserRepository userRepository;
     private final OauthProperties oauthProperties;
     private final JwtTokenProvider jwtTokenProvider;
@@ -59,11 +59,13 @@ public class OauthServiceImpl implements OauthService {
     private User save(UserProfile userProfile) {
         User user = userRepository.findByGithubId(userProfile.getGithubId())
                 .orElseGet(userProfile::toUser);
+
         return userRepository.save(user);
     }
 
     private UserProfile getUserProfile(OauthTokenResponse tokenResponse) {
         Map<String, Object> userAttributes = getUserAttributes(tokenResponse);
+
         return oauthAttributes.extract(userAttributes);
     }
 
@@ -98,6 +100,8 @@ public class OauthServiceImpl implements OauthService {
         formData.add("code", code.getCode());
         formData.add("grant_type", "authorization_code");
         formData.add("redirect_uri", oauthProperties.getRedirectUri());
+
         return formData;
     }
+
 }

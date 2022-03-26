@@ -8,7 +8,6 @@ import com.server.Puzzle.domain.user.repository.UserRepository;
 import com.server.Puzzle.domain.user.service.UserService;
 import com.server.Puzzle.global.enumType.Language;
 import com.server.Puzzle.global.exception.CustomException;
-import com.server.Puzzle.global.security.jwt.JwtTokenProvider;
 import com.server.Puzzle.global.util.CurrentUserUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,10 +21,10 @@ import static com.server.Puzzle.global.exception.ErrorCode.USER_NOT_FOUND;
 @RequiredArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
+
     private final CurrentUserUtil currentUserUtil;
     private final UserRepository userRepository;
     private final UserLanguageRepository userLanguageRepo;
-    private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional
     @Override
@@ -71,4 +70,5 @@ public class UserServiceImpl implements UserService {
                 .updateIsFirstVisited(false)
                 .updateField(userInfo.getField());
     }
+
 }

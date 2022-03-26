@@ -18,6 +18,7 @@ import java.util.Map;
 @RequestMapping("/api/token")
 @RestController
 public class TokenController {
+
     private final TokenService tokenService;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -27,4 +28,5 @@ public class TokenController {
     public ResponseEntity<Map<String, String>> reissueToken(@RequestParam String githubId, HttpServletRequest request) {
         return ResponseEntity.ok().body(tokenService.reissueToken(jwtTokenProvider.resolveRefreshToken(request), githubId));
     }
+
 }

@@ -20,7 +20,6 @@ public class UserCustomRepositoryImpl implements UserCustomRepository{
 
     @Override
     public UserResponseDto findByUser(String githubId) {
-
         List<Language> languages = jpaQueryFactory.from(userLanguage)
                 .select(userLanguage.language)
                 .where(userLanguage.user.githubId.eq(githubId))
@@ -43,4 +42,5 @@ public class UserCustomRepositoryImpl implements UserCustomRepository{
 
         return res;
     }
+
 }

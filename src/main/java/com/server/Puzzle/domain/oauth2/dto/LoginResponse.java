@@ -8,9 +8,11 @@ import lombok.Getter;
 @Builder
 @AllArgsConstructor
 public class LoginResponse {
+
     private String githubId;
     private String email;
     private Boolean isFirstVisited;
     private String accessToken;
     private String refreshToken;
+
 }

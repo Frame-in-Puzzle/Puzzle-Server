@@ -9,6 +9,7 @@ import java.util.Collections;
 @Builder
 @Getter
 public class UserProfile {
+
     private String oauthIdx;
     private String email;
     private String githubId;
@@ -29,4 +30,5 @@ public class UserProfile {
                 .isFirstVisited(true)
                 .build();
     }
+
 }
