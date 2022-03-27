@@ -23,6 +23,7 @@ import com.server.Puzzle.global.exception.CustomException;
 import com.server.Puzzle.global.util.AwsS3Util;
 import com.server.Puzzle.global.util.CurrentUserUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -38,6 +39,9 @@ import static com.server.Puzzle.global.exception.ErrorCode.*;
 @RequiredArgsConstructor
 @Service
 public class BoardServiceImpl implements BoardService {
+
+    @Value("${cloud.aws.url}")
+    private String s3Url;
 
     private final CurrentUserUtil currentUserUtil;
     private final AwsS3Util awsS3Util;
@@ -100,7 +104,7 @@ public class BoardServiceImpl implements BoardService {
     public String createUrl(MultipartFile files) {
         String filename = awsS3Util.putS3(files);
 
-        return "https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/"+filename;
+        return s3Url + filename;
     }
 
     @Transactional
