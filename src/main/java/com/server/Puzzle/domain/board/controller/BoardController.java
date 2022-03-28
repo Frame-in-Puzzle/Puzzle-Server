@@ -62,6 +62,9 @@ public class BoardController {
         return ResponseEntity.ok(boardService.getPost(id));
     }
 
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header")
+    })
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deletePost(@PathVariable("id") Long id){
         boardService.deletePost(id);
