@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.server.Puzzle.global.exception.ErrorCode.USER_NOT_FOUND;
 
@@ -83,11 +84,16 @@ public class ProfileServiceImpl implements ProfileService {
                         .title(board.getTitle())
                         .contents(board.getContents())
                         .date(board.getCreatedDate())
+                        .purpose(board.getPurpose())
                         .status(board.getStatus())
                         .thumbnail(
-                                board.getBoardFiles().stream().map(BoardFile::getUrl)
+                                board.getBoardFiles().stream()
+                                        .map(BoardFile::getUrl)
                                         .findFirst()
                                         .orElse(null))
+                        .fields(board.getBoardFields().stream()
+                                .map(f -> f.getField())
+                                .collect(Collectors.toList()))
                         .build());
     }
 
