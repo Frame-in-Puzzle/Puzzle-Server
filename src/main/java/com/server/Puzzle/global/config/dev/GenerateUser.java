@@ -72,7 +72,7 @@ public class GenerateUser {
                         .id(2L)
                         .email("developerjun0615@gmail.com")
                         .name("노경준")
-                        .imageUrl("imageurl")
+                        .imageUrl("https://avatars.githubusercontent.com/u/68670670?v=4")
                         .githubId("KyungJunNoh")
                         .bio("상메")
                         .isFirstVisited(false)
