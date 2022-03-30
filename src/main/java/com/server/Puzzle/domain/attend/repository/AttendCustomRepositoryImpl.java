@@ -29,7 +29,7 @@ public class AttendCustomRepositoryImpl implements AttendCustomRepository{
         return attends.stream()
                 .map(a -> new GetAllAttendResponse(
                         a.getId(),
-                        a.getLanguages().stream()
+                        a.getUser().getUserLanguages().stream()
                                 .map(l -> l.getLanguage())
                                 .collect(Collectors.toList()),
                         a.getUser().getName(),
