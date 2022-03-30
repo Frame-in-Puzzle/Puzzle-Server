@@ -42,7 +42,6 @@ public class AttendServiceImpl implements AttendService {
                         .attendStatus(AttendStatus.WAIT)
                         .build()
         );
-
     }
 
     @Override
