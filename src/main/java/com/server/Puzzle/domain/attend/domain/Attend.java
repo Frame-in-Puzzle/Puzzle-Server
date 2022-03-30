@@ -27,13 +27,6 @@ public class Attend extends BaseTimeEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToMany(
-            mappedBy = "attend",
-            cascade = CascadeType.REMOVE,
-            orphanRemoval = true
-    )
-    private List<AttendLanguage> languages;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "attend_status")
     private AttendStatus attendStatus;
