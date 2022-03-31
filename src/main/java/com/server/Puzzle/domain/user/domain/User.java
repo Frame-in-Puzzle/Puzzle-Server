@@ -3,7 +3,6 @@ package com.server.Puzzle.domain.user.domain;
 import com.server.Puzzle.domain.board.domain.Board;
 import com.server.Puzzle.global.entity.BaseTimeEntity;
 import com.server.Puzzle.global.enumType.Field;
-import com.server.Puzzle.global.enumType.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,6 +15,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Getter
@@ -54,12 +54,13 @@ public class User extends BaseTimeEntity implements UserDetails {
     )
     private List<UserLanguage> userLanguages; // 세부언어
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "Role")
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "Role", joinColumns = @JoinColumn(name = "user_id"))
-    @Builder.Default
-    private List<Role> roles = new ArrayList<>();
+    @OneToMany(
+            fetch = FetchType.EAGER,
+            mappedBy = "user",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<Roles> roles = new ArrayList<>();;
 
     @Column(name = "user_bio", nullable = true)
     private String bio;
@@ -124,7 +125,7 @@ public class User extends BaseTimeEntity implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<String> rolesConvertString = this.roles.stream().map(Enum::name).collect(Collectors.toList());
+        List<String> rolesConvertString = this.roles.stream().map(Roles::getAuthority).filter(Objects::nonNull).collect(Collectors.toList());
         return rolesConvertString.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
     }
 
