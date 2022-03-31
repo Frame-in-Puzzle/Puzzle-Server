@@ -7,8 +7,12 @@ import com.server.Puzzle.domain.oauth2.dto.OauthCode;
 import com.server.Puzzle.domain.oauth2.dto.OauthTokenResponse;
 import com.server.Puzzle.domain.oauth2.dto.UserProfile;
 import com.server.Puzzle.domain.oauth2.service.OauthService;
+import com.server.Puzzle.domain.user.domain.Roles;
 import com.server.Puzzle.domain.user.domain.User;
+import com.server.Puzzle.domain.user.dto.RolesProfile;
+import com.server.Puzzle.domain.user.repository.RolesRepository;
 import com.server.Puzzle.domain.user.repository.UserRepository;
+import com.server.Puzzle.global.enumType.Role;
 import com.server.Puzzle.global.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
@@ -31,6 +35,7 @@ public class OauthServiceImpl implements OauthService {
     private final OauthProperties oauthProperties;
     private final JwtTokenProvider jwtTokenProvider;
     private final OauthAttributes oauthAttributes;
+    private final RolesRepository rolesRepository;
 
     @Transactional
     @Override
@@ -41,6 +46,8 @@ public class OauthServiceImpl implements OauthService {
         UserProfile userProfile = getUserProfile(tokenResponse);
         // 유저 DB에 저장
         User user = save(userProfile);
+
+        rolesSet(user);
 
         String accessToken = jwtTokenProvider.createToken(String.valueOf(user.getGithubId()), user.getRoles());
         String refreshToken = jwtTokenProvider.createRefreshToken();
@@ -54,6 +61,18 @@ public class OauthServiceImpl implements OauthService {
                 .accessToken("Bearer " + accessToken)
                 .refreshToken("Bearer " + refreshToken)
                 .build();
+    }
+
+    private Roles rolesSet(User user) {
+        RolesProfile roles = RolesProfile.builder()
+                .role(Role.ROLE_USER)
+                .user(user)
+                .build();
+
+        Roles rolesByUser = rolesRepository.findRolesByUser(user)
+                .orElseGet(roles::toRoles);
+
+        return rolesRepository.save(rolesByUser);
     }
 
     private User save(UserProfile userProfile) {
