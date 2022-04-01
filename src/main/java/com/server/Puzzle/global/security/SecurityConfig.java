@@ -62,7 +62,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // 권한을 처리 할 메서드
                 .antMatchers("/api/profile/update").hasAuthority("ROLE_USER")
                 .antMatchers("/api/user/**").hasAuthority("ROLE_USER")
-                .antMatchers("/api/attend/**").hasAuthority("ROLE_USER")
+                .antMatchers("/api/attend/**").hasAuthority("ROLE_USER");
 
         http.authorizeRequests() // 권한 처리를 할 메서드
                 .anyRequest().authenticated();
