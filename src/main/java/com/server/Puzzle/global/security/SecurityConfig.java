@@ -3,7 +3,9 @@ package com.server.Puzzle.global.security;
 import com.server.Puzzle.global.security.jwt.JwtExceptionFilter;
 import com.server.Puzzle.global.security.jwt.JwtTokenFilter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -28,12 +30,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/configuration/**")//
                 .antMatchers("/webjars/**")//
                 .antMatchers("/public")
-                .antMatchers("/api/**")
-
                 // Un-secure H2 Database (for testing purposes, H2 console shouldn't be unprotected in production)
                 .and()
                 .ignoring()
-                .antMatchers("/h2-console/**/**");;
+                .antMatchers("/h2-console/**/**");
     }
 
     @Override
@@ -48,12 +48,32 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         // Entry points
-        http.authorizeRequests() // 권한 처리를 할 메서드
+        http.authorizeRequests() // 권한을 허용할 메서드
+                .antMatchers("/api/oauth/login/github").permitAll()
+                .antMatchers("/api/attend/board/{boardId}").permitAll()
+                .antMatchers("/api/board/{id}").permitAll()
+                .antMatchers("/api/board/all/**").permitAll()
+                .antMatchers("/api/board/filter/**").permitAll()
+                .antMatchers("/api/board/create-url/**").permitAll()
+                .antMatchers("/api/profile/{githubId}/**").permitAll()
                 .antMatchers("/health").permitAll()
+                .antMatchers("/api/token/reissue").permitAll()
+                .antMatchers("/api/board").permitAll()
+
+                // 권한을 처리 할 메서드
+                .antMatchers("/api/profile/update").hasAuthority("ROLE_USER")
+                .antMatchers("/api/user/**").hasAuthority("ROLE_USER")
+                .antMatchers("/api/attend/**").hasAuthority("ROLE_USER")
+
                 .anyRequest().authenticated();
 
         http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(jwtExceptionFilter, JwtTokenFilter.class);
     }
 
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManager() throws Exception {
+        return super.authenticationManagerBean();
+    }
 }
