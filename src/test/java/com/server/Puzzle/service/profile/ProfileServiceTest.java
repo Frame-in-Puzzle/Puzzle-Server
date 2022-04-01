@@ -56,7 +56,6 @@ public class ProfileServiceTest {
                 .imageUrl("https://avatars.githubusercontent.com/u/68847615?v=4")
                 .bio("한줄소개")
                 .field(Field.BACKEND)
-                .roles(List.of(Role.USER))
                 .url("https://github.com/honghyunin")
                 .isFirstVisited(true)
                 .githubId("honghyunin12")
@@ -67,7 +66,7 @@ public class ProfileServiceTest {
         createUserLanguage(user, JAVA, SPRINGBOOT);
         //when
         UsernamePasswordAuthenticationToken token =
-                new UsernamePasswordAuthenticationToken(user.getGithubId(), "password", user.getRoles());
+                new UsernamePasswordAuthenticationToken(user.getGithubId(), "password", List.of(Role.ROLE_USER));
 
         SecurityContext securityContext = SecurityContextHolder.getContext();
         securityContext.setAuthentication(token);
