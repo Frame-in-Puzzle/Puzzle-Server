@@ -25,6 +25,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import javax.transaction.Transactional;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 @RequiredArgsConstructor
@@ -47,9 +48,7 @@ public class OauthServiceImpl implements OauthService {
         // 유저 DB에 저장
         User user = save(userProfile);
 
-        rolesSet(user);
-
-        String accessToken = jwtTokenProvider.createToken(String.valueOf(user.getGithubId()), user.getRoles());
+        String accessToken = jwtTokenProvider.createToken(String.valueOf(user.getGithubId()), rolesSet(user));
         String refreshToken = jwtTokenProvider.createRefreshToken();
 
         user.updateRefreshToken(refreshToken);
@@ -63,16 +62,20 @@ public class OauthServiceImpl implements OauthService {
                 .build();
     }
 
-    private Roles rolesSet(User user) {
-        RolesProfile roles = RolesProfile.builder()
-                .role(Role.ROLE_USER)
-                .user(user)
-                .build();
+    private List<Roles> rolesSet(User user) {
+        if(user.getRoles() == null) {
+            RolesProfile roles = RolesProfile.builder()
+                    .role(Role.ROLE_USER)
+                    .user(user)
+                    .build();
 
-        Roles rolesByUser = rolesRepository.findRolesByUser(user)
-                .orElseGet(roles::toRoles);
+            Roles rolesByUser = rolesRepository.findRolesByUser(user)
+                    .orElseGet(roles::toRoles);
 
-        return rolesRepository.save(rolesByUser);
+            return List.of(rolesRepository.save(rolesByUser));
+        } else {
+            return user.getRoles();
+        }
     }
 
     private User save(UserProfile userProfile) {
