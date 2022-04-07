@@ -1,7 +1,9 @@
 package com.server.Puzzle.global.config.dev;
 
+import com.server.Puzzle.domain.user.domain.Roles;
 import com.server.Puzzle.domain.user.domain.User;
 import com.server.Puzzle.domain.user.domain.UserLanguage;
+import com.server.Puzzle.domain.user.repository.RolesRepository;
 import com.server.Puzzle.domain.user.repository.UserLanguageRepository;
 import com.server.Puzzle.domain.user.repository.UserRepository;
 import com.server.Puzzle.global.enumType.Field;
@@ -15,10 +17,10 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.server.Puzzle.global.enumType.Language.*;
-import static java.util.Collections.singletonList;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -29,13 +31,16 @@ public class GenerateUser {
     private final UserRepository userRepository;
     private final UserLanguageRepository userLanguageRepository;
     private final JwtTokenProvider jwtTokenProvider;
+    private final RolesRepository rolesRepository;
 
     @PostConstruct
     private void genereateUserAccount() {
         User hyunin = createHyuninAccount();
         User kyungjun = createKyungjunAccount();
 
-        loggingAccess(hyunin, kyungjun);
+        Roles roles = createRoles(hyunin);
+
+        loggingAccess(roles, hyunin, kyungjun);
     }
 
     private User createHyuninAccount() {
@@ -51,10 +56,11 @@ public class GenerateUser {
                         .field(Field.BACKEND)
                         .userLanguages(null)
                         .url("github.com/honghyunin")
-                        .roles(singletonList(Role.USER))
                         .oauthIdx(null)
                         .refreshToken(null)
                         .build());
+
+        rolesRepository.save(createRoles(user));
 
         List<Language> languages = new ArrayList<>();
 
@@ -79,10 +85,11 @@ public class GenerateUser {
                         .field(Field.BACKEND)
                         .userLanguages(null)
                         .url("github.com/KyungJunNoh")
-                        .roles(singletonList(Role.USER))
                         .oauthIdx(null)
                         .refreshToken(null)
                         .build());
+
+        rolesRepository.save(createRoles(user));
 
         List<Language> languages = new ArrayList<>();
 
@@ -94,6 +101,13 @@ public class GenerateUser {
         return user;
     }
 
+    private Roles createRoles(User user) {
+        return Roles.builder()
+                .role(Role.ROLE_USER)
+                .user(user)
+                .build();
+    }
+
     private void createUserLanguage(List<Language> languages, User user) {
         for (Language language : languages) {
             userLanguageRepository.save(UserLanguage.builder()
@@ -103,10 +117,14 @@ public class GenerateUser {
         }
     }
 
-    private void loggingAccess(User...users) {
+    private void loggingAccess(Roles roles, User... users) {
         log.info("======================================= Access Token =======================================");
         for(User user: users) {
-            log.info("{} {} : \"Bearer {}\"", user.getRoles(), user.getGithubId(), jwtTokenProvider.createToken(user.getGithubId(), user.getRoles()));
+            user = User.builder()
+                    .githubId(user.getGithubId())
+                    .roles(Collections.singletonList(roles))
+                    .build();
+            log.info("{} {} : \"Bearer {}\"", user.getAuthorities(), user.getGithubId(), jwtTokenProvider.createToken(user.getGithubId(), user.getRoles()));
         }
         log.info("=============================================================================================");
     }

@@ -1,13 +1,12 @@
 package com.server.Puzzle.global.security.jwt;
 
+import com.server.Puzzle.domain.user.domain.Roles;
 import com.server.Puzzle.global.security.authentication.CustomUserDetailsService;
-import com.server.Puzzle.global.enumType.Role;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -34,10 +33,10 @@ public class JwtTokenProvider {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
-    public String createToken(String githubId, List<Role> roles) {
+    public String createToken(String githubId, List<Roles> roles) {
         Claims claims = Jwts.claims().setSubject(githubId);
         claims.put("auth", roles.stream()
-                .map(GrantedAuthority::getAuthority)
+                .map(Roles::getAuthority)
                 .filter(Objects::nonNull).collect(Collectors.toList()));
 
         Date date = new Date();

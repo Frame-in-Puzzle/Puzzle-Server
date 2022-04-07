@@ -58,7 +58,6 @@ public class BoardServiceTest {
                 .githubId("KyungJunNoh2")
                 .name("노경준")
                 .field(Field.BACKEND)
-                .roles(List.of(Role.USER))
                 .bio("성실한 개발자입니다")
                 .url("https://github.com/KyungJunNoh")
                 .imageUrl("https://avatars.githubusercontent.com/u/68670670?v=4")
@@ -68,7 +67,7 @@ public class BoardServiceTest {
         userRepository.save(user);
 
         UsernamePasswordAuthenticationToken token
-                = new UsernamePasswordAuthenticationToken(user.getGithubId(),"password",List.of(Role.USER));
+                = new UsernamePasswordAuthenticationToken(user.getGithubId(),"password",List.of(Role.ROLE_USER));
         SecurityContext securityContext = SecurityContextHolder.getContext();
         securityContext.setAuthentication(token);
 

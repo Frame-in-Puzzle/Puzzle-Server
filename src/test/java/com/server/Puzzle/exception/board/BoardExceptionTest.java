@@ -7,6 +7,7 @@ import com.server.Puzzle.domain.board.enumType.Purpose;
 import com.server.Puzzle.domain.board.enumType.Status;
 import com.server.Puzzle.domain.board.repository.BoardRepository;
 import com.server.Puzzle.domain.board.service.BoardService;
+import com.server.Puzzle.domain.user.domain.Roles;
 import com.server.Puzzle.domain.user.domain.User;
 import com.server.Puzzle.domain.user.repository.UserRepository;
 import com.server.Puzzle.global.enumType.Field;
@@ -23,6 +24,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.transaction.Transactional;
+import java.util.Collections;
 import java.util.List;
 
 import static com.server.Puzzle.global.exception.ErrorCode.BOARD_NOT_FOUND;
@@ -54,7 +56,8 @@ public class BoardExceptionTest {
                 .githubId("KyungJunNoh2")
                 .name("노경준")
                 .field(Field.BACKEND)
-                .roles(List.of(Role.USER))
+                .roles(Collections.singletonList(Roles.builder()
+                        .role(Role.ROLE_USER).build()))
                 .bio("성실한 개발자입니다")
                 .url("https://github.com/KyungJunNoh")
                 .imageUrl("https://avatars.githubusercontent.com/u/68670670?v=4")
@@ -64,7 +67,7 @@ public class BoardExceptionTest {
         userRepository.save(user);
 
         UsernamePasswordAuthenticationToken token
-                = new UsernamePasswordAuthenticationToken(user.getGithubId(),"password",List.of(Role.USER));
+                = new UsernamePasswordAuthenticationToken(user.getGithubId(),"password",List.of(Role.ROLE_USER));
         SecurityContext securityContext = SecurityContextHolder.getContext();
         securityContext.setAuthentication(token);
 

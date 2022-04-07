@@ -1,11 +1,13 @@
 package com.server.Puzzle.domain.oauth2.dto;
 
 import com.server.Puzzle.domain.user.domain.User;
-import com.server.Puzzle.global.enumType.Role;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-import java.util.Collections;
-
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @Getter
 public class UserProfile {
@@ -26,7 +28,6 @@ public class UserProfile {
                 .githubId(githubId)
                 .imageUrl(imageUrl)
                 .bio(bio)
-                .roles(Collections.singletonList(Role.USER))
                 .isFirstVisited(true)
                 .build();
     }

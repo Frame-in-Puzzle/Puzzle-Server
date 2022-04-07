@@ -1,5 +1,6 @@
 package com.server.Puzzle.domain.user.service.Impl;
 
+import com.server.Puzzle.domain.board.domain.BoardField;
 import com.server.Puzzle.domain.board.domain.BoardFile;
 import com.server.Puzzle.domain.board.repository.BoardRepository;
 import com.server.Puzzle.domain.user.domain.User;
@@ -92,7 +93,7 @@ public class ProfileServiceImpl implements ProfileService {
                                         .findFirst()
                                         .orElse(null))
                         .fields(board.getBoardFields().stream()
-                                .map(f -> f.getField())
+                                .map(BoardField::getField)
                                 .collect(Collectors.toList()))
                         .build());
     }

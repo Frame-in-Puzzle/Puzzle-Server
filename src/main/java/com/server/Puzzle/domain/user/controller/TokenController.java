@@ -24,7 +24,7 @@ public class TokenController {
 
     @ApiImplicitParams({@ApiImplicitParam(name = "RefreshToken", value = "로그인 성공 후 refresh_token", required = false, dataType = "String", paramType = "header")
     })
-    @GetMapping("/reissueToken")
+    @GetMapping("/reissue")
     public ResponseEntity<Map<String, String>> reissueToken(@RequestParam String githubId, HttpServletRequest request) {
         return ResponseEntity.ok().body(tokenService.reissueToken(jwtTokenProvider.resolveRefreshToken(request), githubId));
     }
