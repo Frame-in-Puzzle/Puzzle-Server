@@ -14,9 +14,6 @@ import com.server.Puzzle.global.exception.ErrorCode;
 import com.server.Puzzle.global.exception.collection.UserNotFoundException;
 import com.server.Puzzle.global.security.jwt.JwtTokenProvider;
 import com.server.Puzzle.global.util.CurrentUserUtil;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,21 +25,16 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import static com.server.Puzzle.global.enumType.Language.SPRINGBOOT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Transactional
 public class UserServiceTest {
-
-    @Value("${security.jwt.token.secretKey}")
-    private String secretKey;
 
     @Autowired
     UserRepository userRepository;
@@ -159,60 +151,4 @@ public class UserServiceTest {
         assertEquals(map.get("RefreshToken").substring(7), user.getRefreshToken());
     }
 
-    @Test
-    void 로그아웃_상태에서_토큰_재발급() {
-        User user = userRepository.findByGithubId("honghyunin12")
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-
-        user.updateRefreshToken(null);
-
-        em.flush();
-        em.clear();
-
-        String refreshToken = jwtTokenProvider.createRefreshToken();
-
-        assertThrows(CustomException.class, () -> {
-            tokenService.reissueToken(refreshToken, "honghyunin12");
-        });
-    }
-
-    @Test
-    void 만료된_토큰으로_토큰_재발급() {
-
-        String githubid = "honghyunin12";
-
-        Date now = new Date();
-        Claims claims = Jwts.claims().setSubject(null);
-
-        String refreshToken = Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(now)
-                .signWith(SignatureAlgorithm.HS256, secretKey)
-                .compact();
-
-        assertThrows(CustomException.class, () -> {
-            tokenService.reissueToken(refreshToken, githubid);
-        });
-    }
-
-    @Test
-    void 유효하지_않은_토큰으로_재발급() {
-        String githubid = "honghyunin12";
-
-        Date now = new Date();
-        Claims claims = Jwts.claims().setSubject(null);
-        Date validity = new Date(now.getTime() + 100L * 60);
-
-        String refreshToken = Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(validity)
-                .signWith(SignatureAlgorithm.HS256, secretKey+"dfdffdf")
-                .compact();
-
-        assertThrows(CustomException.class, () -> {
-            tokenService.reissueToken(refreshToken, githubid);
-        });
-    }
 }
