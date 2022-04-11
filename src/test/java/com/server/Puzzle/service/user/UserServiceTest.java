@@ -1,13 +1,12 @@
 package com.server.Puzzle.service.user;
 
 import com.server.Puzzle.domain.user.domain.User;
+import com.server.Puzzle.domain.user.domain.UserLanguage;
 import com.server.Puzzle.domain.user.dto.UserUpdateDto;
 import com.server.Puzzle.domain.user.repository.UserRepository;
 import com.server.Puzzle.domain.user.service.ProfileService;
 import com.server.Puzzle.domain.user.service.TokenService;
 import com.server.Puzzle.domain.user.service.UserService;
-import com.server.Puzzle.global.enumType.Field;
-import com.server.Puzzle.global.enumType.Language;
 import com.server.Puzzle.global.enumType.Role;
 import com.server.Puzzle.global.exception.CustomException;
 import com.server.Puzzle.global.exception.ErrorCode;
@@ -17,7 +16,6 @@ import com.server.Puzzle.global.util.CurrentUserUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
@@ -28,8 +26,10 @@ import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-import static com.server.Puzzle.global.enumType.Language.SPRINGBOOT;
+import static com.server.Puzzle.global.enumType.Field.BACKEND;
+import static com.server.Puzzle.global.enumType.Language.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
@@ -66,7 +66,7 @@ public class UserServiceTest {
                 .name("홍현인")
                 .imageUrl("https://avatars.githubusercontent.com/u/68847615?v=4")
                 .bio("한줄소개")
-                .field(Field.BACKEND)
+                .field(BACKEND)
                 .url("https://github.com/honghyunin")
                 .isFirstVisited(true)
                 .refreshToken("refreshToken")
@@ -116,8 +116,8 @@ public class UserServiceTest {
                 .name("홍현인")
                 .imageUrl("https://avatars.githubusercontent.com/u/68847615?v=4")
                 .bio("상메")
-                .field(Field.BACKEND)
-                .language(List.of(Language.JAVA, SPRINGBOOT))
+                .field(BACKEND)
+                .language(List.of(JAVA, SPRINGBOOT))
                 .url("github.com/honghyunin")
                 .build();
 
@@ -134,7 +134,9 @@ public class UserServiceTest {
 
     @Test
     void 토큰_재발급() {
-        User user = userRepository.findByGithubId("honghyunin12")
+        String githubId = currentUserUtil.getCurrentUser().getGithubId();
+
+        User user = userRepository.findByGithubId(githubId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         String refreshToken = jwtTokenProvider.createRefreshToken();
@@ -149,6 +151,29 @@ public class UserServiceTest {
         map = tokenService.reissueToken(user.getRefreshToken(), user.getGithubId());
 
         assertEquals(map.get("RefreshToken").substring(7), user.getRefreshToken());
+    }
+
+    @Test
+    void 첫_방문_시_정보등록() {
+        UserUpdateDto userUpdateDto = UserUpdateDto.builder()
+                .name("인현홍")
+                .imageUrl("imageUrl")
+                .url("github.com/honghyunin")
+                .bio("bio")
+                .language(List.of(TS, REACT))
+                .field(BACKEND)
+                .email("s20080@gsm.hs.kr")
+                .build();
+
+        userService.infoRegistration(userUpdateDto);
+
+        em.flush();
+        em.clear();
+
+        User user = userRepository.findByName(userUpdateDto.getName()).orElseThrow();
+
+        assertEquals(userUpdateDto.getName(), user.getName());
+        assertEquals(userUpdateDto.getLanguage(), user.getUserLanguages().stream().map(UserLanguage::getLanguage).collect(Collectors.toList()));
     }
 
 }
