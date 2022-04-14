@@ -1,7 +1,12 @@
 package com.server.Puzzle.service.profile;
 
+import com.server.Puzzle.domain.board.dto.request.PostRequestDto;
+import com.server.Puzzle.domain.board.enumType.Purpose;
+import com.server.Puzzle.domain.board.enumType.Status;
+import com.server.Puzzle.domain.board.service.BoardService;
 import com.server.Puzzle.domain.user.domain.User;
 import com.server.Puzzle.domain.user.domain.UserLanguage;
+import com.server.Puzzle.domain.user.dto.UserBoardResponse;
 import com.server.Puzzle.domain.user.dto.UserResponseDto;
 import com.server.Puzzle.domain.user.dto.UserUpdateDto;
 import com.server.Puzzle.domain.user.repository.UserLanguageRepository;
@@ -15,6 +20,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -46,6 +53,9 @@ public class ProfileServiceTest {
     @Autowired
     EntityManager em;
 
+    @Autowired
+    BoardService boardService;
+
     @BeforeEach
     void 로그인한_유저확인() {
         //given
@@ -70,6 +80,8 @@ public class ProfileServiceTest {
 
         SecurityContext securityContext = SecurityContextHolder.getContext();
         securityContext.setAuthentication(token);
+
+
     }
 
     private void createUserLanguage(User user, Language...languages) {
@@ -117,5 +129,29 @@ public class ProfileServiceTest {
 
         assertEquals(user.getLanguage(), savedUser.getUserLanguages().stream().
                 map(u -> u.getLanguage()).collect(Collectors.toList()));
+    }
+
+    @Test
+    void 유저_작성글_조회() {
+        PostRequestDto postRequestDto = PostRequestDto.builder()
+                .title("title")
+                .contents("contents")
+                .purpose(Purpose.PROJECT)
+                .status(Status.RECRUITMENT)
+                .fieldList(List.of(Field.BACKEND, Field.FRONTEND))
+                .languageList(List.of(Language.JAVA, Language.TS))
+                .fileUrlList(List.of("google.com", "naver.com"))
+                .build();
+
+        boardService.post(postRequestDto);
+
+        em.clear();
+
+        Page<UserBoardResponse> board = profileService.getUserBoard("honghyunin12", Pageable.unpaged());
+
+        assertEquals(board.map(UserBoardResponse::getContents).get().findFirst().get(), "contents");
+
+        assertEquals(board.map(UserBoardResponse::getFields).get().findFirst().get(), postRequestDto.getFieldList());
+        
     }
 }

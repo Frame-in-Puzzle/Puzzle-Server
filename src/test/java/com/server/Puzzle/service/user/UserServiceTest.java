@@ -1,26 +1,21 @@
 package com.server.Puzzle.service.user;
 
 import com.server.Puzzle.domain.user.domain.User;
+import com.server.Puzzle.domain.user.domain.UserLanguage;
 import com.server.Puzzle.domain.user.dto.UserUpdateDto;
 import com.server.Puzzle.domain.user.repository.UserRepository;
 import com.server.Puzzle.domain.user.service.ProfileService;
 import com.server.Puzzle.domain.user.service.TokenService;
 import com.server.Puzzle.domain.user.service.UserService;
-import com.server.Puzzle.global.enumType.Field;
-import com.server.Puzzle.global.enumType.Language;
 import com.server.Puzzle.global.enumType.Role;
 import com.server.Puzzle.global.exception.CustomException;
 import com.server.Puzzle.global.exception.ErrorCode;
 import com.server.Puzzle.global.exception.collection.UserNotFoundException;
 import com.server.Puzzle.global.security.jwt.JwtTokenProvider;
 import com.server.Puzzle.global.util.CurrentUserUtil;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
@@ -28,21 +23,18 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-import static com.server.Puzzle.global.enumType.Language.SPRINGBOOT;
+import static com.server.Puzzle.global.enumType.Field.BACKEND;
+import static com.server.Puzzle.global.enumType.Language.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Transactional
 public class UserServiceTest {
-
-    @Value("${security.jwt.token.secretKey}")
-    private String secretKey;
 
     @Autowired
     UserRepository userRepository;
@@ -74,7 +66,7 @@ public class UserServiceTest {
                 .name("홍현인")
                 .imageUrl("https://avatars.githubusercontent.com/u/68847615?v=4")
                 .bio("한줄소개")
-                .field(Field.BACKEND)
+                .field(BACKEND)
                 .url("https://github.com/honghyunin")
                 .isFirstVisited(true)
                 .refreshToken("refreshToken")
@@ -124,8 +116,8 @@ public class UserServiceTest {
                 .name("홍현인")
                 .imageUrl("https://avatars.githubusercontent.com/u/68847615?v=4")
                 .bio("상메")
-                .field(Field.BACKEND)
-                .language(List.of(Language.JAVA, SPRINGBOOT))
+                .field(BACKEND)
+                .language(List.of(JAVA, SPRINGBOOT))
                 .url("github.com/honghyunin")
                 .build();
 
@@ -142,7 +134,9 @@ public class UserServiceTest {
 
     @Test
     void 토큰_재발급() {
-        User user = userRepository.findByGithubId("honghyunin12")
+        String githubId = currentUserUtil.getCurrentUser().getGithubId();
+
+        User user = userRepository.findByGithubId(githubId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         String refreshToken = jwtTokenProvider.createRefreshToken();
@@ -160,59 +154,26 @@ public class UserServiceTest {
     }
 
     @Test
-    void 로그아웃_상태에서_토큰_재발급() {
-        User user = userRepository.findByGithubId("honghyunin12")
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+    void 첫_방문_시_정보등록() {
+        UserUpdateDto userUpdateDto = UserUpdateDto.builder()
+                .name("인현홍")
+                .imageUrl("imageUrl")
+                .url("github.com/honghyunin")
+                .bio("bio")
+                .language(List.of(TS, REACT))
+                .field(BACKEND)
+                .email("s20080@gsm.hs.kr")
+                .build();
 
-        user.updateRefreshToken(null);
+        userService.infoRegistration(userUpdateDto);
 
         em.flush();
         em.clear();
 
-        String refreshToken = jwtTokenProvider.createRefreshToken();
+        User user = userRepository.findByName(userUpdateDto.getName()).orElseThrow();
 
-        assertThrows(CustomException.class, () -> {
-            tokenService.reissueToken(refreshToken, "honghyunin12");
-        });
+        assertEquals(userUpdateDto.getName(), user.getName());
+        assertEquals(userUpdateDto.getLanguage(), user.getUserLanguages().stream().map(UserLanguage::getLanguage).collect(Collectors.toList()));
     }
 
-    @Test
-    void 만료된_토큰으로_토큰_재발급() {
-
-        String githubid = "honghyunin12";
-
-        Date now = new Date();
-        Claims claims = Jwts.claims().setSubject(null);
-
-        String refreshToken = Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(now)
-                .signWith(SignatureAlgorithm.HS256, secretKey)
-                .compact();
-
-        assertThrows(CustomException.class, () -> {
-            tokenService.reissueToken(refreshToken, githubid);
-        });
-    }
-
-    @Test
-    void 유효하지_않은_토큰으로_재발급() {
-        String githubid = "honghyunin12";
-
-        Date now = new Date();
-        Claims claims = Jwts.claims().setSubject(null);
-        Date validity = new Date(now.getTime() + 100L * 60);
-
-        String refreshToken = Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(validity)
-                .signWith(SignatureAlgorithm.HS256, secretKey+"dfdffdf")
-                .compact();
-
-        assertThrows(CustomException.class, () -> {
-            tokenService.reissueToken(refreshToken, githubid);
-        });
-    }
 }
