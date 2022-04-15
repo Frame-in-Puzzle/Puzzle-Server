@@ -67,15 +67,49 @@ public class BoardCustomRepositoryImpl implements BoardCustomRepository{
             }
         }
 
-        QueryResults<Board> results = jpaQueryFactory.selectFrom(board)
-                .where(
-                        board.id.in(boardIdHashSet),
-                        board.purpose.eq(purpose),
-                        board.status.eq(status)
-                )
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetchResults();
+        QueryResults<Board> results;
+
+        if (purpose.equals(Purpose.ALL)){
+            if(status.equals(Status.ALL)){
+                results = jpaQueryFactory.selectFrom(board)
+                        .where(
+                                board.id.in(boardIdHashSet)
+                        )
+                        .offset(pageable.getOffset())
+                        .limit(pageable.getPageSize())
+                        .fetchResults();
+            } else {
+                results = jpaQueryFactory.selectFrom(board)
+                        .where(
+                                board.id.in(boardIdHashSet),
+                                board.status.eq(status)
+                        )
+                        .offset(pageable.getOffset())
+                        .limit(pageable.getPageSize())
+                        .fetchResults();
+            }
+        } else {
+            if(status.equals(Status.ALL)){
+                results = jpaQueryFactory.selectFrom(board)
+                        .where(
+                                board.id.in(boardIdHashSet),
+                                board.purpose.eq(purpose)
+                        )
+                        .offset(pageable.getOffset())
+                        .limit(pageable.getPageSize())
+                        .fetchResults();
+            } else {
+                results = jpaQueryFactory.selectFrom(board)
+                        .where(
+                                board.id.in(boardIdHashSet),
+                                board.status.eq(status),
+                                board.purpose.eq(purpose)
+                        )
+                        .offset(pageable.getOffset())
+                        .limit(pageable.getPageSize())
+                        .fetchResults();
+            }
+        }
 
         List<GetPostByTagResponseDto> content = results.getResults().stream()
                 .map(b -> new GetPostByTagResponseDto(
