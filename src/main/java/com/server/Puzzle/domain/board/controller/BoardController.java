@@ -72,10 +72,10 @@ public class BoardController {
     }
 
     @GetMapping("/filter")
-    public ResponseEntity<Page<GetPostByTagResponseDto>> getPostByTag(@RequestParam Purpose purpose,
-                                                                      @RequestParam List<Field> field,
+    public ResponseEntity<Page<GetPostByTagResponseDto>> getPostByTag(@RequestParam(defaultValue = "ALL") Purpose purpose,
+                                                                      @RequestParam(defaultValue = "ALL") List<Field> field,
                                                                       @RequestParam(defaultValue = "NULL") List<Language> language,
-                                                                      @RequestParam Status status,
+                                                                      @RequestParam(defaultValue = "ALL") Status status,
                                                                       @PageableDefault(size = 12) Pageable pageable)
     {
         return ResponseEntity.ok(boardService.getPostByTag(purpose, field, language, status, pageable));
