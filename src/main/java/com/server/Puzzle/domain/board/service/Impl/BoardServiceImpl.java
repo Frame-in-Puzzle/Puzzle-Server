@@ -119,7 +119,7 @@ public class BoardServiceImpl implements BoardService {
 
         Board board = boardRepository.findById(id)
                 .orElseThrow(() -> new CustomException(BOARD_NOT_FOUND));
-        if(board.getUser() != currentUserUtil.getCurrentUser()) throw new CustomException(BOARD_NOT_HAVE_PERMISSION);
+        if(!board.isAuthor(currentUserUtil.getCurrentUser())) throw new CustomException(BOARD_NOT_HAVE_PERMISSION);
 
         board
                 .updateTitle(title)
