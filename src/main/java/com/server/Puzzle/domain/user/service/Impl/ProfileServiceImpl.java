@@ -68,7 +68,6 @@ public class ProfileServiceImpl implements ProfileService {
                 .updateEmail(userInfo.getEmail())
                 .updateImageUrl(userInfo.getImageUrl())
                 .updateBio(userInfo.getBio())
-                .updateUrl(userInfo.getUrl())
                 .updateIsFirstVisited(false)
                 .updateField(userInfo.getField());
     }
