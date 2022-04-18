@@ -99,6 +99,8 @@ public class ProfileServiceTest {
     void 프로필_조회() {
         String githubId = "honghyunin12";
 
+        em.clear();
+
         UserResponseDto user = profileService.getProfile(githubId);
 
         assertEquals("홍현인", user.getName()); // name : hyunin
