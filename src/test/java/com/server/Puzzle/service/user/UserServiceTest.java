@@ -118,7 +118,6 @@ public class UserServiceTest {
                 .bio("상메")
                 .field(BACKEND)
                 .language(List.of(JAVA, SPRINGBOOT))
-                .url("github.com/honghyunin")
                 .build();
 
         profileService.profileUpdate(user);
@@ -158,7 +157,6 @@ public class UserServiceTest {
         UserUpdateDto userUpdateDto = UserUpdateDto.builder()
                 .name("인현홍")
                 .imageUrl("imageUrl")
-                .url("github.com/honghyunin")
                 .bio("bio")
                 .language(List.of(TS, REACT))
                 .field(BACKEND)
