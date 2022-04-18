@@ -66,7 +66,6 @@ public class UserServiceImpl implements UserService {
                 .updateEmail(userInfo.getEmail())
                 .updateImageUrl(userInfo.getImageUrl())
                 .updateBio(userInfo.getBio())
-                .updateUrl(userInfo.getUrl())
                 .updateIsFirstVisited(false)
                 .updateField(userInfo.getField());
     }
