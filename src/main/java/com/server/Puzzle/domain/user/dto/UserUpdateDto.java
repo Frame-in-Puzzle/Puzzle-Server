@@ -18,6 +18,5 @@ public class UserUpdateDto {
     private String bio;
     private Field field;
     private List<Language> language;
-    private String url;
 
 }
