@@ -71,7 +71,7 @@ public class AttendServiceImpl implements AttendService {
         Attend attend = attendRepository.findById(attendId)
                 .orElseThrow(() -> new CustomException(ErrorCode.ATTEND_NOT_FOUND));
 
-        if (!attend.getUser().equals(currentUser)) throw new CustomException(ErrorCode.ATTEND_DELETE_PERMISSION_DENIED);
+        if (!attend.isAttend(currentUser)) throw new CustomException(ErrorCode.ATTEND_DELETE_PERMISSION_DENIED);
 
         attendRepository.deleteById(attend.getId());
     }
