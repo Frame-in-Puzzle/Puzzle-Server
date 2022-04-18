@@ -115,7 +115,6 @@ public class ProfileServiceTest {
                 .bio("상메")
                 .field(Field.BACKEND)
                 .language(List.of(Language.JAVA, SPRINGBOOT))
-                .url("github.com/honghyunin")
                 .build();
 
         profileService.profileUpdate(user);
