@@ -57,7 +57,7 @@ public class ProfileServiceTest {
     BoardService boardService;
 
     @BeforeEach
-    void 로그인한_유저확인() {
+    void 유저_세팅() {
         //given
         User user = User.builder()
                 .oauthIdx("68847615")
