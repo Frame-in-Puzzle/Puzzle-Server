@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
     public void delete() {
         User currentUser = currentUserUtil.getCurrentUser();
 
-        User savedUser = userRepository.findByName(currentUser.getName())
+        User savedUser = userRepository.findByGithubId(currentUser.getGithubId())
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
         userRepository.delete(savedUser);
