@@ -48,7 +48,7 @@ public class OauthServiceImpl implements OauthService {
         // 유저 DB에 저장
         User user = save(userProfile);
 
-        String accessToken = jwtTokenProvider.createToken(String.valueOf(user.getGithubId()), rolesSet(user));
+        String accessToken = jwtTokenProvider.createToken(String.valueOf(user.getGithubId()), saveOrGetRoles(user));
         String refreshToken = jwtTokenProvider.createRefreshToken();
 
         user.updateRefreshToken(refreshToken);
@@ -62,7 +62,7 @@ public class OauthServiceImpl implements OauthService {
                 .build();
     }
 
-    private List<Roles> rolesSet(User user) {
+    private List<Roles> saveOrGetRoles(User user) {
         if(user.getRoles() == null) {
             RolesProfile roles = RolesProfile.builder()
                     .role(Role.ROLE_USER)
