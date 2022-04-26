@@ -2,6 +2,7 @@ package com.server.Puzzle.service.user;
 
 import com.server.Puzzle.domain.user.domain.User;
 import com.server.Puzzle.domain.user.domain.UserLanguage;
+import com.server.Puzzle.domain.user.dto.ProfileUpdateDto;
 import com.server.Puzzle.domain.user.dto.UserUpdateDto;
 import com.server.Puzzle.domain.user.repository.UserRepository;
 import com.server.Puzzle.domain.user.service.ProfileService;
@@ -111,10 +112,9 @@ public class UserServiceTest {
 
         assertEquals(currentUser.isFirstVisited(), true);
 
-        UserUpdateDto user = UserUpdateDto.builder()
+        ProfileUpdateDto user = ProfileUpdateDto.builder()
                 .email("hyunin0102@gmail.com")
                 .name("홍현인")
-                .imageUrl("https://avatars.githubusercontent.com/u/68847615?v=4")
                 .bio("상메")
                 .field(BACKEND)
                 .language(List.of(JAVA, SPRINGBOOT))

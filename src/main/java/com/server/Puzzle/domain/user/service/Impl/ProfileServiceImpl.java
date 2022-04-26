@@ -5,19 +5,20 @@ import com.server.Puzzle.domain.board.domain.BoardFile;
 import com.server.Puzzle.domain.board.repository.BoardRepository;
 import com.server.Puzzle.domain.user.domain.User;
 import com.server.Puzzle.domain.user.domain.UserLanguage;
-import com.server.Puzzle.domain.user.dto.UserBoardResponse;
-import com.server.Puzzle.domain.user.dto.UserResponseDto;
-import com.server.Puzzle.domain.user.dto.UserUpdateDto;
+import com.server.Puzzle.domain.user.dto.*;
 import com.server.Puzzle.domain.user.repository.UserLanguageRepository;
 import com.server.Puzzle.domain.user.repository.UserRepository;
 import com.server.Puzzle.domain.user.service.ProfileService;
 import com.server.Puzzle.global.enumType.Language;
 import com.server.Puzzle.global.exception.CustomException;
+import com.server.Puzzle.global.util.AwsS3Util;
 import com.server.Puzzle.global.util.CurrentUserUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 
@@ -30,10 +31,16 @@ import static com.server.Puzzle.global.exception.ErrorCode.USER_NOT_FOUND;
 @Service
 public class ProfileServiceImpl implements ProfileService {
 
+    @Value("${cloud.aws.url}")
+    private String s3Url;
+
+    private static final String GITHUB_IMAGE_URL = "https://avatars.githubusercontent.com/";
+
     private final CurrentUserUtil currentUserUtil;
     private final UserRepository userRepository;
     private final BoardRepository boardRepository;
     private final UserLanguageRepository userLanguageRepo;
+    private final AwsS3Util awsS3Util;
 
     @Override
     public UserResponseDto getProfile(String githubId) {
@@ -48,11 +55,11 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Transactional
     @Override
-    public void profileUpdate(UserUpdateDto userInfo) {
+    public void profileUpdate(ProfileUpdateDto profileUpdateDto) {
 
         User user = currentUserUtil.getCurrentUser();
 
-        List<Language> languageList = userInfo.getLanguage();
+        List<Language> languageList = profileUpdateDto.getLanguage();
 
         userLanguageRepo.deleteAllByUserId(user.getId());
 
@@ -64,12 +71,28 @@ public class ProfileServiceImpl implements ProfileService {
         }
 
         user
-                .updateName(userInfo.getName())
-                .updateEmail(userInfo.getEmail())
-                .updateImageUrl(userInfo.getImageUrl())
-                .updateBio(userInfo.getBio())
+                .updateName(profileUpdateDto.getName())
+                .updateEmail(profileUpdateDto.getEmail())
+                .updateBio(profileUpdateDto.getBio())
                 .updateIsFirstVisited(false)
-                .updateField(userInfo.getField());
+                .updateField(profileUpdateDto.getField());
+    }
+
+    @Transactional
+    @Override
+    public String profileImageUpdate(MultipartFile multipartFile) {
+        User currentUser = currentUserUtil.getCurrentUser();
+        String profileImageUrl = currentUser.getImageUrl();
+
+        if (!profileImageUrl.substring(38).equals(GITHUB_IMAGE_URL)) {
+            awsS3Util.deleteS3(profileImageUrl);
+        }
+
+        String fileName = awsS3Util.putS3(multipartFile);
+        String s3fileURL = s3Url + fileName;
+        currentUser.updateImageUrl(s3fileURL);
+
+        return s3fileURL;
     }
 
     @Override

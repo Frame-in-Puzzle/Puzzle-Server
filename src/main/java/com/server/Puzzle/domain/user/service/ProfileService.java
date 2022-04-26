@@ -1,15 +1,14 @@
 package com.server.Puzzle.domain.user.service;
 
-import com.server.Puzzle.domain.user.dto.UserBoardResponse;
-import com.server.Puzzle.domain.user.dto.UserResponseDto;
-import com.server.Puzzle.domain.user.dto.UserUpdateDto;
+import com.server.Puzzle.domain.user.dto.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface ProfileService {
 
     UserResponseDto getProfile(String name);
-    void profileUpdate(UserUpdateDto userInfo);
+    void profileUpdate(ProfileUpdateDto profileUpdateDto);
+    String profileImageUpdate(MultipartFile multipartFile);
     Page<UserBoardResponse> getUserBoard(String githubId, Pageable pageable);
-
 }

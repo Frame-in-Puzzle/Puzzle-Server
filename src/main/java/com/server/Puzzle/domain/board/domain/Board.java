@@ -24,7 +24,7 @@ public class Board extends BaseTimeEntity {
     @Column(name = "board_title", nullable = false)
     private String title;
 
-    @Column(name = "board_contents", nullable = false)
+    @Column(name = "board_contents", nullable = false, length = 10000)
     private String contents;
 
     @Enumerated(EnumType.STRING)

@@ -6,6 +6,7 @@ import com.server.Puzzle.domain.board.enumType.Status;
 import com.server.Puzzle.domain.board.service.BoardService;
 import com.server.Puzzle.domain.user.domain.User;
 import com.server.Puzzle.domain.user.domain.UserLanguage;
+import com.server.Puzzle.domain.user.dto.ProfileUpdateDto;
 import com.server.Puzzle.domain.user.dto.UserBoardResponse;
 import com.server.Puzzle.domain.user.dto.UserResponseDto;
 import com.server.Puzzle.domain.user.dto.UserUpdateDto;
@@ -108,10 +109,9 @@ public class ProfileServiceTest {
 
     @Test
     void 프로필_수정() {
-        UserUpdateDto user = UserUpdateDto.builder()
+        ProfileUpdateDto user = ProfileUpdateDto.builder()
                 .email("hyunin0102@gmail.com")
                 .name("홍현인")
-                .imageUrl("https://avatars.githubusercontent.com/u/68847615?v=4")
                 .bio("상메")
                 .field(Field.BACKEND)
                 .language(List.of(Language.JAVA, SPRINGBOOT))
