@@ -2,6 +2,7 @@ package com.server.Puzzle.domain.attend.service;
 
 import com.server.Puzzle.domain.attend.dto.request.PatchAttendRequest;
 import com.server.Puzzle.domain.attend.dto.response.GetAllAttendResponse;
+import com.server.Puzzle.domain.board.enumType.IsAttendStatus;
 
 import java.util.List;
 
@@ -15,4 +16,5 @@ public interface AttendService {
 
     void deleteAttend(Long attendId);
 
+    IsAttendStatus isAttend(Long boardId);
 }
