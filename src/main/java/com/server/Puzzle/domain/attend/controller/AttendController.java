@@ -57,7 +57,7 @@ public class AttendController {
     })
     @GetMapping("/status/board/{boardId}")
     public ResponseEntity<IsAttendStatus> checkAttendStatus(@PathVariable Long boardId) {
-        return ResponseEntity.ok().body(attendService.isAttend(boardId));
+        return ResponseEntity.ok().body(attendService.checkAttendStatus(boardId));
     }
 
 }

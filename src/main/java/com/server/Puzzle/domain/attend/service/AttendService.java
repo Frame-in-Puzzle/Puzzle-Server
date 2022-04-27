@@ -16,5 +16,5 @@ public interface AttendService {
 
     void deleteAttend(Long attendId);
 
-    IsAttendStatus isAttend(Long boardId);
+    IsAttendStatus checkAttendStatus(Long boardId);
 }

@@ -79,7 +79,7 @@ public class AttendServiceImpl implements AttendService {
     }
 
     @Override
-    public IsAttendStatus isAttend(Long boardId) {
+    public IsAttendStatus checkAttendStatus(Long boardId) {
         User currentUser = currentUserUtil.getCurrentUser();
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
 
