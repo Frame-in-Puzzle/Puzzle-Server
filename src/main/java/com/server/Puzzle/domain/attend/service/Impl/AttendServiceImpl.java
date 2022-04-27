@@ -7,6 +7,7 @@ import com.server.Puzzle.domain.attend.enumtype.AttendStatus;
 import com.server.Puzzle.domain.attend.repository.AttendRepository;
 import com.server.Puzzle.domain.attend.service.AttendService;
 import com.server.Puzzle.domain.board.domain.Board;
+import com.server.Puzzle.domain.board.enumType.IsAttendStatus;
 import com.server.Puzzle.domain.board.repository.BoardRepository;
 import com.server.Puzzle.domain.user.domain.User;
 import com.server.Puzzle.global.exception.CustomException;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RequiredArgsConstructor
 @Service
@@ -74,6 +76,31 @@ public class AttendServiceImpl implements AttendService {
         if (!attend.isAttend(currentUser)) throw new CustomException(ErrorCode.ATTEND_DELETE_PERMISSION_DENIED);
 
         attendRepository.deleteById(attend.getId());
+    }
+
+    @Override
+    public IsAttendStatus isAttend(Long boardId) {
+        User currentUser = currentUserUtil.getCurrentUser();
+        Board board = boardRepository.findById(boardId).orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
+
+        try{
+            AttendStatus attendStatus = board.getAttends().stream()
+                    .filter(a -> a.isAttend(currentUser))
+                    .findFirst().get()
+                    .getAttendStatus();
+
+            switch (attendStatus){
+                case WAIT:
+                    return IsAttendStatus.CANT_CANCEL;
+                case ACCEPT:
+                case REFUSE:
+                    return IsAttendStatus.CANT;
+            }
+        } catch (NoSuchElementException e){
+            return IsAttendStatus.CAN;
+        }
+
+        return IsAttendStatus.CAN;
     }
 
 }
