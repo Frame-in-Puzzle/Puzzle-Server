@@ -3,6 +3,7 @@ package com.server.Puzzle.domain.attend.controller;
 import com.server.Puzzle.domain.attend.dto.request.PatchAttendRequest;
 import com.server.Puzzle.domain.attend.dto.response.GetAllAttendResponse;
 import com.server.Puzzle.domain.attend.service.AttendService;
+import com.server.Puzzle.domain.board.enumType.IsAttendStatus;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import lombok.RequiredArgsConstructor;
@@ -49,6 +50,14 @@ public class AttendController {
     public ResponseEntity<String> deleteAttend(@PathVariable Long attendId) {
         attendService.deleteAttend(attendId);
         return ResponseEntity.ok("Success");
+    }
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header")
+    })
+    @GetMapping("/status/board/{boardId}")
+    public ResponseEntity<IsAttendStatus> checkAttendStatus(@PathVariable Long boardId) {
+        return ResponseEntity.ok().body(attendService.isAttend(boardId));
     }
 
 }
