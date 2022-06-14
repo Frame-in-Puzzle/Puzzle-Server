@@ -170,7 +170,7 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public Page<GetAllPostResponseDto> getAllPost(Pageable pageable) {
-        Page<GetAllPostResponseDto> response = boardRepository.findAll(pageable).map(
+        return boardRepository.findAll(pageable).map(
                 board -> GetAllPostResponseDto.builder()
                         .boardId(board.getId())
                         .title(board.getTitle())
@@ -181,16 +181,13 @@ public class BoardServiceImpl implements BoardService {
                                         .map(BoardFile::getUrl)
                                         .findFirst().orElse(null)
                         )
-                        .introduce(board.getIntroduce())
                         .build()
         );
-
-        return response;
     }
 
     @Override
     public GetPostResponseDto getPost(Long id) {
-        GetPostResponseDto response = boardRepository.findById(id).map(
+        return boardRepository.findById(id).map(
                 board -> GetPostResponseDto.builder()
                         .id(id)
                         .title(board.getTitle())
@@ -218,8 +215,6 @@ public class BoardServiceImpl implements BoardService {
                         )
                         .build()
         ).orElseThrow(() -> new CustomException(BOARD_NOT_FOUND));
-
-        return response;
     }
 
     @Override
@@ -240,9 +235,7 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public Page<GetPostByTagResponseDto> getPostByTag(Purpose purpose, List<Field> field, List<Language> language, Status status, Pageable pageable) {
-        Page<GetPostByTagResponseDto> response = boardRepository.findBoardByTag(purpose, field, language, status, pageable);
-
-        return response;
+        return boardRepository.findBoardByTag(purpose, field, language, status, pageable);
     }
 
     private List<String> getSaveFileUrlList(Board board, CorrectionPostRequestDto request){
