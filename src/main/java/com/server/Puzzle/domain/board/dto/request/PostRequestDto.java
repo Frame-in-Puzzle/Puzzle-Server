@@ -18,6 +18,7 @@ public class PostRequestDto {
     private String contents;
     private Purpose purpose;
     private Status status;
+    private String introduce;
     private List<Field> fieldList;
     private List<Language> languageList;
     private List<String> fileUrlList;
