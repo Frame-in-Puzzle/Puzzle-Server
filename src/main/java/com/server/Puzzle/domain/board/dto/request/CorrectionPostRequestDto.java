@@ -18,6 +18,7 @@ public class CorrectionPostRequestDto {
     private String contents;
     private Purpose purpose;
     private Status status;
+    private String introduce;
     private List<String> fileUrlList;
     private List<Field> fieldList;
     private List<Language> languageList;
