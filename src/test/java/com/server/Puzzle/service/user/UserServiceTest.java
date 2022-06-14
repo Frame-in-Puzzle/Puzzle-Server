@@ -146,8 +146,7 @@ public class UserServiceTest {
         em.flush();
         em.clear();
 
-        Map<String, String>
-        map = tokenService.reissueToken(user.getRefreshToken(), user.getGithubId());
+        Map<String, String> map = tokenService.reissueToken(user.getRefreshToken(), user.getGithubId());
 
         User findUser = userRepository.findByGithubId(githubId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
