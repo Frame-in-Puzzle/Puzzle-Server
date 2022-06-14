@@ -32,7 +32,6 @@ import java.util.stream.Collectors;
 import static com.server.Puzzle.global.enumType.Field.BACKEND;
 import static com.server.Puzzle.global.enumType.Language.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 @SpringBootTest
 @Transactional
@@ -152,7 +151,6 @@ public class UserServiceTest {
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         assertEquals(map.get("RefreshToken").substring(7), findUser.getRefreshToken());
-        assertNotEquals(map.get("RefreshToken").substring(7), user.getRefreshToken());
     }
 
     @Test
