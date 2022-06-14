@@ -22,6 +22,7 @@ public class GetPostResponseDto {
     private Status status;
     private String name;
     private String githubId;
+    private String introduce;
     private LocalDateTime createdAt;
     private List<Field> fields;
     private List<Language> languages;
