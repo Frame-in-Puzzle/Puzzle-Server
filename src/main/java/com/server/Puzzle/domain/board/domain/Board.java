@@ -35,6 +35,9 @@ public class Board extends BaseTimeEntity {
     @Column(name = "board_status", nullable = false)
     private Status status;
 
+    @Column(name = "board_introduce", nullable = false)
+    private String introduce;
+
     @OneToMany(
             mappedBy = "board",
             cascade = CascadeType.REMOVE,
@@ -77,6 +80,10 @@ public class Board extends BaseTimeEntity {
         return this;
     }
 
+    public void updateIntroduce(String introduce){
+        this.introduce = introduce != null ? introduce : this.introduce;
+    }
+
     public Board updatePurpose(Purpose purpose) {
         this.purpose = purpose;
         return this;
@@ -92,10 +99,6 @@ public class Board extends BaseTimeEntity {
                 .anyMatch(b -> b.getUser().equals(currentUser));
     }
 
-    public boolean isAuthor(User currentUser){
-        return this.getUser().equals(currentUser);
-    }
-
     public void updateAttendStatus(Long attendId, AttendStatus attendStatus){
         this.getAttends().stream()
                 .filter(a ->
@@ -106,4 +109,7 @@ public class Board extends BaseTimeEntity {
                 .updateAttendStatus(attendStatus);
     }
 
+    public boolean isAuthor(User currentUser){
+        return this.getUser().equals(currentUser);
+    }
 }
