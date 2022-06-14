@@ -57,6 +57,7 @@ public class BoardServiceImpl implements BoardService {
         String contents = request.getContents();
         Purpose purpose = request.getPurpose();
         Status status = request.getStatus();
+        String introduce = request.getIntroduce();
         List<Field> fieldList = request.getFieldList();
         List<Language> languageList = request.getLanguageList();
         List<String> fileUrlList = request.getFileUrlList();
@@ -69,6 +70,7 @@ public class BoardServiceImpl implements BoardService {
                         .purpose(purpose)
                         .status(status)
                         .user(currentUser)
+                        .introduce(introduce)
                         .build()
         );
 
@@ -114,6 +116,7 @@ public class BoardServiceImpl implements BoardService {
         String contents = request.getContents();
         Purpose purpose = request.getPurpose();
         Status status = request.getStatus();
+        String introduce = request.getIntroduce();
         List<Field> fieldList = request.getFieldList();
         List<Language> languageList = request.getLanguageList();
 
@@ -125,7 +128,8 @@ public class BoardServiceImpl implements BoardService {
                 .updateTitle(title)
                 .updateContents(contents)
                 .updatePurpose(purpose)
-                .updateStatus(status);
+                .updateStatus(status)
+                .updateIntroduce(introduce);
 
         boardFieldRepository.deleteByBoardId(board.getId());
         boardLanguageRepository.deleteByBoardId(board.getId());
@@ -174,9 +178,10 @@ public class BoardServiceImpl implements BoardService {
                         .createDateTime(board.getCreatedDate())
                         .image_url(
                                 board.getBoardFiles().stream()
-                                        .map(boardFile -> boardFile.getUrl())
+                                        .map(BoardFile::getUrl)
                                         .findFirst().orElse(null)
                         )
+                        .introduce(board.getIntroduce())
                         .build()
         );
 
@@ -195,19 +200,20 @@ public class BoardServiceImpl implements BoardService {
                         .name(board.getUser().getName())
                         .githubId(board.getUser().getGithubId())
                         .createdAt(board.getCreatedDate())
+                        .introduce(board.getIntroduce())
                         .fields(
                                 board.getBoardFields().stream()
-                                .map(boardField -> boardField.getField())
+                                .map(BoardField::getField)
                                 .collect(Collectors.toList())
                         )
                         .languages(
                                 board.getBoardLanguages().stream()
-                                .map(boardLanguage -> boardLanguage.getLanguage())
+                                .map(BoardLanguage::getLanguage)
                                 .collect(Collectors.toList())
                         )
                         .files(
                                 board.getBoardFiles().stream()
-                                .map(boardFile -> boardFile.getUrl())
+                                .map(BoardFile::getUrl)
                                 .collect(Collectors.toList())
                         )
                         .build()
