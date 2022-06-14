@@ -101,6 +101,7 @@ public class ProfileServiceImpl implements ProfileService {
                         .boardId(board.getId())
                         .title(board.getTitle())
                         .contents(board.getContents())
+                        .introduce(board.getIntroduce())
                         .date(board.getCreatedDate())
                         .purpose(board.getPurpose())
                         .status(board.getStatus())

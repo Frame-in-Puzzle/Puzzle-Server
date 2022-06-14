@@ -21,6 +21,7 @@ public class UserBoardResponse {
     private String title;
     private LocalDateTime date;
     private String contents;
+    private String introduce;
     private Status status;
     private String thumbnail;
     private List<Field> fields;

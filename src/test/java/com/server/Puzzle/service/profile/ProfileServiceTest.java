@@ -9,7 +9,6 @@ import com.server.Puzzle.domain.user.domain.UserLanguage;
 import com.server.Puzzle.domain.user.dto.ProfileUpdateDto;
 import com.server.Puzzle.domain.user.dto.UserBoardResponse;
 import com.server.Puzzle.domain.user.dto.UserResponseDto;
-import com.server.Puzzle.domain.user.dto.UserUpdateDto;
 import com.server.Puzzle.domain.user.repository.UserLanguageRepository;
 import com.server.Puzzle.domain.user.repository.UserRepository;
 import com.server.Puzzle.domain.user.service.ProfileService;
@@ -137,6 +136,7 @@ public class ProfileServiceTest {
         PostRequestDto postRequestDto = PostRequestDto.builder()
                 .title("title")
                 .contents("contents")
+                .introduce("hi i'm introduce")
                 .purpose(Purpose.PROJECT)
                 .status(Status.RECRUITMENT)
                 .fieldList(List.of(Field.BACKEND, Field.FRONTEND))
