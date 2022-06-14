@@ -16,7 +16,6 @@ import com.server.Puzzle.domain.board.repository.BoardFileRepository;
 import com.server.Puzzle.domain.board.repository.BoardLanguageRepository;
 import com.server.Puzzle.domain.board.repository.BoardRepository;
 import com.server.Puzzle.domain.board.service.BoardService;
-import com.server.Puzzle.domain.user.domain.User;
 import com.server.Puzzle.global.enumType.Field;
 import com.server.Puzzle.global.enumType.Language;
 import com.server.Puzzle.global.exception.CustomException;
@@ -53,52 +52,16 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public void post(PostRequestDto request) {
-        String title = request.getTitle();
-        String contents = request.getContents();
-        Purpose purpose = request.getPurpose();
-        Status status = request.getStatus();
-        List<Field> fieldList = request.getFieldList();
-        List<Language> languageList = request.getLanguageList();
-        List<String> fileUrlList = request.getFileUrlList();
-        User currentUser = currentUserUtil.getCurrentUser();
-
         Board board = boardRepository.save(
-                Board.builder()
-                        .title(title)
-                        .contents(contents)
-                        .purpose(purpose)
-                        .status(status)
-                        .user(currentUser)
-                        .build()
+                request.dtoToEntity(currentUserUtil.getCurrentUser())
         );
 
-        for (String fileUrl : fileUrlList) {
-            boardFileRepository.save(
-                    BoardFile.builder()
-                            .board(board)
-                            .url(fileUrl)
-                            .build()
-            );
-        }
-
-        for (Field field : fieldList) {
-            boardFieldRepository.save(
-                    BoardField.builder()
-                            .board(board)
-                            .field(field)
-                            .build()
-            );
-        }
-
-        for (Language language : languageList) {
-            boardLanguageRepository.save(
-                    BoardLanguage.builder()
-                            .board(board)
-                            .language(language)
-                            .build()
-            );
-        }
+        saveFiledUrls(request.getFileUrlList(), board);
+        saveFileds(request.getFieldList(), board);
+        saveLanguages(request.getLanguageList(), board);
     }
+
+
 
     @Override
     public String createUrl(MultipartFile files) {
@@ -110,65 +73,33 @@ public class BoardServiceImpl implements BoardService {
     @Transactional
     @Override
     public Board correctionPost(Long id, CorrectionPostRequestDto request) {
-        String title = request.getTitle();
-        String contents = request.getContents();
-        Purpose purpose = request.getPurpose();
-        Status status = request.getStatus();
-        List<Field> fieldList = request.getFieldList();
-        List<Language> languageList = request.getLanguageList();
-
         Board board = boardRepository.findById(id)
                 .orElseThrow(() -> new CustomException(BOARD_NOT_FOUND));
         if(!board.isAuthor(currentUserUtil.getCurrentUser())) throw new CustomException(BOARD_NOT_HAVE_PERMISSION);
 
         board
-                .updateTitle(title)
-                .updateContents(contents)
-                .updatePurpose(purpose)
-                .updateStatus(status);
+                .updateTitle(request.getTitle())
+                .updateContents(request.getContents())
+                .updatePurpose(request.getPurpose())
+                .updateStatus(request.getStatus())
+                .updateIntroduce(request.getIntroduce());
 
         boardFieldRepository.deleteByBoardId(board.getId());
         boardLanguageRepository.deleteByBoardId(board.getId());
 
-        for (Field field : fieldList) {
-            boardFieldRepository.save(
-                    BoardField.builder()
-                            .board(board)
-                            .field(field)
-                            .build()
-            );
-        }
-
-        for (Language language : languageList) {
-            boardLanguageRepository.save(
-                    BoardLanguage.builder()
-                            .board(board)
-                            .language(language)
-                            .build()
-            );
-        }
+        saveFileds(request.getFieldList(), board);
+        saveLanguages(request.getLanguageList(), board);
 
         List<String> saveFileUrlList = this.getSaveFileUrlList(board, request);
 
-        try{
-            for (String fileUrl : saveFileUrlList) {
-                boardFileRepository.save(
-                        BoardFile.builder()
-                                .board(board)
-                                .url(fileUrl)
-                                .build()
-                );
-            }
-        } catch (NullPointerException e){
-            return board;
-        }
+        if(saveFileUrlList == Collections.EMPTY_LIST) saveFiledUrls(saveFileUrlList, board);
 
         return board;
     }
 
     @Override
     public Page<GetAllPostResponseDto> getAllPost(Pageable pageable) {
-        Page<GetAllPostResponseDto> response = boardRepository.findAll(pageable).map(
+        return boardRepository.findAll(pageable).map(
                 board -> GetAllPostResponseDto.builder()
                         .boardId(board.getId())
                         .title(board.getTitle())
@@ -176,18 +107,16 @@ public class BoardServiceImpl implements BoardService {
                         .createDateTime(board.getCreatedDate())
                         .image_url(
                                 board.getBoardFiles().stream()
-                                        .map(boardFile -> boardFile.getUrl())
+                                        .map(BoardFile::getUrl)
                                         .findFirst().orElse(null)
                         )
                         .build()
         );
-
-        return response;
     }
 
     @Override
     public GetPostResponseDto getPost(Long id) {
-        GetPostResponseDto response = boardRepository.findById(id).map(
+        return boardRepository.findById(id).map(
                 board -> GetPostResponseDto.builder()
                         .id(id)
                         .title(board.getTitle())
@@ -197,25 +126,24 @@ public class BoardServiceImpl implements BoardService {
                         .name(board.getUser().getName())
                         .githubId(board.getUser().getGithubId())
                         .createdAt(board.getCreatedDate())
+                        .introduce(board.getIntroduce())
                         .fields(
                                 board.getBoardFields().stream()
-                                .map(boardField -> boardField.getField())
+                                .map(BoardField::getField)
                                 .collect(Collectors.toList())
                         )
                         .languages(
                                 board.getBoardLanguages().stream()
-                                .map(boardLanguage -> boardLanguage.getLanguage())
+                                .map(BoardLanguage::getLanguage)
                                 .collect(Collectors.toList())
                         )
                         .files(
                                 board.getBoardFiles().stream()
-                                .map(boardFile -> boardFile.getUrl())
+                                .map(BoardFile::getUrl)
                                 .collect(Collectors.toList())
                         )
                         .build()
         ).orElseThrow(() -> new CustomException(BOARD_NOT_FOUND));
-
-        return response;
     }
 
     @Override
@@ -223,11 +151,9 @@ public class BoardServiceImpl implements BoardService {
         Board board = boardRepository.findById(id)
                 .orElseThrow(() -> new CustomException(BOARD_NOT_FOUND));
 
-        if(board.getUser() == currentUserUtil.getCurrentUser()){
+        if(board.isAuthor(currentUserUtil.getCurrentUser())){
             List<BoardFile> boardFiles = board.getBoardFiles();
-            for (BoardFile boardFile : boardFiles) {
-                awsS3Util.deleteS3(boardFile.getUrl().substring(61));
-            }
+            for (BoardFile boardFile : boardFiles) awsS3Util.deleteS3(boardFile.getUrl().substring(61));
             boardRepository.deleteById(id);
         } else {
             throw new CustomException(BOARD_NOT_HAVE_PERMISSION);
@@ -236,9 +162,40 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public Page<GetPostByTagResponseDto> getPostByTag(Purpose purpose, List<Field> field, List<Language> language, Status status, Pageable pageable) {
-        Page<GetPostByTagResponseDto> response = boardRepository.findBoardByTag(purpose, field, language, status, pageable);
+        return boardRepository.findBoardByTag(purpose, field, language, status, pageable);
+    }
 
-        return response;
+    private void saveFiledUrls(List<String> fileUrlList, Board board) {
+        for (String fileUrl : fileUrlList) {
+            boardFileRepository.save(
+                    BoardFile.builder()
+                            .board(board)
+                            .url(fileUrl)
+                            .build()
+            );
+        }
+    }
+
+    private void saveLanguages(List<Language> languageList, Board board) {
+        for (Language language : languageList) {
+            boardLanguageRepository.save(
+                    BoardLanguage.builder()
+                            .board(board)
+                            .language(language)
+                            .build()
+            );
+        }
+    }
+
+    private void saveFileds(List<Field> fieldList, Board board) {
+        for (Field field : fieldList) {
+            boardFieldRepository.save(
+                    BoardField.builder()
+                            .board(board)
+                            .field(field)
+                            .build()
+            );
+        }
     }
 
     private List<String> getSaveFileUrlList(Board board, CorrectionPostRequestDto request){
@@ -253,7 +210,7 @@ public class BoardServiceImpl implements BoardService {
                 }
                 return addFileList;
             } else {
-                return null;
+                return Collections.EMPTY_LIST;
             }
         } else { // db에 url 이 있다면,
             if(CollectionUtils.isEmpty(requestFileUrlList)){ // 요청파일 목록에 파일이 없다면,
@@ -282,7 +239,7 @@ public class BoardServiceImpl implements BoardService {
             }
         }
 
-        return null;
+        return Collections.EMPTY_LIST;
     }
 
 }

@@ -3,6 +3,7 @@ package com.server.Puzzle.domain.board.repository;
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.server.Puzzle.domain.board.domain.Board;
+import com.server.Puzzle.domain.board.domain.BoardFile;
 import com.server.Puzzle.domain.board.dto.response.GetPostByTagResponseDto;
 import com.server.Puzzle.domain.board.enumType.Purpose;
 import com.server.Puzzle.domain.board.enumType.Status;
@@ -32,13 +33,11 @@ public class BoardCustomRepositoryImpl implements BoardCustomRepository{
         HashSet<Long> boardIdHashSet = new HashSet<>();
 
         if (field.get(0) == Field.ALL){
-            List<Long> dbresult = jpaQueryFactory.from(boardField)
+            List<Long> dbResult = jpaQueryFactory.from(boardField)
                     .select(boardField.board.id)
                     .fetch();
 
-            for (Long aLong : dbresult) {
-                boardIdHashSet.add(aLong);
-            }
+            boardIdHashSet.addAll(dbResult);
         } else {
             for (Field f : field) {
                 String name = f.name();
@@ -49,22 +48,18 @@ public class BoardCustomRepositoryImpl implements BoardCustomRepository{
                             .where(boardField.field.eq(Field.valueOf(name.substring(0,name.length() - 4))))
                             .fetch();
 
-                    for (Long aLong : dbresult) {
-                        boardIdHashSet.add(aLong);
-                    }
+                    boardIdHashSet.addAll(dbresult);
                 }
             }
         }
 
         for (Language l : language) {
-            List<Long> dbresult = jpaQueryFactory.from(boardLanguage)
+            List<Long> dbREsult = jpaQueryFactory.from(boardLanguage)
                     .select(boardLanguage.board.id)
                     .where(boardLanguage.language.eq(l))
                     .fetch();
 
-            for (Long aLong : dbresult) {
-                boardIdHashSet.add(aLong);
-            }
+            boardIdHashSet.addAll(dbREsult);
         }
 
         QueryResults<Board> results;
@@ -112,16 +107,18 @@ public class BoardCustomRepositoryImpl implements BoardCustomRepository{
         }
 
         List<GetPostByTagResponseDto> content = results.getResults().stream()
-                .map(b -> new GetPostByTagResponseDto(
-                        b.getId(),
-                        b.getTitle(),
-                        b.getStatus(),
-                        b.getCreatedDate(),
-                        b.getBoardFiles().stream()
-                                .map(f -> f.getUrl())
-                                .findFirst().orElse(null)
-                ))
-                .collect(Collectors.toList());
+                .map(
+                        b -> GetPostByTagResponseDto.builder()
+                                .boardId(b.getId())
+                                .title(b.getTitle())
+                                .status(b.getStatus())
+                                .createdDate(b.getCreatedDate())
+                                .introduce(b.getIntroduce())
+                                .fileUrl(b.getBoardFiles().stream()
+                                            .map(BoardFile::getUrl)
+                                            .findFirst().orElse(null))
+                        .build()
+                ).collect(Collectors.toList());
 
         return new PageImpl<>(content, pageable, results.getTotal());
     }

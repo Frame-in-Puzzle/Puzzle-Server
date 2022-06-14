@@ -27,8 +27,6 @@ import javax.transaction.Transactional;
 import java.util.Collections;
 import java.util.List;
 
-import static com.server.Puzzle.global.exception.ErrorCode.BOARD_NOT_FOUND;
-import static com.server.Puzzle.global.exception.ErrorCode.BOARD_NOT_HAVE_PERMISSION;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Transactional
@@ -46,6 +44,17 @@ public class BoardExceptionTest {
 
     @Autowired
     private CurrentUserUtil currentUserUtil;
+
+    final PostRequestDto postRequestDto = PostRequestDto.builder()
+            .title("title")
+            .contents("contents")
+            .purpose(Purpose.PROJECT)
+            .status(Status.RECRUITMENT)
+            .introduce("this is board")
+            .fieldList(List.of(Field.BACKEND,Field.FRONTEND))
+            .languageList(List.of(Language.JAVA,Language.TS))
+            .fileUrlList(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
+            .build();
 
     @BeforeEach
     void 로그인_되어있는_유저를_확인() {
@@ -80,21 +89,12 @@ public class BoardExceptionTest {
     @Test
     void correctionPost_에서_게시글을_찾을_수_없습니다(){
         // given
-        PostRequestDto postRequestDto = PostRequestDto.builder()
-                .title("title")
-                .contents("contents")
-                .purpose(Purpose.PROJECT)
-                .status(Status.RECRUITMENT)
-                .fieldList(List.of(Field.BACKEND,Field.FRONTEND))
-                .languageList(List.of(Language.JAVA,Language.TS))
-                .fileUrlList(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
-                .build();
-
         CorrectionPostRequestDto correctionPostRequestDto = CorrectionPostRequestDto.builder()
                 .title("correctionTitle")
                 .contents("correctionContents")
                 .purpose(Purpose.PROJECT)
                 .status(Status.RECRUITMENT)
+                .introduce("this is board")
                 .fileUrlList(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
                 .languageList(List.of(Language.PYTORCH, Language.KOTLIN))
                 .fieldList(List.of(Field.AI,Field.ANDROID))
@@ -105,7 +105,7 @@ public class BoardExceptionTest {
         Long boardId = boardRepository.findAll().get(0).getId() + 1L;
 
         // when // then
-        CustomException customException = assertThrows(new CustomException(BOARD_NOT_FOUND).getClass(), () -> {
+        CustomException customException = assertThrows(CustomException.class, () -> {
             boardService.correctionPost(boardId, correctionPostRequestDto);
         });
 
@@ -115,22 +115,12 @@ public class BoardExceptionTest {
     @Test
     void getPost_에서_게시글을_찾을_수_없습니다(){
         // given
-        PostRequestDto postRequestDto = PostRequestDto.builder()
-                .title("title")
-                .contents("contents")
-                .purpose(Purpose.PROJECT)
-                .status(Status.RECRUITMENT)
-                .fieldList(List.of(Field.BACKEND,Field.FRONTEND))
-                .languageList(List.of(Language.JAVA,Language.TS))
-                .fileUrlList(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
-                .build();
-
         boardService.post(postRequestDto);
 
         Long boardId = boardRepository.findAll().get(0).getId() + 1L;
 
         // when // then
-        CustomException customException = assertThrows(new CustomException(BOARD_NOT_FOUND).getClass(), () -> {
+        CustomException customException = assertThrows(CustomException.class, () -> {
             boardService.getPost(boardId);
         });
 
@@ -140,22 +130,12 @@ public class BoardExceptionTest {
     @Test
     void deletePost_에서_게시글을_찾을_수_없습니다() {
         // given
-        PostRequestDto postRequestDto = PostRequestDto.builder()
-                .title("title")
-                .contents("contents")
-                .purpose(Purpose.PROJECT)
-                .status(Status.RECRUITMENT)
-                .fieldList(List.of(Field.BACKEND,Field.FRONTEND))
-                .languageList(List.of(Language.JAVA,Language.TS))
-                .fileUrlList(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
-                .build();
-
         boardService.post(postRequestDto);
 
         Long boardId = boardRepository.findAll().get(0).getId() + 1L;
 
         // when // then
-        CustomException customException = assertThrows(new CustomException(BOARD_NOT_FOUND).getClass(), () -> {
+        CustomException customException = assertThrows(CustomException.class, () -> {
             boardService.deletePost(boardId);
         });
 
@@ -184,13 +164,14 @@ public class BoardExceptionTest {
                 .contents("contents")
                 .purpose(Purpose.PROJECT)
                 .status(Status.RECRUITMENT)
+                .introduce("this is board")
                 .user(user)
                 .build();
 
         boardRepository.save(board);
 
         // when
-        CustomException customException = assertThrows(new CustomException(BOARD_NOT_HAVE_PERMISSION).getClass(), () -> {
+        CustomException customException = assertThrows(CustomException.class, () -> {
             boardService.deletePost(board.getId());
         });
 
