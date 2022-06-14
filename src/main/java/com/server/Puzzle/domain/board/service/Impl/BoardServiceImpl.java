@@ -150,7 +150,7 @@ public class BoardServiceImpl implements BoardService {
 
         List<String> saveFileUrlList = this.getSaveFileUrlList(board, request);
 
-        try{
+        if(saveFileUrlList == Collections.EMPTY_LIST){
             for (String fileUrl : saveFileUrlList) {
                 boardFileRepository.save(
                         BoardFile.builder()
@@ -159,8 +159,6 @@ public class BoardServiceImpl implements BoardService {
                                 .build()
                 );
             }
-        } catch (NullPointerException e){
-            return board;
         }
 
         return board;
@@ -223,7 +221,7 @@ public class BoardServiceImpl implements BoardService {
         Board board = boardRepository.findById(id)
                 .orElseThrow(() -> new CustomException(BOARD_NOT_FOUND));
 
-        if(board.getUser() == currentUserUtil.getCurrentUser()){
+        if(board.isAuthor(currentUserUtil.getCurrentUser())){
             List<BoardFile> boardFiles = board.getBoardFiles();
             for (BoardFile boardFile : boardFiles) {
                 awsS3Util.deleteS3(boardFile.getUrl().substring(61));
@@ -253,7 +251,7 @@ public class BoardServiceImpl implements BoardService {
                 }
                 return addFileList;
             } else {
-                return null;
+                return Collections.EMPTY_LIST;
             }
         } else { // db에 url 이 있다면,
             if(CollectionUtils.isEmpty(requestFileUrlList)){ // 요청파일 목록에 파일이 없다면,
@@ -282,7 +280,7 @@ public class BoardServiceImpl implements BoardService {
             }
         }
 
-        return null;
+        return Collections.EMPTY_LIST;
     }
 
 }
