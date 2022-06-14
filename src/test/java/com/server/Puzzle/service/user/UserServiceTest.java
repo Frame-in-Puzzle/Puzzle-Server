@@ -149,7 +149,10 @@ public class UserServiceTest {
 
         map = tokenService.reissueToken(user.getRefreshToken(), user.getGithubId());
 
-        assertEquals(map.get("RefreshToken").substring(7), user.getRefreshToken());
+        User findUser = userRepository.findByGithubId(githubId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        assertEquals(map.get("RefreshToken").substring(7), findUser.getRefreshToken());
     }
 
     @Test
