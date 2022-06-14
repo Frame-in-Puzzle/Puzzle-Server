@@ -63,12 +63,7 @@ public class ProfileServiceImpl implements ProfileService {
 
         userLanguageRepo.deleteAllByUserId(user.getId());
 
-        for (Language language : languageList) {
-            userLanguageRepo.save(UserLanguage.builder()
-                    .user(user)
-                    .language(language)
-                    .build());
-        }
+        saveLanguage(languageList, user);
 
         user
                 .updateName(profileUpdateDto.getName())
@@ -118,6 +113,15 @@ public class ProfileServiceImpl implements ProfileService {
                                 .map(BoardField::getField)
                                 .collect(Collectors.toList()))
                         .build());
+    }
+
+    private void saveLanguage(List<Language> languages, User user) {
+        for (Language language : languages) {
+            userLanguageRepo.save(UserLanguage.builder()
+                    .user(user)
+                    .language(language)
+                    .build());
+        }
     }
 
 }
