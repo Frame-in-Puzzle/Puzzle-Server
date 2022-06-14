@@ -16,5 +16,6 @@ public class GetPostByTagResponseDto {
     private Status status;
     private LocalDateTime createdDate;
     private String fileUrl;
+    private String introduce;
 
 }
