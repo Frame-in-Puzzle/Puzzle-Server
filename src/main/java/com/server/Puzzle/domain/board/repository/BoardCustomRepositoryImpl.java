@@ -117,6 +117,7 @@ public class BoardCustomRepositoryImpl implements BoardCustomRepository{
                         b.getTitle(),
                         b.getStatus(),
                         b.getCreatedDate(),
+                        b.getIntroduce(),
                         b.getBoardFiles().stream()
                                 .map(f -> f.getUrl())
                                 .findFirst().orElse(null)
