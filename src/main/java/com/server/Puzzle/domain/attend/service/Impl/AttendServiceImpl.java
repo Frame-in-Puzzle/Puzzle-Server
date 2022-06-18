@@ -2,7 +2,7 @@ package com.server.Puzzle.domain.attend.service.Impl;
 
 import com.server.Puzzle.domain.attend.domain.Attend;
 import com.server.Puzzle.domain.attend.dto.request.PatchAttendRequest;
-import com.server.Puzzle.domain.attend.dto.response.GetAllAttendResponse;
+import com.server.Puzzle.domain.attend.dto.response.FindAllAttendResponse;
 import com.server.Puzzle.domain.attend.enumtype.AttendStatus;
 import com.server.Puzzle.domain.attend.repository.AttendRepository;
 import com.server.Puzzle.domain.attend.service.AttendService;
@@ -47,7 +47,7 @@ public class AttendServiceImpl implements AttendService {
     }
 
     @Override
-    public List<GetAllAttendResponse> getAllAttend(Long boardId) {
+    public List<FindAllAttendResponse> findAllAttend(Long boardId) {
         boardRepository.findById(boardId)
                 .orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
 

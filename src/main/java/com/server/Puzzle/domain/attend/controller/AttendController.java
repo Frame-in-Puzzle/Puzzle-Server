@@ -1,7 +1,7 @@
 package com.server.Puzzle.domain.attend.controller;
 
 import com.server.Puzzle.domain.attend.dto.request.PatchAttendRequest;
-import com.server.Puzzle.domain.attend.dto.response.GetAllAttendResponse;
+import com.server.Puzzle.domain.attend.dto.response.FindAllAttendResponse;
 import com.server.Puzzle.domain.attend.service.AttendService;
 import com.server.Puzzle.domain.board.enumType.IsAttendStatus;
 import io.swagger.annotations.ApiImplicitParam;
@@ -29,8 +29,8 @@ public class AttendController {
     }
 
     @GetMapping("/board/{boardId}")
-    public ResponseEntity<List<GetAllAttendResponse>> getAllAttend(@PathVariable Long boardId){
-        List<GetAllAttendResponse> response = attendService.getAllAttend(boardId);
+    public ResponseEntity<List<FindAllAttendResponse>> FindAllAttend(@PathVariable Long boardId){
+        List<FindAllAttendResponse> response = attendService.findAllAttend(boardId);
         return ResponseEntity.ok().body(response);
     }
 

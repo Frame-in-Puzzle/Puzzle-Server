@@ -2,7 +2,7 @@ package com.server.Puzzle.service.attend;
 
 import com.server.Puzzle.domain.attend.domain.Attend;
 import com.server.Puzzle.domain.attend.dto.request.PatchAttendRequest;
-import com.server.Puzzle.domain.attend.dto.response.GetAllAttendResponse;
+import com.server.Puzzle.domain.attend.dto.response.FindAllAttendResponse;
 import com.server.Puzzle.domain.attend.enumtype.AttendStatus;
 import com.server.Puzzle.domain.attend.repository.AttendRepository;
 import com.server.Puzzle.domain.attend.service.AttendService;
@@ -127,7 +127,7 @@ public class AttendServiceTest {
         em.clear();
 
         // when
-        List<GetAllAttendResponse> allAttend = attendService.getAllAttend(board.getId());
+        List<FindAllAttendResponse> allAttend = attendService.findAllAttend(board.getId());
 
         // then
         assertThat(allAttend).isNotNull();

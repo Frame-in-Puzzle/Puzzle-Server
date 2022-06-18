@@ -2,7 +2,7 @@ package com.server.Puzzle.domain.attend.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.server.Puzzle.domain.attend.domain.Attend;
-import com.server.Puzzle.domain.attend.dto.response.GetAllAttendResponse;
+import com.server.Puzzle.domain.attend.dto.response.FindAllAttendResponse;
 import com.server.Puzzle.domain.board.domain.Board;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -21,13 +21,13 @@ public class AttendCustomRepositoryImpl implements AttendCustomRepository{
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<GetAllAttendResponse> findAllByBoardId(Long boardId) {
+    public List<FindAllAttendResponse> findAllByBoardId(Long boardId) {
         List<Attend> attends = jpaQueryFactory.selectFrom(attend)
                 .where(attend.board.id.eq(boardId))
                 .fetch();
 
         return attends.stream()
-                .map(a -> new GetAllAttendResponse(
+                .map(a -> new FindAllAttendResponse(
                         a.getId(),
                         a.getUser().getUserLanguages().stream()
                                 .map(l -> l.getLanguage())
