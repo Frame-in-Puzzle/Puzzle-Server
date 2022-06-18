@@ -14,6 +14,12 @@ public class OauthController {
 
     private final OauthServiceImpl oauthServiceImpl;
 
+    /**
+     * Github Oauth 로그인
+     * @param code code
+     * @return githubId, email, isFirstVisited, accessToken, refreshToken
+     * @author 홍현인
+     */
     @PostMapping("/login/github")
     public ResponseEntity<LoginResponse> login(@RequestBody OauthCode code)  {
         LoginResponse loginResponse = oauthServiceImpl.login(code);
