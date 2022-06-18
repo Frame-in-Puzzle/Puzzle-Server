@@ -31,7 +31,7 @@ public class UserCustomRepositoryImpl implements UserCustomRepository{
                 .bio(user1.getBio())
                 .field(user1.getField())
                 .url(user1.getUrl())
-                .language(user1.getUserLanguages().stream()
+                .languages(user1.getUserLanguages().stream()
                         .map(UserLanguage::getLanguage)
                         .collect(Collectors.toList()))
                 .build();

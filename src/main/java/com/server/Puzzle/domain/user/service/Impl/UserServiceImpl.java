@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
         if(!user.isFirstVisited())
             throw new CustomException(IS_ALREADY_USER);
 
-        List<Language> languageList = userInfo.getLanguage();
+        List<Language> languageList = userInfo.getLanguages();
 
         userLanguageRepo.deleteAllByUserId(user.getId());
 
