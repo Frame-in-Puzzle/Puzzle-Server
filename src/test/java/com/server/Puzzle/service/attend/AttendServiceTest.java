@@ -166,14 +166,13 @@ public class AttendServiceTest {
         em.clear();
 
         Board board = boardRepository.findAll().get(0);
-
-        attendService.requestAttend(board.getId());
+        Long boardId = board.getId();
+        attendService.requestAttend(boardId);
         Long attendId = attendRepository.findAll().get(0).getId();
-
         em.clear();
 
         // when
-        attendService.deleteAttend(attendId);
+        attendService.deleteAttend(boardId);
 
         // then
         assertThat(attendRepository.findById(attendId).isEmpty()).isTrue();
