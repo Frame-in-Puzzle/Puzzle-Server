@@ -2,7 +2,7 @@ package com.server.Puzzle.service.attend;
 
 import com.server.Puzzle.domain.attend.domain.Attend;
 import com.server.Puzzle.domain.attend.dto.request.PatchAttendRequest;
-import com.server.Puzzle.domain.attend.dto.response.GetAllAttendResponse;
+import com.server.Puzzle.domain.attend.dto.response.FindAllAttendResponse;
 import com.server.Puzzle.domain.attend.enumtype.AttendStatus;
 import com.server.Puzzle.domain.attend.repository.AttendRepository;
 import com.server.Puzzle.domain.attend.service.AttendService;
@@ -127,7 +127,7 @@ public class AttendServiceTest {
         em.clear();
 
         // when
-        List<GetAllAttendResponse> allAttend = attendService.findAllAttend(board.getId());
+        List<FindAllAttendResponse> allAttend = attendService.findAllAttend(board.getId());
 
         // then
         assertThat(allAttend).isNotNull();
@@ -166,14 +166,13 @@ public class AttendServiceTest {
         em.clear();
 
         Board board = boardRepository.findAll().get(0);
-
-        attendService.requestAttend(board.getId());
+        Long boardId = board.getId();
+        attendService.requestAttend(boardId);
         Long attendId = attendRepository.findAll().get(0).getId();
-
         em.clear();
 
         // when
-        attendService.deleteAttend(attendId);
+        attendService.deleteAttend(boardId);
 
         // then
         assertThat(attendRepository.findById(attendId).isEmpty()).isTrue();

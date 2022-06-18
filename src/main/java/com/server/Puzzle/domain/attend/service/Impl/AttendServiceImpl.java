@@ -2,7 +2,7 @@ package com.server.Puzzle.domain.attend.service.Impl;
 
 import com.server.Puzzle.domain.attend.domain.Attend;
 import com.server.Puzzle.domain.attend.dto.request.PatchAttendRequest;
-import com.server.Puzzle.domain.attend.dto.response.GetAllAttendResponse;
+import com.server.Puzzle.domain.attend.dto.response.FindAllAttendResponse;
 import com.server.Puzzle.domain.attend.enumtype.AttendStatus;
 import com.server.Puzzle.domain.attend.repository.AttendRepository;
 import com.server.Puzzle.domain.attend.service.AttendService;
@@ -47,7 +47,7 @@ public class AttendServiceImpl implements AttendService {
     }
 
     @Override
-    public List<GetAllAttendResponse> findAllAttend(Long boardId) {
+    public List<FindAllAttendResponse> findAllAttend(Long boardId) {
         boardRepository.findById(boardId)
                 .orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
 
@@ -67,15 +67,18 @@ public class AttendServiceImpl implements AttendService {
     }
 
     @Override
-    public void deleteAttend(Long attendId) {
+    public void deleteAttend(Long boardId) {
         User currentUser = currentUserUtil.getCurrentUser();
 
-        Attend attend = attendRepository.findById(attendId)
-                .orElseThrow(() -> new CustomException(ErrorCode.ATTEND_NOT_FOUND));
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
 
-        if (!attend.isAttend(currentUser)) throw new CustomException(ErrorCode.ATTEND_DELETE_PERMISSION_DENIED);
+        Long attendId = board.getAttends().stream()
+                .filter(a -> a.isAttend(currentUser)).findFirst()
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_ATTEND))
+                .getId();
 
-        attendRepository.deleteById(attend.getId());
+        attendRepository.deleteById(attendId);
     }
 
     @Override

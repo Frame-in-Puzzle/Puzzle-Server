@@ -9,7 +9,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @Getter
-public class GetAllAttendResponse {
+public class FindAllAttendResponse {
 
     private Long id;
     private List<Language> languages;
