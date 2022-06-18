@@ -2,7 +2,6 @@ package com.server.Puzzle.domain.user.controller;
 
 import com.server.Puzzle.domain.user.dto.UserUpdateDto;
 import com.server.Puzzle.domain.user.service.UserService;
-import com.server.Puzzle.global.security.jwt.JwtTokenProvider;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +15,13 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
-    private final JwtTokenProvider jwtTokenProvider;
 
+    /**
+     * 현재 로그인 된 유저를 로그아웃함
+     * @Header Bearer AccessToken
+     * @return ResponseEntity - Success
+     * @author 홍현인
+     */
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization", value = "로그인 성공 후 토큰", required = true, dataType = "String", paramType = "header")
     })
@@ -28,6 +32,12 @@ public class UserController {
         return ResponseEntity.ok("Success");
     }
 
+    /**
+     * 현재 로그인 한 회원탈퇴(계정삭제)
+     * @Header Bearer AccessToken
+     * @return ResponseEntity - Success
+     * @author 홍현인
+     */
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization", value = "로그인 성공 후 토큰", required = true, dataType = "String", paramType = "header")
     })
@@ -38,6 +48,13 @@ public class UserController {
         return ResponseEntity.ok("Success");
     }
 
+    /**
+     * 첫 회원가입을 한 유저의 정보(분야, 언어) 등록
+     * @Header Bearer AccessToken
+     * @param userInfo name, email, imageUrl, bio, field, languages
+     * @return ResponseEntity - Success
+     * @author 홍현인
+     */
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization", value = "로그인 성공 후 토큰", required = true, dataType = "String", paramType = "header")
     })
