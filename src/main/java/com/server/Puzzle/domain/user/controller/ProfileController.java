@@ -20,8 +20,8 @@ public class ProfileController {
     private final ProfileService profileService;
 
     @GetMapping("/{githubId}")
-    public ResponseEntity<UserResponseDto> getProfile(@PathVariable String githubId) {
-        UserResponseDto profile = profileService.getProfile(githubId);
+    public ResponseEntity<UserProfileResponse> getProfile(@PathVariable String githubId) {
+        UserProfileResponse profile = profileService.getProfile(githubId);
         return ResponseEntity.ok().body(profile);
     }
 
