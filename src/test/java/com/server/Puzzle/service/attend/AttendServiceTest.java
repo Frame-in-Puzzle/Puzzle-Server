@@ -127,7 +127,7 @@ public class AttendServiceTest {
         em.clear();
 
         // when
-        List<GetAllAttendResponse> allAttend = attendService.findAllAttend(board.getId());
+        List<GetAllAttendResponse> allAttend = attendService.getAllAttend(board.getId());
 
         // then
         assertThat(allAttend).isNotNull();
