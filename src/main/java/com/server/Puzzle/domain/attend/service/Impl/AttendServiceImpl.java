@@ -67,15 +67,18 @@ public class AttendServiceImpl implements AttendService {
     }
 
     @Override
-    public void deleteAttend(Long attendId) {
+    public void deleteAttend(Long boardId) {
         User currentUser = currentUserUtil.getCurrentUser();
 
-        Attend attend = attendRepository.findById(attendId)
-                .orElseThrow(() -> new CustomException(ErrorCode.ATTEND_NOT_FOUND));
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
 
-        if (!attend.isAttend(currentUser)) throw new CustomException(ErrorCode.ATTEND_DELETE_PERMISSION_DENIED);
+        Long attendId = board.getAttends().stream()
+                .filter(a -> a.isAttend(currentUser)).findFirst()
+                .orElseThrow(() -> new CustomException(ErrorCode.ATTEND_DELETE_PERMISSION_DENIED))
+                .getId();
 
-        attendRepository.deleteById(attend.getId());
+        attendRepository.deleteById(attendId);
     }
 
     @Override
