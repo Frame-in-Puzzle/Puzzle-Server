@@ -47,7 +47,7 @@ public class AttendServiceImpl implements AttendService {
     }
 
     @Override
-    public List<GetAllAttendResponse> findAllAttend(Long boardId) {
+    public List<GetAllAttendResponse> getAllAttend(Long boardId) {
         boardRepository.findById(boardId)
                 .orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
 
@@ -75,7 +75,7 @@ public class AttendServiceImpl implements AttendService {
 
         Long attendId = board.getAttends().stream()
                 .filter(a -> a.isAttend(currentUser)).findFirst()
-                .orElseThrow(() -> new CustomException(ErrorCode.ATTEND_DELETE_PERMISSION_DENIED))
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_ATTEND))
                 .getId();
 
         attendRepository.deleteById(attendId);
