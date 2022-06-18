@@ -30,7 +30,7 @@ public class AttendController {
 
     @GetMapping("/board/{boardId}")
     public ResponseEntity<List<GetAllAttendResponse>> getAllAttend(@PathVariable Long boardId){
-        List<GetAllAttendResponse> response = attendService.findAllAttend(boardId);
+        List<GetAllAttendResponse> response = attendService.getAllAttend(boardId);
         return ResponseEntity.ok().body(response);
     }
 
