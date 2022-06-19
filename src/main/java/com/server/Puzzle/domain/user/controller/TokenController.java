@@ -22,6 +22,13 @@ public class TokenController {
     private final TokenService tokenService;
     private final JwtTokenProvider jwtTokenProvider;
 
+    /**
+     * 만료된 토큰 재발급
+     * @param githubId
+     * @param request
+     * @author 홍현인
+     * @return Map<String, String> - AccessToken, RefreshToken
+     */
     @ApiImplicitParams({@ApiImplicitParam(name = "RefreshToken", value = "로그인 성공 후 refresh_token", required = false, dataType = "String", paramType = "header")
     })
     @GetMapping("/reissue")

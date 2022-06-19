@@ -43,12 +43,12 @@ public class ProfileServiceImpl implements ProfileService {
     private final AwsS3Util awsS3Util;
 
     @Override
-    public UserResponseDto getProfile(String githubId) {
+    public UserProfileResponse getProfile(String githubId) {
 
         userRepository.findByGithubId(githubId)
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
-        UserResponseDto user = userRepository.findByUser(githubId);
+        UserProfileResponse user = userRepository.findByUser(githubId);
 
         return user;
     }

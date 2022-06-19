@@ -10,14 +10,14 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserResponseDto {
+public class UserProfileResponse {
 
       private String name;
       private String email;
       private String imageUrl;
       private String bio;
       private Field field;
-      private List<Language> language;
+      private List<Language> languages;
       private String url;
 
 }

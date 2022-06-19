@@ -3,7 +3,7 @@ package com.server.Puzzle.domain.user.repository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.server.Puzzle.domain.user.domain.User;
 import com.server.Puzzle.domain.user.domain.UserLanguage;
-import com.server.Puzzle.domain.user.dto.UserResponseDto;
+import com.server.Puzzle.domain.user.dto.UserProfileResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -18,20 +18,20 @@ public class UserCustomRepositoryImpl implements UserCustomRepository{
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public UserResponseDto findByUser(String githubId) {
+    public UserProfileResponse findByUser(String githubId) {
         User user1  = jpaQueryFactory
                 .selectFrom(user)
                 .where(user.githubId.eq(githubId))
                 .fetchOne();
 
-        return UserResponseDto.builder()
+        return UserProfileResponse.builder()
                 .name(user1.getName())
                 .email(user1.getEmail())
                 .imageUrl(user1.getImageUrl())
                 .bio(user1.getBio())
                 .field(user1.getField())
                 .url(user1.getUrl())
-                .language(user1.getUserLanguages().stream()
+                .languages(user1.getUserLanguages().stream()
                         .map(UserLanguage::getLanguage)
                         .collect(Collectors.toList()))
                 .build();

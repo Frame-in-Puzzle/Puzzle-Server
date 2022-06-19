@@ -159,7 +159,7 @@ public class UserServiceTest {
                 .name("인현홍")
                 .imageUrl("imageUrl")
                 .bio("bio")
-                .language(List.of(TS, REACT))
+                .languages(List.of(TS, REACT))
                 .field(BACKEND)
                 .email("s20080@gsm.hs.kr")
                 .build();
@@ -172,7 +172,7 @@ public class UserServiceTest {
         User user = userRepository.findByName(userUpdateDto.getName()).orElseThrow();
 
         assertEquals(userUpdateDto.getName(), user.getName());
-        assertEquals(userUpdateDto.getLanguage(), user.getUserLanguages().stream().map(UserLanguage::getLanguage).collect(Collectors.toList()));
+        assertEquals(userUpdateDto.getLanguages(), user.getUserLanguages().stream().map(UserLanguage::getLanguage).collect(Collectors.toList()));
     }
 
 }
