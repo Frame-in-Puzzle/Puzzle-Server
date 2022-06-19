@@ -1,5 +1,15 @@
 package com.server.Puzzle.global.config.dev;
 
+import com.server.Puzzle.domain.board.domain.Board;
+import com.server.Puzzle.domain.board.domain.BoardField;
+import com.server.Puzzle.domain.board.domain.BoardFile;
+import com.server.Puzzle.domain.board.domain.BoardLanguage;
+import com.server.Puzzle.domain.board.enumType.Purpose;
+import com.server.Puzzle.domain.board.enumType.Status;
+import com.server.Puzzle.domain.board.repository.BoardFieldRepository;
+import com.server.Puzzle.domain.board.repository.BoardFileRepository;
+import com.server.Puzzle.domain.board.repository.BoardLanguageRepository;
+import com.server.Puzzle.domain.board.repository.BoardRepository;
 import com.server.Puzzle.domain.user.domain.Roles;
 import com.server.Puzzle.domain.user.domain.User;
 import com.server.Puzzle.domain.user.domain.UserLanguage;
@@ -32,6 +42,10 @@ public class GenerateUser {
     private final UserLanguageRepository userLanguageRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final RolesRepository rolesRepository;
+    private final BoardRepository boardRepository;
+    private final BoardFileRepository boardFileRepository;
+    private final BoardLanguageRepository boardLanguageRepository;
+    private final BoardFieldRepository boardFieldRepository;
 
     @PostConstruct
     private void genereateUserAccount() {
@@ -41,6 +55,9 @@ public class GenerateUser {
         Roles roles = createRoles(hyunin);
 
         loggingAccess(roles, hyunin, kyungjun);
+
+        writeBoard(1L, hyunin);
+        writeBoard(2L, kyungjun);
     }
 
     private User createHyuninAccount() {
@@ -114,6 +131,56 @@ public class GenerateUser {
                     .user(user)
                     .language(language)
                     .build());
+        }
+    }
+
+    private void writeBoard(Long id, User user) {
+            Board board = Board.builder()
+                    .id(id)
+                    .contents("내용")
+                    .purpose(Purpose.PROJECT)
+                    .status(Status.ALL)
+                    .introduce("I am introduce")
+                    .title("제목")
+                    .user(user).build();
+
+            boardRepository.save(board);
+
+            saveLanguages(List.of(JAVA, SPRINGBOOT), board);
+            saveFields(List.of(Field.BACKEND, Field.FRONTEND), board);
+            saveFiles(List.of("파일 1", "파일 2"), board);
+    }
+
+    private void saveLanguages(List<Language> languageList, Board board) {
+        for (Language language : languageList) {
+            boardLanguageRepository.save(
+                    BoardLanguage.builder()
+                            .board(board)
+                            .language(language)
+                            .build()
+            );
+        }
+    }
+
+    private void saveFields(List<Field> fieldList, Board board) {
+        for (Field field : fieldList) {
+            boardFieldRepository.save(
+                    BoardField.builder()
+                            .board(board)
+                            .field(field)
+                            .build()
+            );
+        }
+    }
+
+    private void saveFiles(List<String> fileList, Board board) {
+        for (String url : fileList) {
+            boardFileRepository.save(
+                    BoardFile.builder()
+                            .board(board)
+                            .url(url)
+                            .build()
+            );
         }
     }
 
