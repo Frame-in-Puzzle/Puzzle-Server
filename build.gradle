@@ -99,11 +99,11 @@ jacocoTestReport {
 		})
 	}
 
-	finalizedBy 'jacocoTestCoverageVerification'
+//	finalizedBy 'jacocoTestCoverageVerification'
 }
 
 // 테스트 커버리지 체크 단위 설정 ( 빌드 성공 조건 )
-jacocoTestCoverageVerification {
+/*jacocoTestCoverageVerification {
 	violationRules {
 		rule {
 			enabled = true // 룰 적용
@@ -116,7 +116,7 @@ jacocoTestCoverageVerification {
 			}
 		}
 	}
-}
+}*/
 
 // ====================================== //
 
