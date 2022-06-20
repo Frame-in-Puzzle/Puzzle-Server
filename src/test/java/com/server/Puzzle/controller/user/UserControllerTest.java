@@ -1,6 +1,7 @@
-package com.server.Puzzle.domain.user.controller;
+package com.server.Puzzle.controller.user;
 
 import com.google.gson.Gson;
+import com.server.Puzzle.domain.user.controller.UserController;
 import com.server.Puzzle.domain.user.dto.UserUpdateDto;
 import com.server.Puzzle.domain.user.service.UserService;
 import com.server.Puzzle.global.enumType.Field;
