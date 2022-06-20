@@ -4,6 +4,7 @@ plugins {
 	id 'java'
 	id "com.ewerk.gradle.plugins.querydsl" version "1.0.10" //querydsl
 	id "io.franzbecker.gradle-lombok" version "3.0.0"
+	id 'jacoco'
 }
 
 group = 'com.server'
@@ -64,10 +65,62 @@ dependencies {
 }
 
 test {
+	// jacoco 사용 선언
+	jacoco {
+		enabled = true
+		destinationFile = file("$buildDir/jacoco/${name}.exec")
+		output = JacocoTaskExtension.Output.FILE
+	}
 	useJUnitPlatform()
+	finalizedBy 'jacocoTestReport'
 }
 
-//querydsl 추가 시작
+// ============== jacoco =============== //
+jacocoTestReport {
+	reports {
+		html.enabled true
+		xml.enabled false
+		csv.enabled false
+	}
+
+	// 테스트 커버리지를 제외하는 경로들 ( 초반에는 controller, service 로직에만 집중 )
+	afterEvaluate {
+		classDirectories.from = files(classDirectories.files.collect {
+			fileTree(dir: it, exclude: [
+					'**/exception/**'
+					,'**/dto/**'
+					,'**/repository/**'
+					,'**/config/**'
+					,'**/health_check/**'
+					,'**/Puzzle/PuzzleApplication*'
+					,'**/Puzzle/**/Q*'
+					,'**/Puzzle/global/**'
+			])
+		})
+	}
+
+	finalizedBy 'jacocoTestCoverageVerification'
+}
+
+// 테스트 커버리지 체크 단위 설정 ( 빌드 성공 조건 )
+jacocoTestCoverageVerification {
+	violationRules {
+		rule {
+			enabled = false // 룰 적용 안함
+			element = 'BUNDLE' // Bundle(패키지) 단위
+
+			limit {
+				counter = 'INSTRUCTION' // 커버리지 측정의 최소 단위를 Java 바이트코드 명령 수로 지정 ( Missed Instructions 가 50퍼센트 이상일때 )
+				value = 'COVEREDRATIO' // 커버된 개수
+				minimum = 0.50 // 50퍼센트 이상일시
+			}
+		}
+	}
+}
+
+// ====================================== //
+
+// ============== querydsl =============== //
 def querydslDir = "$buildDir/generated/querydsl"
 querydsl {
 	jpa = true
@@ -82,3 +135,4 @@ configurations {
 compileQuerydsl {
 	options.annotationProcessorPath = configurations.querydsl
 }
+// ====================================== //
