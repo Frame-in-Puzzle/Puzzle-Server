@@ -40,4 +40,16 @@ class UserControllerTest {
 
         resultActions.andExpect(status().isOk());
     }
+
+    @Test
+    public void 회원탈퇴_성공() throws Exception {
+        doNothing().when(userService)
+                .delete();
+
+        ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.delete("/api/user/delete")
+        );
+
+        resultActions.andExpect(status().isOk());
+    }
 }
