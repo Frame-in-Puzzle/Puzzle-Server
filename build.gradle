@@ -99,14 +99,14 @@ jacocoTestReport {
 		})
 	}
 
-//	finalizedBy 'jacocoTestCoverageVerification'
+	finalizedBy 'jacocoTestCoverageVerification'
 }
 
 // 테스트 커버리지 체크 단위 설정 ( 빌드 성공 조건 )
-/*jacocoTestCoverageVerification {
+jacocoTestCoverageVerification {
 	violationRules {
 		rule {
-			enabled = true // 룰 적용
+			enabled = false // 룰 적용 안함
 			element = 'BUNDLE' // Bundle(패키지) 단위
 
 			limit {
@@ -116,7 +116,7 @@ jacocoTestReport {
 			}
 		}
 	}
-}*/
+}
 
 // ====================================== //
 
