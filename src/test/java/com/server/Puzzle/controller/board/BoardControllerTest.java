@@ -15,14 +15,20 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.mock.web.MockPart;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.io.FileInputStream;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -65,8 +71,22 @@ public class BoardControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
-                .andExpect(content().string("Success"))
-                .andReturn().getResponse().getContentAsString();
+                .andExpect(content().string("Success"));
     }
+
+    @Test
+    void 이미지_주소_생성() throws Exception {
+        MockMultipartFile file = new MockMultipartFile("files",
+                "PuzzleLogo.png",
+                "image/png",
+                new FileInputStream("src/test/resources/PuzzleLogo.png"));
+
+        mockMvc.perform(
+                        multipart("/api/board/create-url")
+                                .file(file).part(new MockPart("PuzzleLogo.png",file.getBytes())))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
 
 }
