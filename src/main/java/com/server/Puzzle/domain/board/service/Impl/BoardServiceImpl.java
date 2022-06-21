@@ -72,7 +72,7 @@ public class BoardServiceImpl implements BoardService {
 
     @Transactional
     @Override
-    public Board correctionPost(Long id, CorrectionPostRequestDto request) {
+    public void correctionPost(Long id, CorrectionPostRequestDto request) {
         Board board = boardRepository.findById(id)
                 .orElseThrow(() -> new CustomException(BOARD_NOT_FOUND));
         if(!board.isAuthor(currentUserUtil.getCurrentUser())) throw new CustomException(BOARD_NOT_HAVE_PERMISSION);
@@ -93,8 +93,6 @@ public class BoardServiceImpl implements BoardService {
         List<String> saveFileUrlList = this.getSaveFileUrlList(board, request);
 
         if(saveFileUrlList == Collections.EMPTY_LIST) saveFiledUrls(saveFileUrlList, board);
-
-        return board;
     }
 
     @Override
