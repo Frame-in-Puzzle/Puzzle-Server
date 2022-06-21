@@ -5,6 +5,7 @@ import com.server.Puzzle.domain.board.controller.BoardController;
 import com.server.Puzzle.domain.board.dto.request.CorrectionPostRequestDto;
 import com.server.Puzzle.domain.board.dto.request.PostRequestDto;
 import com.server.Puzzle.domain.board.dto.response.GetAllPostResponseDto;
+import com.server.Puzzle.domain.board.dto.response.GetPostByTagResponseDto;
 import com.server.Puzzle.domain.board.dto.response.GetPostResponseDto;
 import com.server.Puzzle.domain.board.enumType.Purpose;
 import com.server.Puzzle.domain.board.enumType.Status;
@@ -49,8 +50,6 @@ public class BoardControllerTest {
 
     MockMvc mockMvc;
 
-    private static final String BASE_URI = "/api/board";
-
     @BeforeEach
     public void init() {
         mockMvc = MockMvcBuilders.standaloneSetup(boardController)
@@ -58,22 +57,15 @@ public class BoardControllerTest {
                 .build();
     }
 
+    private static final String BASE_URI = "/api/board";
+
     @Test
     void 게시물_등록() throws Exception {
         // given
         doNothing().when(boardService)
                 .post(any(PostRequestDto.class));
 
-        final String body = new Gson().toJson(PostRequestDto.builder()
-                .title("title")
-                .contents("contents")
-                .purpose(Purpose.PROJECT)
-                .status(Status.RECRUITMENT)
-                .introduce("this is board")
-                .fieldList(List.of(Field.BACKEND, Field.FRONTEND))
-                .languageList(List.of(Language.JAVA, Language.TS))
-                .fileUrlList(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
-                .build());
+        final String body = postBodyInfo();
 
         // when, then
         mockMvc.perform(
@@ -112,16 +104,7 @@ public class BoardControllerTest {
         doNothing().when(boardService)
                 .correctionPost(any(Long.class), any(CorrectionPostRequestDto.class));
 
-        final String body = new Gson().toJson(CorrectionPostRequestDto.builder()
-                .title("correctionTitle")
-                .contents("correctionContents")
-                .purpose(Purpose.PROJECT)
-                .status(Status.RECRUITMENT)
-                .introduce("this is board")
-                .fileUrlList(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
-                .languageList(List.of(Language.PYTORCH, Language.KOTLIN))
-                .fieldList(List.of(Field.AI, Field.ANDROID))
-                .build());
+        final String body = correctionPostBodyInfo();
 
         // when, then
         mockMvc.perform(
@@ -137,14 +120,7 @@ public class BoardControllerTest {
     @Test
     void 게시물_전체_조회() throws Exception {
         // given
-        final GetAllPostResponseDto response = GetAllPostResponseDto.builder()
-                .boardId(1L)
-                .title("title")
-                .status(Status.RECRUITMENT)
-                .createDateTime(LocalDateTime.now())
-                .image_url("url")
-                .introduce("hello")
-                .build();
+        final GetAllPostResponseDto response = allPostResponse();
 
         doReturn(new PageImpl<>(List.of(response))).when(boardService)
                 .getAllPost(any(Pageable.class));
@@ -163,26 +139,7 @@ public class BoardControllerTest {
     @Test
     void 게시물_단일_조회() throws Exception {
         // given
-        final GetPostResponseDto response = GetPostResponseDto.builder()
-                .id(1L)
-                .title("title")
-                .contents("contents")
-                .purpose(Purpose.PROJECT)
-                .status(Status.RECRUITMENT)
-                .name("name")
-                .githubId("githubId")
-                .createdAt(LocalDateTime.now())
-                .introduce("introduce")
-                .fields(
-                        List.of(Field.BACKEND)
-                )
-                .languages(
-                        List.of(Language.JAVA)
-                )
-                .files(
-                        List.of("url")
-                )
-                .build();
+        final GetPostResponseDto response = postResponse();
 
         doReturn(response).when(boardService)
                 .getPost(1L);
@@ -208,5 +165,101 @@ public class BoardControllerTest {
                 )
                 .andExpect(status().isOk())
                 .andDo(print());
+    }
+
+    @Test
+    void 게시물_태그조회() throws Exception {
+        // given
+        final GetPostByTagResponseDto response = postByTagResponse();
+
+        doReturn(new PageImpl<>(List.of(response)))
+                .when(boardService).getPostByTag(
+                        any(Purpose.class),
+                        anyList(),
+                        anyList(),
+                        any(Status.class),
+                        any(Pageable.class)
+                );
+
+        final String expectByTitle = "$..content[?(@.title == '%s')]";
+
+        // when, then
+        mockMvc.perform(
+                    get(BASE_URI.concat("/filter"))
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath(expectByTitle,"title").exists())
+                .andDo(print());
+    }
+
+    private String postBodyInfo() {
+        return new Gson().toJson(PostRequestDto.builder()
+                .title("title")
+                .contents("contents")
+                .purpose(Purpose.PROJECT)
+                .status(Status.RECRUITMENT)
+                .introduce("this is board")
+                .fieldList(List.of(Field.BACKEND, Field.FRONTEND))
+                .languageList(List.of(Language.JAVA, Language.TS))
+                .fileUrlList(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
+                .build());
+    }
+
+    private GetPostByTagResponseDto postByTagResponse() {
+        return GetPostByTagResponseDto.builder()
+                .boardId(1L)
+                .title("title")
+                .status(Status.RECRUITMENT)
+                .createdDate(LocalDateTime.now())
+                .fileUrl("url")
+                .introduce("introduce")
+                .build();
+    }
+
+    private String correctionPostBodyInfo() {
+        return new Gson().toJson(CorrectionPostRequestDto.builder()
+                .title("correctionTitle")
+                .contents("correctionContents")
+                .purpose(Purpose.PROJECT)
+                .status(Status.RECRUITMENT)
+                .introduce("this is board")
+                .fileUrlList(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
+                .languageList(List.of(Language.PYTORCH, Language.KOTLIN))
+                .fieldList(List.of(Field.AI, Field.ANDROID))
+                .build());
+    }
+
+    private GetAllPostResponseDto allPostResponse() {
+        return GetAllPostResponseDto.builder()
+                .boardId(1L)
+                .title("title")
+                .status(Status.RECRUITMENT)
+                .createDateTime(LocalDateTime.now())
+                .image_url("url")
+                .introduce("hello")
+                .build();
+    }
+
+    private GetPostResponseDto postResponse() {
+        return GetPostResponseDto.builder()
+                .id(1L)
+                .title("title")
+                .contents("contents")
+                .purpose(Purpose.PROJECT)
+                .status(Status.RECRUITMENT)
+                .name("name")
+                .githubId("githubId")
+                .createdAt(LocalDateTime.now())
+                .introduce("introduce")
+                .fields(
+                        List.of(Field.BACKEND)
+                )
+                .languages(
+                        List.of(Language.JAVA)
+                )
+                .files(
+                        List.of("url")
+                )
+                .build();
     }
 }
