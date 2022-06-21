@@ -55,6 +55,7 @@ public class BoardControllerTest {
     public void init() {
         mockMvc = MockMvcBuilders.standaloneSetup(boardController)
                 .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
+                .alwaysDo(print())
                 .build();
     }
 
@@ -75,8 +76,7 @@ public class BoardControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
-                .andExpect(content().string("Success"))
-                .andDo(print());
+                .andExpect(content().string("Success"));
     }
 
     @Test
@@ -92,8 +92,7 @@ public class BoardControllerTest {
                         multipart(BASE_URI.concat("/create-url"))
                                 .file(file).part(new MockPart("PuzzleLogo.png",file.getBytes())))
                 .andExpect(status().isOk())
-                .andExpect(content().string("url"))
-                .andDo(print());
+                .andExpect(content().string("url"));
     }
 
     @Test
@@ -111,8 +110,7 @@ public class BoardControllerTest {
                             .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
-                .andExpect(content().string("Success"))
-                .andDo(print());
+                .andExpect(content().string("Success"));
     }
 
     @Test
@@ -130,8 +128,7 @@ public class BoardControllerTest {
                     get(BASE_URI.concat("/all"))
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath(expectByTitle,"title").exists())
-                .andDo(print());
+                .andExpect(jsonPath(expectByTitle,"title").exists());
     }
 
     @Test
@@ -147,8 +144,7 @@ public class BoardControllerTest {
                     get(BASE_URI.concat("/{id}"),1L)
                 )
                 .andExpect(jsonPath("$.id",1).exists())
-                .andExpect(jsonPath("$.title","title").exists())
-                .andDo(print());
+                .andExpect(jsonPath("$.title","title").exists());
     }
 
     @Test
@@ -161,8 +157,7 @@ public class BoardControllerTest {
         mockMvc.perform(
                     delete(BASE_URI.concat("/{id}"),any(Long.class))
                 )
-                .andExpect(status().isOk())
-                .andDo(print());
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -186,8 +181,7 @@ public class BoardControllerTest {
                     get(BASE_URI.concat("/filter"))
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath(expectByTitle,"title").exists())
-                .andDo(print());
+                .andExpect(jsonPath(expectByTitle,"title").exists());
     }
 
     private String postBodyInfo() {
