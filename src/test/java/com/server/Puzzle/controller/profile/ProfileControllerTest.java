@@ -31,8 +31,10 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
@@ -70,7 +72,16 @@ public class ProfileControllerTest {
                         .queryParam("page", "0")
                         .queryParam("size", "5")
         );
-        resultActions.andExpect(status().isOk());
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].boardId", notNullValue()))
+                .andExpect(jsonPath("$.content[0].title", notNullValue()))
+                .andExpect(jsonPath("$.content[0].date", notNullValue()))
+                .andExpect(jsonPath("$.content[0].contents", notNullValue()))
+                .andExpect(jsonPath("$.content[0].introduce", notNullValue()))
+                .andExpect(jsonPath("$.content[0].status", notNullValue()))
+                .andExpect(jsonPath("$.content[0].thumbnail", notNullValue()))
+                .andExpect(jsonPath("$.content[0].fields", notNullValue()))
+                .andExpect(jsonPath("$.content[0].purpose", notNullValue()));
     }
 
     @Test
@@ -83,7 +94,14 @@ public class ProfileControllerTest {
 
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/profile/{githubId}", githubId));
 
-        resultActions.andExpect(status().isOk());
+        resultActions
+                .andExpect(jsonPath("email", notNullValue()))
+                .andExpect(jsonPath("name", notNullValue()))
+                .andExpect(jsonPath("bio", notNullValue()))
+                .andExpect(jsonPath("url", notNullValue()))
+                .andExpect(jsonPath("field", notNullValue()))
+                .andExpect(jsonPath("languages", notNullValue()))
+                .andExpect(jsonPath("imageUrl", notNullValue()));
         ;
     }
 
