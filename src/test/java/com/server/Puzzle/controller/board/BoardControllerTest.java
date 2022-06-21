@@ -29,6 +29,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -84,10 +85,7 @@ public class BoardControllerTest {
         doReturn("url").when(boardService)
                 .createUrl(any(MultipartFile.class));
 
-        final MockMultipartFile file = new MockMultipartFile("files",
-                "PuzzleLogo.png",
-                "image/png",
-                new FileInputStream("src/test/resources/PuzzleLogo.png"));
+        final MockMultipartFile file = settingFile();
 
         // when, then
         mockMvc.perform(
@@ -214,6 +212,13 @@ public class BoardControllerTest {
                 .fileUrl("url")
                 .introduce("introduce")
                 .build();
+    }
+
+    private MockMultipartFile settingFile() throws IOException {
+        return new MockMultipartFile("files",
+                "PuzzleLogo.png",
+                "image/png",
+                new FileInputStream("src/test/resources/PuzzleLogo.png"));
     }
 
     private String correctionPostBodyInfo() {
