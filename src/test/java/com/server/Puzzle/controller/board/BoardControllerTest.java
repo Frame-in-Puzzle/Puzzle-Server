@@ -195,4 +195,18 @@ public class BoardControllerTest {
                 .andExpect(jsonPath("$.title","title").exists())
                 .andDo(print());
     }
+
+    @Test
+    void 게시물_삭제() throws Exception {
+        // given
+        doNothing().when(boardService)
+                .deletePost(any(Long.class));
+
+        // when, then
+        mockMvc.perform(
+                    delete(BASE_URI.concat("/{id}"),any(Long.class))
+                )
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
 }
