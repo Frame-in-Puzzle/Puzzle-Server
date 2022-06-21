@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.filter.CharacterEncodingFilter;
 
 import java.util.List;
 
@@ -39,7 +40,10 @@ class UserControllerTest {
 
     @BeforeEach
     public void init() {
-        mockMvc = MockMvcBuilders.standaloneSetup(userController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(userController)
+                .addFilters(new CharacterEncodingFilter("UTF-8", true))
+                .alwaysDo(print())
+                .build();
     }
 
     @Test
@@ -48,7 +52,7 @@ class UserControllerTest {
         doNothing().when(userService)
                 .logout();
 
-        ResultActions resultActions = mockMvc.perform(
+        final ResultActions resultActions = mockMvc.perform(
                 MockMvcRequestBuilders.delete(URL + "/logout")
         );
 
@@ -60,7 +64,7 @@ class UserControllerTest {
         doNothing().when(userService)
                 .delete();
 
-        ResultActions resultActions = mockMvc.perform(
+        final ResultActions resultActions = mockMvc.perform(
                 MockMvcRequestBuilders.delete(URL + "/delete")
         );
 
@@ -74,19 +78,19 @@ class UserControllerTest {
         doNothing().when(userService)
                 .infoRegistration(any(UserUpdateDto.class));
 
-        ResultActions resultActions = mockMvc.perform(
+        final ResultActions resultActions = mockMvc.perform(
                 MockMvcRequestBuilders.put(URL + "/registration")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new Gson().toJson(userUpdateDto))
-
-        ).andDo(print());
+                        .characterEncoding("UTF-8")
+        );
 
         resultActions.andExpect(status().isOk());
     }
 
     private UserUpdateDto requestUserUpdateDto() {
         return UserUpdateDto.builder()
-                .name("hyunin")
+                .name("현인")
                 .email("hyunin0102@gmail.com")
                 .imageUrl("https://avatars.githubusercontent.com/u/68847615?v=4")
                 .bio("i am bio")

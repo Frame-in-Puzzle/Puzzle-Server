@@ -31,7 +31,8 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.hamcrest.Matchers.notNullValue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -61,58 +62,51 @@ public class ProfileControllerTest {
 
     @Test
     void 유저_작성글_조회_성공() throws Exception {
-        Pageable pageable = PageRequest.of(0, 5);
-        String githubId = "honghyunin";
+        final Pageable pageable = PageRequest.of(0, 5);
+        final String githubId = "honghyunin";
 
-        Page<UserBoardResponse> response = responseUserBoard(pageable);
+        final Page<UserBoardResponse> response = responseUserBoard(pageable);
 
         doReturn(response).when(profileService)
                 .getUserBoard(githubId, pageable);
 
-        ResultActions resultActions = mockMvc.perform(
+        final ResultActions resultActions = mockMvc.perform(
                 MockMvcRequestBuilders.get(URL + "/{githubId}/board", githubId)
                         .queryParam("page", "0")
                         .queryParam("size", "5")
         );
+
+        final String expectByTitle = "$..content[0].[?(@.title == '%s')]";
+
         resultActions.andExpect(status().isOk())
-                .andExpect(jsonPath("$.content[0].boardId", notNullValue()))
-                .andExpect(jsonPath("$.content[0].title", notNullValue()))
-                .andExpect(jsonPath("$.content[0].date", notNullValue()))
-                .andExpect(jsonPath("$.content[0].contents", notNullValue()))
-                .andExpect(jsonPath("$.content[0].introduce", notNullValue()))
-                .andExpect(jsonPath("$.content[0].status", notNullValue()))
-                .andExpect(jsonPath("$.content[0].thumbnail", notNullValue()))
-                .andExpect(jsonPath("$.content[0].fields", notNullValue()))
-                .andExpect(jsonPath("$.content[0].purpose", notNullValue()));
+                .andExpect(jsonPath(expectByTitle, "title").exists());
     }
 
     @Test
     void 유저_프로필_조회_성공() throws Exception {
-        String githubId = "honghyunin";
-        UserProfileResponse response = getUserProfile();
+        final String githubId = "honghyunin";
+        final UserProfileResponse response = getUserProfile();
 
         doReturn(response).when(profileService)
                 .getProfile(githubId);
 
-        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get(URL + "/{githubId}", githubId));
+        final ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get(URL + "/{githubId}", githubId));
 
-        resultActions
-                .andExpect(jsonPath("email", notNullValue()))
-                .andExpect(jsonPath("name", notNullValue()))
-                .andExpect(jsonPath("bio", notNullValue()))
-                .andExpect(jsonPath("url", notNullValue()))
-                .andExpect(jsonPath("field", notNullValue()))
-                .andExpect(jsonPath("languages", notNullValue()))
-                .andExpect(jsonPath("imageUrl", notNullValue()));
-        ;
+        final String expectByEmail = "$[?(@.email == '%s')]";
+
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath(expectByEmail, "hyunin0102@gmail.com").exists());
     }
 
     @Test
     void 유저_프로필_변경_성공() throws Exception {
-        ProfileUpdateDto request = profileInfo();
+        final ProfileUpdateDto request = profileInfo();
 
-        ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.get(URL + "/update")
+        doNothing().when(profileService)
+                .profileUpdate(any(ProfileUpdateDto.class));
+
+        final ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.put(URL + "/update")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(new Gson().toJson(request))
                         .characterEncoding("UTF-8")
