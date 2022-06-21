@@ -40,6 +40,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(MockitoExtension.class)
 public class ProfileControllerTest {
 
+    private static final String URL = "/api/profile/";
+
     @InjectMocks
     private ProfileController profileController;
 
@@ -68,7 +70,7 @@ public class ProfileControllerTest {
                 .getUserBoard(githubId, pageable);
 
         ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.get("/api/profile/{githubId}/board", githubId)
+                MockMvcRequestBuilders.get(URL + "/{githubId}/board", githubId)
                         .queryParam("page", "0")
                         .queryParam("size", "5")
         );
@@ -92,7 +94,7 @@ public class ProfileControllerTest {
         doReturn(response).when(profileService)
                 .getProfile(githubId);
 
-        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/profile/{githubId}", githubId));
+        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get(URL + "/{githubId}", githubId));
 
         resultActions
                 .andExpect(jsonPath("email", notNullValue()))
@@ -110,7 +112,7 @@ public class ProfileControllerTest {
         ProfileUpdateDto request = profileInfo();
 
         ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.get("/api/profile/update")
+                MockMvcRequestBuilders.get(URL + "/update")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(new Gson().toJson(request))
                         .characterEncoding("UTF-8")

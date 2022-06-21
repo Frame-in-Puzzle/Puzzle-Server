@@ -28,6 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(MockitoExtension.class)
 class UserControllerTest {
 
+    private static final String URL = "/api/user";
     @InjectMocks
     private UserController userController;
 
@@ -48,7 +49,7 @@ class UserControllerTest {
                 .logout();
 
         ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.delete("/api/user/logout")
+                MockMvcRequestBuilders.delete(URL + "/logout")
         );
 
         resultActions.andExpect(status().isOk());
@@ -60,7 +61,7 @@ class UserControllerTest {
                 .delete();
 
         ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.delete("/api/user/delete")
+                MockMvcRequestBuilders.delete(URL + "/delete")
         );
 
         resultActions.andExpect(status().isOk());
@@ -74,7 +75,7 @@ class UserControllerTest {
                 .infoRegistration(any(UserUpdateDto.class));
 
         ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.put("/api/user/registration")
+                MockMvcRequestBuilders.put(URL + "/registration")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new Gson().toJson(userUpdateDto))
 
