@@ -5,6 +5,7 @@ import com.server.Puzzle.domain.board.controller.BoardController;
 import com.server.Puzzle.domain.board.dto.request.CorrectionPostRequestDto;
 import com.server.Puzzle.domain.board.dto.request.PostRequestDto;
 import com.server.Puzzle.domain.board.dto.response.GetAllPostResponseDto;
+import com.server.Puzzle.domain.board.dto.response.GetPostResponseDto;
 import com.server.Puzzle.domain.board.enumType.Purpose;
 import com.server.Puzzle.domain.board.enumType.Status;
 import com.server.Puzzle.domain.board.service.BoardService;
@@ -29,7 +30,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.FileInputStream;
 import java.time.LocalDateTime;
 import java.util.List;
-
 
 import static org.mockito.ArgumentMatchers.any;
 
@@ -149,14 +149,50 @@ public class BoardControllerTest {
         doReturn(new PageImpl<>(List.of(response))).when(boardService)
                 .getAllPost(any(Pageable.class));
 
-        final String expectByContent = "$..content[?(@.title == '%s')]";
+        final String expectByTitle = "$..content[?(@.title == '%s')]";
 
         // when then
         mockMvc.perform(
                     get(BASE_URI.concat("/all"))
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath(expectByContent,"title").exists())
+                .andExpect(jsonPath(expectByTitle,"title").exists())
+                .andDo(print());
+    }
+
+    @Test
+    void 게시물_단일_조회() throws Exception {
+        // given
+        final GetPostResponseDto response = GetPostResponseDto.builder()
+                .id(1L)
+                .title("title")
+                .contents("contents")
+                .purpose(Purpose.PROJECT)
+                .status(Status.RECRUITMENT)
+                .name("name")
+                .githubId("githubId")
+                .createdAt(LocalDateTime.now())
+                .introduce("introduce")
+                .fields(
+                        List.of(Field.BACKEND)
+                )
+                .languages(
+                        List.of(Language.JAVA)
+                )
+                .files(
+                        List.of("url")
+                )
+                .build();
+
+        doReturn(response).when(boardService)
+                .getPost(1L);
+
+        // when, then
+        mockMvc.perform(
+                    get(BASE_URI.concat("/{id}"),1L)
+                )
+                .andExpect(jsonPath("$.id",1).exists())
+                .andExpect(jsonPath("$.title","title").exists())
                 .andDo(print());
     }
 }
