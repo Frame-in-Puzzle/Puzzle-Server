@@ -1,6 +1,8 @@
 package com.server.Puzzle.controller.attend;
 
+import com.google.gson.Gson;
 import com.server.Puzzle.domain.attend.controller.AttendController;
+import com.server.Puzzle.domain.attend.dto.request.PatchAttendRequest;
 import com.server.Puzzle.domain.attend.dto.response.FindAllAttendResponse;
 import com.server.Puzzle.domain.attend.enumtype.AttendStatus;
 import com.server.Puzzle.domain.attend.service.AttendService;
@@ -11,16 +13,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -62,7 +63,7 @@ public class AttendControllerTest {
                 .findAllAttend(any(Long.class));
 
         mockMvc.perform(
-                        get("/api/attend/board/{boardId}",any(Long.class))
+                    get("/api/attend/board/{boardId}",1L)
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(1L))
@@ -71,6 +72,22 @@ public class AttendControllerTest {
                 .andExpect(jsonPath("$[0].githubId").value("KyungJunNoh"))
                 .andExpect(jsonPath("$[0].imageUrl").value("url"))
                 .andExpect(jsonPath("$[0].attendStatus").value("WAIT"));
+    }
+
+    @Test
+    void 참가요청_상태_수정() throws Exception {
+        doNothing().when(attendService)
+                        .patchAttend(any(Long.class),any(PatchAttendRequest.class));
+
+        String body = patchAttendBody();
+
+        mockMvc.perform(
+                    patch("/api/attend/{attendId}", 1L)
+                            .content(body)
+                            .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andExpect(content().string("Success"));
     }
 
     private FindAllAttendResponse findAllAttendResponse() {
@@ -82,6 +99,12 @@ public class AttendControllerTest {
                 .imageUrl("url")
                 .attendStatus(AttendStatus.WAIT)
                 .build();
+    }
+
+    private String patchAttendBody() {
+        return new Gson().toJson(PatchAttendRequest.builder()
+                .attendStatus(AttendStatus.ACCEPT)
+                .build());
     }
 
 }
