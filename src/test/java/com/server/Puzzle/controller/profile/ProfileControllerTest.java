@@ -76,10 +76,8 @@ public class ProfileControllerTest {
                         .queryParam("size", "5")
         );
 
-        final String expectByTitle = "$..content[0].[?(@.title == '%s')]";
-
         resultActions.andExpect(status().isOk())
-                .andExpect(jsonPath(expectByTitle, "title").exists());
+                .andExpect(jsonPath("content[0].title").value("title"));
     }
 
     @Test
@@ -92,10 +90,8 @@ public class ProfileControllerTest {
 
         final ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get(URL + "/{githubId}", githubId));
 
-        final String expectByEmail = "$[?(@.email == '%s')]";
-
         resultActions.andExpect(status().isOk())
-                .andExpect(jsonPath(expectByEmail, "hyunin0102@gmail.com").exists());
+                .andExpect(jsonPath("email").value( "hyunin0102@gmail.com"));
     }
 
     @Test
