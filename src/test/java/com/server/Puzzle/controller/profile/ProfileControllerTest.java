@@ -22,21 +22,29 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.mock.web.MockPart;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.filter.CharacterEncodingFilter;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ProfileControllerTest {
@@ -102,13 +110,41 @@ public class ProfileControllerTest {
                 .profileUpdate(any(ProfileUpdateDto.class));
 
         final ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.put(URL + "/update")
+                put(URL + "/update")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(new Gson().toJson(request))
                         .characterEncoding("UTF-8")
         );
 
         resultActions.andExpect(status().isOk());
+    }
+
+    @Test
+    void 유저_프로필_사진_변경() throws Exception {
+        // given
+        doReturn("url").when(profileService)
+                .profileImageUpdate(any(MultipartFile.class));
+
+        MockMultipartFile file = settingFile();
+
+        MockHttpServletRequestBuilder builder = multipart(URL.concat("image/update"))
+                .file(file).part(new MockPart("PuzzleLogo.png", file.getBytes()))
+                .with(request -> {
+                    request.setMethod("PUT");
+                    return request;
+                });
+
+        // when, then
+        mockMvc.perform(builder)
+                .andExpect(status().isOk())
+                .andExpect(content().string("url"));
+    }
+
+    private MockMultipartFile settingFile() throws IOException {
+        return new MockMultipartFile("file",
+                "PuzzleLogo.png",
+                "image/png",
+                new FileInputStream("src/test/resources/PuzzleLogo.png"));
     }
 
     private ProfileUpdateDto profileInfo() {
