@@ -121,14 +121,12 @@ public class BoardControllerTest {
         doReturn(new PageImpl<>(List.of(response))).when(boardService)
                 .getAllPost(any(Pageable.class));
 
-        final String expectByTitle = "$..content[?(@.title == '%s')]";
-
         // when then
         mockMvc.perform(
                     get(BASE_URI.concat("/all"))
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath(expectByTitle,"title").exists());
+                .andExpect(jsonPath("$.content[0].title").value("title"));
     }
 
     @Test
@@ -143,8 +141,8 @@ public class BoardControllerTest {
         mockMvc.perform(
                     get(BASE_URI.concat("/{id}"),1L)
                 )
-                .andExpect(jsonPath("$.id",1).exists())
-                .andExpect(jsonPath("$.title","title").exists());
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.title").value("title"));
     }
 
     @Test
@@ -174,14 +172,12 @@ public class BoardControllerTest {
                         any(Pageable.class)
                 );
 
-        final String expectByTitle = "$..content[?(@.title == '%s')]";
-
         // when, then
         mockMvc.perform(
                     get(BASE_URI.concat("/filter"))
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath(expectByTitle,"title").exists());
+                .andExpect(jsonPath("$.content[0].title").value("title"));
     }
 
     private String postBodyInfo() {
