@@ -37,6 +37,8 @@ public class AttendControllerTest {
 
     MockMvc mockMvc;
 
+    private static final String BASE_URI = "/api/attend";
+
     @BeforeEach
     public void init(){
         mockMvc = MockMvcBuilders.standaloneSetup(attendController)
@@ -52,7 +54,7 @@ public class AttendControllerTest {
 
         // when, then
         mockMvc.perform(
-                    post("/api/attend/board/{boardId}",any(Long.class))
+                    post(BASE_URI.concat("/board/{boardId}"), any(Long.class))
                 )
                 .andExpect(status().isOk())
                 .andExpect(content().string("Success"));
@@ -68,7 +70,7 @@ public class AttendControllerTest {
 
         // when, then
         mockMvc.perform(
-                    get("/api/attend/board/{boardId}",1L)
+                    get(BASE_URI.concat("/board/{boardId}"), any(Long.class))
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(1L))
@@ -85,11 +87,11 @@ public class AttendControllerTest {
         doNothing().when(attendService)
                         .patchAttend(any(Long.class),any(PatchAttendRequest.class));
 
-        String body = patchAttendBody();
+        final String body = patchAttendBody();
 
         // when, then
         mockMvc.perform(
-                    patch("/api/attend/{attendId}", 1L)
+                    patch(BASE_URI.concat("/{attendId}"),1L)
                             .content(body)
                             .contentType(MediaType.APPLICATION_JSON)
                 )
@@ -105,7 +107,7 @@ public class AttendControllerTest {
 
         // when, then
         mockMvc.perform(
-                    delete("/api/attend/board/{boardId}", 1L)
+                    delete(BASE_URI.concat("/board/{boardId}"), any(Long.class))
                 )
                 .andExpect(status().isOk())
                 .andExpect(content().string("Success"));
@@ -119,7 +121,7 @@ public class AttendControllerTest {
 
         // when, then
         mockMvc.perform(
-                        get("/api/attend/status/board/{boardId}", 1L)
+                    get(BASE_URI.concat("/status/board/{boardId}"), any(Long.class))
                 )
                 .andExpect(status().isOk())
                 .andExpect(content().string("\"CAN\""));
