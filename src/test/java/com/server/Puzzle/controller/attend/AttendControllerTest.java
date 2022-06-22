@@ -17,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -85,6 +86,19 @@ public class AttendControllerTest {
                     patch("/api/attend/{attendId}", 1L)
                             .content(body)
                             .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andExpect(content().string("Success"));
+    }
+
+
+    @Test
+    void 참가요청_취소() throws Exception {
+        doNothing().when(attendService)
+                .deleteAttend(any(Long.class));
+
+        mockMvc.perform(
+                    delete("/api/attend/board/{boardId}", 1L)
                 )
                 .andExpect(status().isOk())
                 .andExpect(content().string("Success"));
