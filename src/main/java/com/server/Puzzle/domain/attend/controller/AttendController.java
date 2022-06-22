@@ -12,6 +12,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * AttendController <br>
+ * 프로젝트, 대회, 서비스 등의 참가 Controller
+ */
 @RequestMapping("/api/attend")
 @RequiredArgsConstructor
 @RestController
@@ -19,6 +23,11 @@ public class AttendController {
 
     private final AttendService attendService;
 
+    /**
+     * 참가요청
+     * @param boardId
+     * @return ResponseEntity - Success
+     */
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header")
     })
@@ -28,12 +37,23 @@ public class AttendController {
         return ResponseEntity.ok("Success");
     }
 
+    /**
+     * 참가요청목록 전체조회
+     * @param boardId
+     * @return List FindAllAttendResponse - id, languages, name, githubId, imageUrl, attendStatus
+     */
     @GetMapping("/board/{boardId}")
     public ResponseEntity<List<FindAllAttendResponse>> FindAllAttend(@PathVariable Long boardId){
         List<FindAllAttendResponse> response = attendService.findAllAttend(boardId);
         return ResponseEntity.ok().body(response);
     }
 
+    /**
+     * 참가요청 상태 수정
+     * @param attendId
+     * @param patchAttendRequest attendStatus
+     * @return ResponseEntity - Success
+     */
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header")
     })
@@ -43,6 +63,11 @@ public class AttendController {
         return ResponseEntity.ok("Success");
     }
 
+    /**
+     * 참가요청 취소
+     * @param boardId
+     * @return ResponseEntity - Success
+     */
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header")
     })
@@ -52,6 +77,11 @@ public class AttendController {
         return ResponseEntity.ok("Success");
     }
 
+    /**
+     * 참가요청 상태확인
+     * @param boardId
+     * @return IsAttendStatus(Enum)
+     */
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header")
     })

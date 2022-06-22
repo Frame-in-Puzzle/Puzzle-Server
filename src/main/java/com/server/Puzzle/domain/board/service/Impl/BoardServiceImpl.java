@@ -35,6 +35,10 @@ import java.util.stream.Collectors;
 
 import static com.server.Puzzle.global.exception.ErrorCode.*;
 
+/**
+ * BoardServiceImpl <br>
+ * Puzzle 게시글 서비스 로직
+ */
 @RequiredArgsConstructor
 @Service
 public class BoardServiceImpl implements BoardService {
@@ -50,6 +54,10 @@ public class BoardServiceImpl implements BoardService {
     private final BoardFieldRepository boardFieldRepository;
     private final BoardLanguageRepository boardLanguageRepository;
 
+    /**
+     * 게시글을 저장하는 서비스로직
+     * @param request title, contents, purpose, status, introduce, fieldList, languageList, fileUrlList
+     */
     @Override
     public void post(PostRequestDto request) {
         Board board = boardRepository.save(
@@ -61,8 +69,11 @@ public class BoardServiceImpl implements BoardService {
         saveLanguages(request.getLanguageList(), board);
     }
 
-
-
+    /**
+     * 이미지 url을 생성하는 서비스 로직
+     * @param files
+     * @return s3Url + filename
+     */
     @Override
     public String createUrl(MultipartFile files) {
         String filename = awsS3Util.putS3(files);
@@ -70,6 +81,11 @@ public class BoardServiceImpl implements BoardService {
         return s3Url + filename;
     }
 
+    /**
+     * 게시글을 수정하는 서비스 로직
+     * @param id
+     * @param request title, contents, purpose, status, introduce, fileUrlList, fieldList, languageList
+     */
     @Transactional
     @Override
     public void correctionPost(Long id, CorrectionPostRequestDto request) {
@@ -95,6 +111,11 @@ public class BoardServiceImpl implements BoardService {
         if(saveFileUrlList == Collections.EMPTY_LIST) saveFiledUrls(saveFileUrlList, board);
     }
 
+    /**
+     * 게시글을 전체조회하는 서비스 로직
+     * @param pageable
+     * @return List GetAllPostResponseDto - boardId, title, status, createDateTime, image_url, introduce
+     */
     @Override
     public Page<GetAllPostResponseDto> getAllPost(Pageable pageable) {
         return boardRepository.findAll(pageable).map(
@@ -112,6 +133,11 @@ public class BoardServiceImpl implements BoardService {
         );
     }
 
+    /**
+     * 게시글을 세부조회하는 서비스 로직
+     * @param id
+     * @return GetPostResponseDto - id, title, contents, purpose, status, name, githubId, introduce, createDateTime, fields, languages, files
+     */
     @Override
     public GetPostResponseDto getPost(Long id) {
         return boardRepository.findById(id).map(
@@ -144,6 +170,10 @@ public class BoardServiceImpl implements BoardService {
         ).orElseThrow(() -> new CustomException(BOARD_NOT_FOUND));
     }
 
+    /**
+     * 게시글을 삭제하는 서비스 로직
+     * @param id
+     */
     @Override
     public void deletePost(Long id) {
         Board board = boardRepository.findById(id)
@@ -158,6 +188,15 @@ public class BoardServiceImpl implements BoardService {
         }
     }
 
+    /**
+     * 게시글을 태그조회하는 서비스로직
+     * @param purpose
+     * @param field
+     * @param language
+     * @param status
+     * @param pageable
+     * @return Page GetPostByTagResponseDto - boardId, title, status, createdDate, fileUrl, introduce
+     */
     @Override
     public Page<GetPostByTagResponseDto> getPostByTag(Purpose purpose, List<Field> field, List<Language> language, Status status, Pageable pageable) {
         return boardRepository.findBoardByTag(purpose, field, language, status, pageable);
