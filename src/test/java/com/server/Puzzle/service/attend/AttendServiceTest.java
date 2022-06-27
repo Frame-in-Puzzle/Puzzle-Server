@@ -64,9 +64,9 @@ public class AttendServiceTest {
             .purpose(Purpose.PROJECT)
             .status(Status.RECRUITMENT)
             .introduce("this is board")
-            .fields(List.of(Field.BACKEND,Field.FRONTEND))
-            .languages(List.of(Language.JAVA,Language.TS))
-            .fileUrls(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
+            .fieldList(List.of(Field.BACKEND,Field.FRONTEND))
+            .languageList(List.of(Language.JAVA,Language.TS))
+            .fileUrlList(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
             .build();
 
     @BeforeEach

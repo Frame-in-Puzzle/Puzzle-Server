@@ -64,9 +64,9 @@ public class BoardServiceImpl implements BoardService {
                 request.dtoToEntity(currentUserUtil.getCurrentUser())
         );
 
-        saveFiledUrls(request.getFileUrls(), board);
-        saveFileds(request.getFields(), board);
-        saveLanguages(request.getLanguages(), board);
+        saveFiledUrls(request.getFileUrlList(), board);
+        saveFileds(request.getFieldList(), board);
+        saveLanguages(request.getLanguageList(), board);
     }
 
     /**
@@ -103,8 +103,8 @@ public class BoardServiceImpl implements BoardService {
         boardFieldRepository.deleteByBoardId(board.getId());
         boardLanguageRepository.deleteByBoardId(board.getId());
 
-        saveFileds(request.getFields(), board);
-        saveLanguages(request.getLanguages(), board);
+        saveFileds(request.getFieldList(), board);
+        saveLanguages(request.getLanguageList(), board);
 
         List<String> saveFileUrlList = this.getSaveFileUrlList(board, request);
 
@@ -124,7 +124,7 @@ public class BoardServiceImpl implements BoardService {
                         .title(board.getTitle())
                         .status(board.getStatus())
                         .createDateTime(board.getCreatedDate())
-                        .imageUrl(
+                        .image_url(
                                 board.getBoardFiles().stream()
                                         .map(BoardFile::getUrl)
                                         .findFirst().orElse(null)
@@ -237,7 +237,7 @@ public class BoardServiceImpl implements BoardService {
 
     private List<String> getSaveFileUrlList(Board board, CorrectionPostRequestDto request){
         List<BoardFile> dbBoardFileList = boardFileRepository.findByBoardId(board.getId());
-        List<String> requestFileUrlList = request.getFileUrls();
+        List<String> requestFileUrlList = request.getFileUrlList();
         List<String> addFileList = new ArrayList<>();
 
         if(CollectionUtils.isEmpty(dbBoardFileList)) { // db에 url 이 없다면,

@@ -55,9 +55,9 @@ public class BoardServiceTest {
             .purpose(Purpose.PROJECT)
             .status(Status.RECRUITMENT)
             .introduce("this is board")
-            .fields(List.of(Field.BACKEND,Field.FRONTEND))
-            .languages(List.of(Language.JAVA,Language.TS))
-            .fileUrls(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
+            .fieldList(List.of(Field.BACKEND,Field.FRONTEND))
+            .languageList(List.of(Language.JAVA,Language.TS))
+            .fileUrlList(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
             .build();
 
     @BeforeEach
@@ -103,19 +103,19 @@ public class BoardServiceTest {
                 board.getBoardFields().stream()
                 .map(b -> b.getField())
                 .collect(Collectors.toList())
-        ).isEqualTo(postRequestDto.getFields());
+        ).isEqualTo(postRequestDto.getFieldList());
 
         assertThat(
                 board.getBoardLanguages().stream()
                         .map(b -> b.getLanguage())
                         .collect(Collectors.toList())
-        ).isEqualTo(postRequestDto.getLanguages());
+        ).isEqualTo(postRequestDto.getLanguageList());
 
         assertThat(
                 board.getBoardFiles().stream()
                 .map(b -> b.getUrl())
                 .collect(Collectors.toList())
-        ).isEqualTo(postRequestDto.getFileUrls());
+        ).isEqualTo(postRequestDto.getFileUrlList());
     }
 
     @Test
@@ -127,9 +127,9 @@ public class BoardServiceTest {
                 .purpose(Purpose.PROJECT)
                 .status(Status.RECRUITMENT)
                 .introduce("this is board")
-                .fileUrls(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
-                .languages(List.of(Language.PYTORCH, Language.KOTLIN))
-                .fields(List.of(Field.AI,Field.ANDROID))
+                .fileUrlList(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
+                .languageList(List.of(Language.PYTORCH, Language.KOTLIN))
+                .fieldList(List.of(Field.AI,Field.ANDROID))
                 .build();
 
         boardService.post(postRequestDto);
@@ -194,9 +194,9 @@ public class BoardServiceTest {
                 .purpose(Purpose.PROJECT)
                 .status(Status.RECRUITMENT)
                 .introduce("this is introduce")
-                .fields(List.of(Field.BACKEND,Field.FRONTEND))
-                .languages(List.of(Language.JAVA,Language.TS))
-                .fileUrls(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
+                .fieldList(List.of(Field.BACKEND,Field.FRONTEND))
+                .languageList(List.of(Language.JAVA,Language.TS))
+                .fileUrlList(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
                 .build();
 
         PostRequestDto postRequestDto2 = PostRequestDto.builder()
@@ -205,9 +205,9 @@ public class BoardServiceTest {
                 .introduce("this is introduce")
                 .purpose(Purpose.SERVICE)
                 .status(Status.RECRUITMENT)
-                .fields(List.of(Field.BACKEND,Field.FRONTEND))
-                .languages(List.of(Language.SPRINGBOOT,Language.REACT))
-                .fileUrls(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
+                .fieldList(List.of(Field.BACKEND,Field.FRONTEND))
+                .languageList(List.of(Language.SPRINGBOOT,Language.REACT))
+                .fileUrlList(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
                 .build();
 
         PostRequestDto postRequestDto3 = PostRequestDto.builder()
@@ -216,9 +216,9 @@ public class BoardServiceTest {
                 .introduce("this is introduce")
                 .purpose(Purpose.STUDY)
                 .status(Status.RECRUITMENT)
-                .fields(List.of(Field.AI,Field.GAME))
-                .languages(List.of(Language.PYTORCH,Language.UNITY))
-                .fileUrls(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
+                .fieldList(List.of(Field.AI,Field.GAME))
+                .languageList(List.of(Language.PYTORCH,Language.UNITY))
+                .fileUrlList(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
                 .build();
 
         boardService.post(postRequestDto1);
