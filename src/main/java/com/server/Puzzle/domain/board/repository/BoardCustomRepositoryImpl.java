@@ -3,7 +3,7 @@ package com.server.Puzzle.domain.board.repository;
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.server.Puzzle.domain.board.domain.Board;
-import com.server.Puzzle.domain.board.domain.BoardFile;
+import com.server.Puzzle.domain.board.domain.BoardImage;
 import com.server.Puzzle.domain.board.dto.response.GetPostByTagResponseDto;
 import com.server.Puzzle.domain.board.enumType.Purpose;
 import com.server.Puzzle.domain.board.enumType.Status;
@@ -114,8 +114,8 @@ public class BoardCustomRepositoryImpl implements BoardCustomRepository{
                                 .status(b.getStatus())
                                 .createdDate(b.getCreatedDate())
                                 .introduce(b.getIntroduce())
-                                .fileUrl(b.getBoardFiles().stream()
-                                            .map(BoardFile::getUrl)
+                                .thumbnail(b.getBoardImages().stream()
+                                            .map(BoardImage::getImageUrl)
                                             .findFirst().orElse(null))
                         .build()
                 ).collect(Collectors.toList());

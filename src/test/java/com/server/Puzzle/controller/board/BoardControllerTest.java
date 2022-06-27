@@ -85,12 +85,12 @@ public class BoardControllerTest {
         doReturn("url").when(boardService)
                 .createUrl(any(MultipartFile.class));
 
-        final MockMultipartFile file = settingFile();
+        final MockMultipartFile image = settingImage();
 
         // when, then
         mockMvc.perform(
                         multipart(BASE_URI.concat("/create-url"))
-                                .file(file).part(new MockPart("PuzzleLogo.png",file.getBytes())))
+                                .file(image).part(new MockPart("PuzzleLogo.png",image.getBytes())))
                 .andExpect(status().isOk())
                 .andExpect(content().string("url"));
     }
@@ -105,7 +105,7 @@ public class BoardControllerTest {
 
         // when, then
         mockMvc.perform(
-                    put(BASE_URI.concat("/{id}"),1L)
+                    put(BASE_URI.concat("/{boardId}"),1L)
                             .content(body)
                             .contentType(MediaType.APPLICATION_JSON)
                 )
@@ -139,7 +139,7 @@ public class BoardControllerTest {
 
         // when, then
         mockMvc.perform(
-                    get(BASE_URI.concat("/{id}"),1L)
+                    get(BASE_URI.concat("/{boardId}"),1L)
                 )
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.title").value("title"));
@@ -153,7 +153,7 @@ public class BoardControllerTest {
 
         // when, then
         mockMvc.perform(
-                    delete(BASE_URI.concat("/{id}"),any(Long.class))
+                    delete(BASE_URI.concat("/{boardId}"),any(Long.class))
                 )
                 .andExpect(status().isOk());
     }
@@ -187,9 +187,9 @@ public class BoardControllerTest {
                 .purpose(Purpose.PROJECT)
                 .status(Status.RECRUITMENT)
                 .introduce("this is board")
-                .fieldList(List.of(Field.BACKEND, Field.FRONTEND))
-                .languageList(List.of(Language.JAVA, Language.TS))
-                .fileUrlList(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
+                .fields(List.of(Field.BACKEND, Field.FRONTEND))
+                .languages(List.of(Language.JAVA, Language.TS))
+                .imageUrls(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
                 .build());
     }
 
@@ -199,13 +199,13 @@ public class BoardControllerTest {
                 .title("title")
                 .status(Status.RECRUITMENT)
                 .createdDate(LocalDateTime.now())
-                .fileUrl("url")
+                .thumbnail("url")
                 .introduce("introduce")
                 .build();
     }
 
-    private MockMultipartFile settingFile() throws IOException {
-        return new MockMultipartFile("files",
+    private MockMultipartFile settingImage() throws IOException {
+        return new MockMultipartFile("image",
                 "PuzzleLogo.png",
                 "image/png",
                 new FileInputStream("src/test/resources/PuzzleLogo.png"));
@@ -218,9 +218,9 @@ public class BoardControllerTest {
                 .purpose(Purpose.PROJECT)
                 .status(Status.RECRUITMENT)
                 .introduce("this is board")
-                .fileUrlList(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
-                .languageList(List.of(Language.PYTORCH, Language.KOTLIN))
-                .fieldList(List.of(Field.AI, Field.ANDROID))
+                .imageUrls(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
+                .languages(List.of(Language.PYTORCH, Language.KOTLIN))
+                .fields(List.of(Field.AI, Field.ANDROID))
                 .build());
     }
 
@@ -230,7 +230,7 @@ public class BoardControllerTest {
                 .title("title")
                 .status(Status.RECRUITMENT)
                 .createDateTime(LocalDateTime.now())
-                .image_url("url")
+                .thumbnail("url")
                 .introduce("hello")
                 .build();
     }
@@ -252,7 +252,7 @@ public class BoardControllerTest {
                 .languages(
                         List.of(Language.JAVA)
                 )
-                .files(
+                .imageUrls(
                         List.of("url")
                 )
                 .build();

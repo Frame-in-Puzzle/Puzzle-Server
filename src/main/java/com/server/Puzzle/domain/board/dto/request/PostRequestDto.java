@@ -21,9 +21,9 @@ public class PostRequestDto {
     private Purpose purpose;
     private Status status;
     private String introduce;
-    private List<Field> fieldList;
-    private List<Language> languageList;
-    private List<String> fileUrlList;
+    private List<Field> fields;
+    private List<Language> languages;
+    private List<String> imageUrls;
 
     public Board dtoToEntity(User user){
         return Board.builder()

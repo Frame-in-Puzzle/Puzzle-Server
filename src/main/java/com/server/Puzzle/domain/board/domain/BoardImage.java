@@ -8,18 +8,18 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder @Getter
-@Entity @Table(name = "Board_File")
-public class BoardFile extends BaseTimeEntity {
+@Entity @Table(name = "Board_Image")
+public class BoardImage extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "board_file_id")
+    @Column(name = "board_image_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id", nullable = false)
     private Board board;
 
-    @Column(name = "board_file_url")
-    private String url;
+    @Column(name = "board_image_url")
+    private String imageUrl;
 
 }

@@ -139,9 +139,9 @@ public class ProfileServiceTest {
                 .introduce("hi i'm introduce")
                 .purpose(Purpose.PROJECT)
                 .status(Status.RECRUITMENT)
-                .fieldList(List.of(Field.BACKEND, Field.FRONTEND))
-                .languageList(List.of(Language.JAVA, Language.TS))
-                .fileUrlList(List.of("google.com", "naver.com"))
+                .fields(List.of(Field.BACKEND, Field.FRONTEND))
+                .languages(List.of(Language.JAVA, Language.TS))
+                .imageUrls(List.of("google.com", "naver.com"))
                 .build();
 
         boardService.post(postRequestDto);
@@ -152,7 +152,7 @@ public class ProfileServiceTest {
 
         assertEquals(board.map(UserBoardResponse::getContents).get().findFirst().get(), "contents");
 
-        assertEquals(board.map(UserBoardResponse::getFields).get().findFirst().get(), postRequestDto.getFieldList());
+        assertEquals(board.map(UserBoardResponse::getFields).get().findFirst().get(), postRequestDto.getFields());
         
     }
 }
