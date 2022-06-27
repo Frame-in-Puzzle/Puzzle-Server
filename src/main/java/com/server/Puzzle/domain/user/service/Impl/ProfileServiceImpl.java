@@ -59,7 +59,7 @@ public class ProfileServiceImpl implements ProfileService {
 
         User user = currentUserUtil.getCurrentUser();
 
-        List<Language> languageList = profileUpdateDto.getLanguage();
+        List<Language> languageList = profileUpdateDto.getLanguages();
 
         userLanguageRepo.deleteAllByUserId(user.getId());
 
