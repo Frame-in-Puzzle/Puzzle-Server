@@ -2,7 +2,7 @@ package com.server.Puzzle.global.config.dev;
 
 import com.server.Puzzle.domain.board.domain.Board;
 import com.server.Puzzle.domain.board.domain.BoardField;
-import com.server.Puzzle.domain.board.domain.BoardFile;
+import com.server.Puzzle.domain.board.domain.BoardImage;
 import com.server.Puzzle.domain.board.domain.BoardLanguage;
 import com.server.Puzzle.domain.board.enumType.Purpose;
 import com.server.Puzzle.domain.board.enumType.Status;
@@ -176,9 +176,9 @@ public class GenerateUser {
     private void saveFiles(List<String> fileList, Board board) {
         for (String url : fileList) {
             boardFileRepository.save(
-                    BoardFile.builder()
+                    BoardImage.builder()
                             .board(board)
-                            .url(url)
+                            .imageUrl(url)
                             .build()
             );
         }

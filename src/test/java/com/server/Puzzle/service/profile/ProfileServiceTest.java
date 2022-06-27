@@ -141,7 +141,7 @@ public class ProfileServiceTest {
                 .status(Status.RECRUITMENT)
                 .fields(List.of(Field.BACKEND, Field.FRONTEND))
                 .languages(List.of(Language.JAVA, Language.TS))
-                .fileUrls(List.of("google.com", "naver.com"))
+                .imageUrls(List.of("google.com", "naver.com"))
                 .build();
 
         boardService.post(postRequestDto);

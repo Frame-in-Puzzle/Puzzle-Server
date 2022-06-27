@@ -19,7 +19,7 @@ public class CorrectionPostRequestDto {
     private Purpose purpose;
     private Status status;
     private String introduce;
-    private List<String> fileUrls;
+    private List<String> imageUrls;
     private List<Field> fields;
     private List<Language> languages;
 

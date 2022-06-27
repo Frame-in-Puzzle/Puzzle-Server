@@ -1,7 +1,7 @@
 package com.server.Puzzle.domain.user.service.Impl;
 
 import com.server.Puzzle.domain.board.domain.BoardField;
-import com.server.Puzzle.domain.board.domain.BoardFile;
+import com.server.Puzzle.domain.board.domain.BoardImage;
 import com.server.Puzzle.domain.board.repository.BoardRepository;
 import com.server.Puzzle.domain.user.domain.User;
 import com.server.Puzzle.domain.user.domain.UserLanguage;
@@ -106,8 +106,8 @@ public class ProfileServiceImpl implements ProfileService {
                         .purpose(board.getPurpose())
                         .status(board.getStatus())
                         .thumbnail(
-                                board.getBoardFiles().stream()
-                                        .map(BoardFile::getUrl)
+                                board.getBoardImages().stream()
+                                        .map(BoardImage::getImageUrl)
                                         .findFirst()
                                         .orElse(null))
                         .fields(board.getBoardFields().stream()

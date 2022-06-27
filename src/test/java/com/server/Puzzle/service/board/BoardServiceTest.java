@@ -57,7 +57,7 @@ public class BoardServiceTest {
             .introduce("this is board")
             .fields(List.of(Field.BACKEND,Field.FRONTEND))
             .languages(List.of(Language.JAVA,Language.TS))
-            .fileUrls(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
+            .imageUrls(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
             .build();
 
     @BeforeEach
@@ -112,10 +112,10 @@ public class BoardServiceTest {
         ).isEqualTo(postRequestDto.getLanguages());
 
         assertThat(
-                board.getBoardFiles().stream()
-                .map(b -> b.getUrl())
+                board.getBoardImages().stream()
+                .map(b -> b.getImageUrl())
                 .collect(Collectors.toList())
-        ).isEqualTo(postRequestDto.getFileUrls());
+        ).isEqualTo(postRequestDto.getImageUrls());
     }
 
     @Test
@@ -127,7 +127,7 @@ public class BoardServiceTest {
                 .purpose(Purpose.PROJECT)
                 .status(Status.RECRUITMENT)
                 .introduce("this is board")
-                .fileUrls(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
+                .imageUrls(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
                 .languages(List.of(Language.PYTORCH, Language.KOTLIN))
                 .fields(List.of(Field.AI,Field.ANDROID))
                 .build();
@@ -196,7 +196,7 @@ public class BoardServiceTest {
                 .introduce("this is introduce")
                 .fields(List.of(Field.BACKEND,Field.FRONTEND))
                 .languages(List.of(Language.JAVA,Language.TS))
-                .fileUrls(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
+                .imageUrls(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
                 .build();
 
         PostRequestDto postRequestDto2 = PostRequestDto.builder()
@@ -207,7 +207,7 @@ public class BoardServiceTest {
                 .status(Status.RECRUITMENT)
                 .fields(List.of(Field.BACKEND,Field.FRONTEND))
                 .languages(List.of(Language.SPRINGBOOT,Language.REACT))
-                .fileUrls(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
+                .imageUrls(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
                 .build();
 
         PostRequestDto postRequestDto3 = PostRequestDto.builder()
@@ -218,7 +218,7 @@ public class BoardServiceTest {
                 .status(Status.RECRUITMENT)
                 .fields(List.of(Field.AI,Field.GAME))
                 .languages(List.of(Language.PYTORCH,Language.UNITY))
-                .fileUrls(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
+                .imageUrls(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
                 .build();
 
         boardService.post(postRequestDto1);

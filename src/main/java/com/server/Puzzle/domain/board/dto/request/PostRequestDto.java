@@ -23,7 +23,7 @@ public class PostRequestDto {
     private String introduce;
     private List<Field> fields;
     private List<Language> languages;
-    private List<String> fileUrls;
+    private List<String> imageUrls;
 
     public Board dtoToEntity(User user){
         return Board.builder()

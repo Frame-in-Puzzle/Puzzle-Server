@@ -57,7 +57,7 @@ public class Board extends BaseTimeEntity {
             cascade = CascadeType.REMOVE,
             orphanRemoval = true
     )
-    private List<BoardFile> boardFiles;
+    private List<BoardImage> boardImages;
 
     @OneToMany(
             mappedBy = "board",

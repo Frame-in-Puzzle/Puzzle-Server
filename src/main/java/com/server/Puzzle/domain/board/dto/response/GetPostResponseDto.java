@@ -26,6 +26,6 @@ public class GetPostResponseDto {
     private LocalDateTime createdAt;
     private List<Field> fields;
     private List<Language> languages;
-    private List<String> files;
+    private List<String> imageUrls;
 
 }
