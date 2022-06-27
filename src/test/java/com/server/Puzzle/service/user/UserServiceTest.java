@@ -65,7 +65,7 @@ public class UserServiceTest {
                 .oauthIdx("68847615")
                 .email("hyunin0102@gmail.com")
                 .name("홍현인")
-                .imageUrl("https://avatars.githubusercontent.com/u/68847615?v=4")
+                .profileImageUrl("https://avatars.githubusercontent.com/u/68847615?v=4")
                 .bio("한줄소개")
                 .field(BACKEND)
                 .url("https://github.com/honghyunin")
@@ -157,7 +157,7 @@ public class UserServiceTest {
     void 첫_방문_시_정보등록() {
         UserUpdateDto userUpdateDto = UserUpdateDto.builder()
                 .name("인현홍")
-                .imageUrl("imageUrl")
+                .profileImageUrl("imageUrl")
                 .bio("bio")
                 .languages(List.of(TS, REACT))
                 .field(BACKEND)

@@ -77,7 +77,7 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     public String profileImageUpdate(MultipartFile multipartFile) {
         User currentUser = currentUserUtil.getCurrentUser();
-        String profileImageUrl = currentUser.getImageUrl();
+        String profileImageUrl = currentUser.getProfileImageUrl();
 
         if (!profileImageUrl.substring(38).equals(GITHUB_IMAGE_URL)) {
             awsS3Util.deleteS3(profileImageUrl);
@@ -85,7 +85,7 @@ public class ProfileServiceImpl implements ProfileService {
 
         String fileName = awsS3Util.putS3(multipartFile);
         String s3fileURL = s3Url + fileName;
-        currentUser.updateImageUrl(s3fileURL);
+        currentUser.updateProfileImageUrl(s3fileURL);
 
         return s3fileURL;
     }

@@ -26,7 +26,7 @@ public class UserProfile {
                 .email(email)
                 .name(name)
                 .githubId(githubId)
-                .imageUrl(imageUrl)
+                .profileImageUrl(imageUrl)
                 .bio(bio)
                 .isFirstVisited(true)
                 .build();
