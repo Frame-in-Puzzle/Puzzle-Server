@@ -49,6 +49,17 @@ public class BoardServiceTest {
     @Autowired
     private EntityManager em;
 
+    final PostRequestDto postRequestDto = PostRequestDto.builder()
+            .title("title")
+            .contents("contents")
+            .purpose(Purpose.PROJECT)
+            .status(Status.RECRUITMENT)
+            .introduce("this is board")
+            .fieldList(List.of(Field.BACKEND,Field.FRONTEND))
+            .languageList(List.of(Language.JAVA,Language.TS))
+            .fileUrlList(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
+            .build();
+
     @BeforeEach
     void 로그인_되어있는_유저를_확인() {
         // given // when
@@ -79,18 +90,7 @@ public class BoardServiceTest {
 
     @Test
     void 게시물_등록(){
-        // given
-        PostRequestDto postRequestDto = PostRequestDto.builder()
-                .title("title")
-                .contents("contents")
-                .purpose(Purpose.PROJECT)
-                .status(Status.RECRUITMENT)
-                .fieldList(List.of(Field.BACKEND,Field.FRONTEND))
-                .languageList(List.of(Language.JAVA,Language.TS))
-                .fileUrlList(List.of("google.com","naver.com"))
-                .build();
-
-        // when
+        // given // when
         boardService.post(postRequestDto);
         em.clear();
 
@@ -121,21 +121,12 @@ public class BoardServiceTest {
     @Test
     void 게시물_수정(){
         // given
-        PostRequestDto postRequestDto = PostRequestDto.builder()
-                .title("title")
-                .contents("contents")
-                .purpose(Purpose.PROJECT)
-                .status(Status.RECRUITMENT)
-                .fieldList(List.of(Field.BACKEND,Field.FRONTEND))
-                .languageList(List.of(Language.JAVA,Language.TS))
-                .fileUrlList(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
-                .build();
-
         CorrectionPostRequestDto correctionPostRequestDto = CorrectionPostRequestDto.builder()
                 .title("correctionTitle")
                 .contents("correctionContents")
                 .purpose(Purpose.PROJECT)
                 .status(Status.RECRUITMENT)
+                .introduce("this is board")
                 .fileUrlList(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
                 .languageList(List.of(Language.PYTORCH, Language.KOTLIN))
                 .fieldList(List.of(Field.AI,Field.ANDROID))
@@ -157,16 +148,6 @@ public class BoardServiceTest {
     @Test
     void 게시물_전체_조회(){
         // given
-        PostRequestDto postRequestDto = PostRequestDto.builder()
-                .title("title")
-                .contents("contents")
-                .purpose(Purpose.PROJECT)
-                .status(Status.RECRUITMENT)
-                .fieldList(List.of(Field.BACKEND,Field.FRONTEND))
-                .languageList(List.of(Language.JAVA,Language.TS))
-                .fileUrlList(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
-                .build();
-
         for (int i = 0; i < 12; i++){
             boardService.post(postRequestDto);
         }
@@ -180,18 +161,7 @@ public class BoardServiceTest {
 
     @Test
     void 게시물_단일_조회(){
-        // given
-        PostRequestDto postRequestDto = PostRequestDto.builder()
-                .title("title")
-                .contents("contents")
-                .purpose(Purpose.PROJECT)
-                .status(Status.RECRUITMENT)
-                .fieldList(List.of(Field.BACKEND,Field.FRONTEND))
-                .languageList(List.of(Language.JAVA,Language.TS))
-                .fileUrlList(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
-                .build();
-
-        // when
+        // given // when
         boardService.post(postRequestDto);
         Board findBoard = boardRepository.findAll().get(0);
 
@@ -204,17 +174,7 @@ public class BoardServiceTest {
     @Disabled
     @Test
     void 게시물_삭제(){
-        // then
-        PostRequestDto postRequestDto = PostRequestDto.builder()
-                .title("title")
-                .contents("contents")
-                .purpose(Purpose.PROJECT)
-                .status(Status.RECRUITMENT)
-                .fieldList(List.of(Field.BACKEND,Field.FRONTEND))
-                .languageList(List.of(Language.JAVA,Language.TS))
-                .fileUrlList(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
-                .build();
-
+        // given
         boardService.post(postRequestDto);
 
         // when
@@ -233,6 +193,7 @@ public class BoardServiceTest {
                 .contents("contents1")
                 .purpose(Purpose.PROJECT)
                 .status(Status.RECRUITMENT)
+                .introduce("this is introduce")
                 .fieldList(List.of(Field.BACKEND,Field.FRONTEND))
                 .languageList(List.of(Language.JAVA,Language.TS))
                 .fileUrlList(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
@@ -241,6 +202,7 @@ public class BoardServiceTest {
         PostRequestDto postRequestDto2 = PostRequestDto.builder()
                 .title("title2")
                 .contents("contents2")
+                .introduce("this is introduce")
                 .purpose(Purpose.SERVICE)
                 .status(Status.RECRUITMENT)
                 .fieldList(List.of(Field.BACKEND,Field.FRONTEND))
@@ -251,6 +213,7 @@ public class BoardServiceTest {
         PostRequestDto postRequestDto3 = PostRequestDto.builder()
                 .title("title3")
                 .contents("contents3")
+                .introduce("this is introduce")
                 .purpose(Purpose.STUDY)
                 .status(Status.RECRUITMENT)
                 .fieldList(List.of(Field.AI,Field.GAME))

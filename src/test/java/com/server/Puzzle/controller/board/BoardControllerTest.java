@@ -1,111 +1,260 @@
 package com.server.Puzzle.controller.board;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.server.Puzzle.domain.board.controller.BoardController;
-import com.server.Puzzle.domain.board.domain.Board;
+import com.server.Puzzle.domain.board.dto.request.CorrectionPostRequestDto;
 import com.server.Puzzle.domain.board.dto.request.PostRequestDto;
+import com.server.Puzzle.domain.board.dto.response.GetAllPostResponseDto;
+import com.server.Puzzle.domain.board.dto.response.GetPostByTagResponseDto;
+import com.server.Puzzle.domain.board.dto.response.GetPostResponseDto;
 import com.server.Puzzle.domain.board.enumType.Purpose;
 import com.server.Puzzle.domain.board.enumType.Status;
 import com.server.Puzzle.domain.board.service.BoardService;
 import com.server.Puzzle.global.enumType.Field;
 import com.server.Puzzle.global.enumType.Language;
-import com.server.Puzzle.global.security.SecurityConfig;
-import com.server.Puzzle.global.security.jwt.JwtTokenFilter;
-import com.server.Puzzle.global.security.jwt.JwtTokenProvider;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.reactivestreams.Publisher;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
-import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.mock.web.MockPart;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.asyncDispatch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static reactor.core.publisher.Mono.when;
 
-@MockBean(JpaMetamodelMappingContext.class)
-@WebMvcTest(BoardController.class)
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+@ExtendWith(MockitoExtension.class)
 public class BoardControllerTest {
-//
-//    @Autowired private MockMvc mockMvc;
-//    @Autowired private ObjectMapper objectMapper;
-//
-//    @MockBean BoardService boardService;
-//    @MockBean JwtTokenProvider jwtTokenProvider;
-//
-//    final GetPostResponseDto board = GetPostResponseDto.builder()
-//            .id(1L)
-//            .title("title")
-//            .contents("contents")
-//            .purpose(Purpose.PROJECT)
-//            .status(Status.RECRUITMENT)
-//            .fields(List.of(Field.BACKEND,Field.FRONTEND))
-//            .languages(List.of(Language.JAVA,Language.TS))
-//            .files(List.of("1234"))
-//            .build();
-//
-//    @Disabled
-//    @Test
-//    void postTest() throws Exception{
-//        // given
-//        PostRequestDto request = PostRequestDto.builder().title("title")
-//                .contents("contents")
-//                .purpose(Purpose.PROJECT)
-//                .status(Status.RECRUITMENT)
-//                .fieldList(List.of(Field.BACKEND, Field.FRONTEND))
-//                .languageList(List.of(Language.TS, Language.SPRINGBOOT))
-//                .fileUrlList(List.of())
-//                .build();
-//
-//        String content = objectMapper.writeValueAsString(request);
-//
-//        // when
-//        mockMvc.perform(post("/v1/api/board/")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .characterEncoding("UTF-8")
-//                        .content(content)
-//                        .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiLrhbjqsr3spIAiLCJhdXRoIjpbIlVTRVIiXSwiaWF0IjoxNjQ1MTY2NTU3LCJleHAiOjE2NDUxNzczNTd9.tsPDjRRrBgxpWr0a3MRgEKYoLIs9LmfTkLzO_UIIKnY"))
-//                .andExpect(status().isOk())
-//                .andDo(print());
-//    }
-//
-//    @Disabled
-//    @Test
-//    void getPost() throws Exception{
-//        Mockito.when(boardService.getPost(anyLong())).thenReturn(board);
-//
-//        mockMvc.perform(get("/v1/api/board/1"))
-//                .andExpect(status().isOk())
-//                .andDo(print());
-//    }
-//
-//    @Disabled
-//    @Test
-//    void testController() throws Exception{
-//        this.mockMvc.perform(get("/v1/api/board/test").accept(MediaType.TEXT_PLAIN))
-//                .andExpect(status().isOk())
-//                .andExpect(content().string("success"))
-//                .andDo(print());
-//    }
+
+    @InjectMocks
+    private BoardController boardController;
+
+    @Mock
+    private BoardService boardService;
+
+    MockMvc mockMvc;
+
+    @BeforeEach
+    public void init() {
+        mockMvc = MockMvcBuilders.standaloneSetup(boardController)
+                .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
+                .alwaysDo(print())
+                .build();
+    }
+
+    private static final String BASE_URI = "/api/board";
+
+    @Test
+    void 게시물_등록() throws Exception {
+        // given
+        doNothing().when(boardService)
+                .post(any(PostRequestDto.class));
+
+        final String body = postBodyInfo();
+
+        // when, then
+        mockMvc.perform(
+                        post(BASE_URI)
+                                .content(body)
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andExpect(content().string("Success"));
+    }
+
+    @Test
+    void 이미지_주소_생성() throws Exception {
+        // given
+        doReturn("url").when(boardService)
+                .createUrl(any(MultipartFile.class));
+
+        final MockMultipartFile file = settingFile();
+
+        // when, then
+        mockMvc.perform(
+                        multipart(BASE_URI.concat("/create-url"))
+                                .file(file).part(new MockPart("PuzzleLogo.png",file.getBytes())))
+                .andExpect(status().isOk())
+                .andExpect(content().string("url"));
+    }
+
+    @Test
+    void 게시물_수정() throws Exception {
+        // given
+        doNothing().when(boardService)
+                .correctionPost(any(Long.class), any(CorrectionPostRequestDto.class));
+
+        final String body = correctionPostBodyInfo();
+
+        // when, then
+        mockMvc.perform(
+                    put(BASE_URI.concat("/{id}"),1L)
+                            .content(body)
+                            .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andExpect(content().string("Success"));
+    }
+
+    @Test
+    void 게시물_전체_조회() throws Exception {
+        // given
+        final GetAllPostResponseDto response = allPostResponse();
+
+        doReturn(new PageImpl<>(List.of(response))).when(boardService)
+                .getAllPost(any(Pageable.class));
+
+        // when then
+        mockMvc.perform(
+                    get(BASE_URI.concat("/all"))
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].title").value("title"));
+    }
+
+    @Test
+    void 게시물_단일_조회() throws Exception {
+        // given
+        final GetPostResponseDto response = postResponse();
+
+        doReturn(response).when(boardService)
+                .getPost(1L);
+
+        // when, then
+        mockMvc.perform(
+                    get(BASE_URI.concat("/{id}"),1L)
+                )
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.title").value("title"));
+    }
+
+    @Test
+    void 게시물_삭제() throws Exception {
+        // given
+        doNothing().when(boardService)
+                .deletePost(any(Long.class));
+
+        // when, then
+        mockMvc.perform(
+                    delete(BASE_URI.concat("/{id}"),any(Long.class))
+                )
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void 게시물_태그조회() throws Exception {
+        // given
+        final GetPostByTagResponseDto response = postByTagResponse();
+
+        doReturn(new PageImpl<>(List.of(response)))
+                .when(boardService).getPostByTag(
+                        any(Purpose.class),
+                        anyList(),
+                        anyList(),
+                        any(Status.class),
+                        any(Pageable.class)
+                );
+
+        // when, then
+        mockMvc.perform(
+                    get(BASE_URI.concat("/filter"))
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].title").value("title"));
+    }
+
+    private String postBodyInfo() {
+        return new Gson().toJson(PostRequestDto.builder()
+                .title("title")
+                .contents("contents")
+                .purpose(Purpose.PROJECT)
+                .status(Status.RECRUITMENT)
+                .introduce("this is board")
+                .fieldList(List.of(Field.BACKEND, Field.FRONTEND))
+                .languageList(List.of(Language.JAVA, Language.TS))
+                .fileUrlList(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
+                .build());
+    }
+
+    private GetPostByTagResponseDto postByTagResponse() {
+        return GetPostByTagResponseDto.builder()
+                .boardId(1L)
+                .title("title")
+                .status(Status.RECRUITMENT)
+                .createdDate(LocalDateTime.now())
+                .fileUrl("url")
+                .introduce("introduce")
+                .build();
+    }
+
+    private MockMultipartFile settingFile() throws IOException {
+        return new MockMultipartFile("files",
+                "PuzzleLogo.png",
+                "image/png",
+                new FileInputStream("src/test/resources/PuzzleLogo.png"));
+    }
+
+    private String correctionPostBodyInfo() {
+        return new Gson().toJson(CorrectionPostRequestDto.builder()
+                .title("correctionTitle")
+                .contents("correctionContents")
+                .purpose(Purpose.PROJECT)
+                .status(Status.RECRUITMENT)
+                .introduce("this is board")
+                .fileUrlList(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
+                .languageList(List.of(Language.PYTORCH, Language.KOTLIN))
+                .fieldList(List.of(Field.AI, Field.ANDROID))
+                .build());
+    }
+
+    private GetAllPostResponseDto allPostResponse() {
+        return GetAllPostResponseDto.builder()
+                .boardId(1L)
+                .title("title")
+                .status(Status.RECRUITMENT)
+                .createDateTime(LocalDateTime.now())
+                .image_url("url")
+                .introduce("hello")
+                .build();
+    }
+
+    private GetPostResponseDto postResponse() {
+        return GetPostResponseDto.builder()
+                .id(1L)
+                .title("title")
+                .contents("contents")
+                .purpose(Purpose.PROJECT)
+                .status(Status.RECRUITMENT)
+                .name("name")
+                .githubId("githubId")
+                .createdAt(LocalDateTime.now())
+                .introduce("introduce")
+                .fields(
+                        List.of(Field.BACKEND)
+                )
+                .languages(
+                        List.of(Language.JAVA)
+                )
+                .files(
+                        List.of("url")
+                )
+                .build();
+    }
 }

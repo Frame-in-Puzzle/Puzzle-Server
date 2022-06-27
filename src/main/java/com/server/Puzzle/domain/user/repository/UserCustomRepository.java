@@ -1,9 +1,9 @@
 package com.server.Puzzle.domain.user.repository;
 
-import com.server.Puzzle.domain.user.dto.UserResponseDto;
+import com.server.Puzzle.domain.user.dto.UserProfileResponse;
 
 public interface UserCustomRepository {
 
-    UserResponseDto findByUser(String githubId);
+    UserProfileResponse findByUser(String githubId);
 
 }

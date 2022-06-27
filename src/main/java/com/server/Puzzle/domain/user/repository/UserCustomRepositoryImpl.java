@@ -1,16 +1,15 @@
 package com.server.Puzzle.domain.user.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.server.Puzzle.domain.user.domain.QUser;
 import com.server.Puzzle.domain.user.domain.User;
-import com.server.Puzzle.domain.user.dto.UserResponseDto;
-import com.server.Puzzle.global.enumType.Language;
+import com.server.Puzzle.domain.user.domain.UserLanguage;
+import com.server.Puzzle.domain.user.dto.UserProfileResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import java.util.stream.Collectors;
 
-import static com.server.Puzzle.domain.user.domain.QUserLanguage.userLanguage;
+import static com.server.Puzzle.domain.user.domain.QUser.user;
 
 @RequiredArgsConstructor
 @Repository
@@ -19,28 +18,23 @@ public class UserCustomRepositoryImpl implements UserCustomRepository{
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public UserResponseDto findByUser(String githubId) {
-        List<Language> languages = jpaQueryFactory.from(userLanguage)
-                .select(userLanguage.language)
-                .where(userLanguage.user.githubId.eq(githubId))
-                .fetch();
-
-        User user = jpaQueryFactory.from(QUser.user)
-                .select(QUser.user)
-                .where(QUser.user.githubId.eq(githubId))
+    public UserProfileResponse findByUser(String githubId) {
+        User user1  = jpaQueryFactory
+                .selectFrom(user)
+                .where(user.githubId.eq(githubId))
                 .fetchOne();
 
-        UserResponseDto res = UserResponseDto.builder()
-                .name(user.getName())
-                .email(user.getEmail())
-                .imageUrl(user.getImageUrl())
-                .field(user.getField())
-                .bio(user.getBio())
-                .language(languages)
-                .url(user.getUrl())
+        return UserProfileResponse.builder()
+                .name(user1.getName())
+                .email(user1.getEmail())
+                .imageUrl(user1.getImageUrl())
+                .bio(user1.getBio())
+                .field(user1.getField())
+                .url(user1.getUrl())
+                .languages(user1.getUserLanguages().stream()
+                        .map(UserLanguage::getLanguage)
+                        .collect(Collectors.toList()))
                 .build();
-
-        return res;
     }
 
 }

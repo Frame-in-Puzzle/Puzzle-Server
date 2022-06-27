@@ -2,7 +2,7 @@ package com.server.Puzzle.service.attend;
 
 import com.server.Puzzle.domain.attend.domain.Attend;
 import com.server.Puzzle.domain.attend.dto.request.PatchAttendRequest;
-import com.server.Puzzle.domain.attend.dto.response.GetAllAttendResponse;
+import com.server.Puzzle.domain.attend.dto.response.FindAllAttendResponse;
 import com.server.Puzzle.domain.attend.enumtype.AttendStatus;
 import com.server.Puzzle.domain.attend.repository.AttendRepository;
 import com.server.Puzzle.domain.attend.service.AttendService;
@@ -58,6 +58,17 @@ public class AttendServiceTest {
     @Autowired
     private EntityManager em;
 
+    final PostRequestDto postRequestDto = PostRequestDto.builder()
+            .title("title")
+            .contents("contents")
+            .purpose(Purpose.PROJECT)
+            .status(Status.RECRUITMENT)
+            .introduce("this is board")
+            .fieldList(List.of(Field.BACKEND,Field.FRONTEND))
+            .languageList(List.of(Language.JAVA,Language.TS))
+            .fileUrlList(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
+            .build();
+
     @BeforeEach
     void 로그인_되어있는_유저를_확인() {
         // given // when
@@ -89,16 +100,6 @@ public class AttendServiceTest {
     @Test
     void 프로젝트_참가_신청(){
         // given
-        PostRequestDto postRequestDto = PostRequestDto.builder()
-                .title("title")
-                .contents("contents")
-                .purpose(Purpose.PROJECT)
-                .status(Status.RECRUITMENT)
-                .fieldList(List.of(Field.BACKEND,Field.FRONTEND))
-                .languageList(List.of(Language.JAVA,Language.TS))
-                .fileUrlList(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
-                .build();
-
         boardService.post(postRequestDto);
 
         em.clear();
@@ -116,16 +117,6 @@ public class AttendServiceTest {
     @Test
     void 프로젝트_참가_신청_전체_조회(){
         // given
-        PostRequestDto postRequestDto = PostRequestDto.builder()
-                .title("title")
-                .contents("contents")
-                .purpose(Purpose.PROJECT)
-                .status(Status.RECRUITMENT)
-                .fieldList(List.of(Field.BACKEND,Field.FRONTEND))
-                .languageList(List.of(Language.JAVA,Language.TS))
-                .fileUrlList(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
-                .build();
-
         boardService.post(postRequestDto);
 
         em.clear();
@@ -136,7 +127,7 @@ public class AttendServiceTest {
         em.clear();
 
         // when
-        List<GetAllAttendResponse> allAttend = attendService.findAllAttend(board.getId());
+        List<FindAllAttendResponse> allAttend = attendService.findAllAttend(board.getId());
 
         // then
         assertThat(allAttend).isNotNull();
@@ -145,16 +136,6 @@ public class AttendServiceTest {
     @Test
     void 프로젝트_참가_신청_수정() {
         // given
-        PostRequestDto postRequestDto = PostRequestDto.builder()
-                .title("title")
-                .contents("contents")
-                .purpose(Purpose.PROJECT)
-                .status(Status.RECRUITMENT)
-                .fieldList(List.of(Field.BACKEND,Field.FRONTEND))
-                .languageList(List.of(Language.JAVA,Language.TS))
-                .fileUrlList(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
-                .build();
-
         boardService.post(postRequestDto);
 
         em.clear();
@@ -180,29 +161,18 @@ public class AttendServiceTest {
     @Test
     void 프로젝트_참가_신청_취소(){
         // given
-        PostRequestDto postRequestDto = PostRequestDto.builder()
-                .title("title")
-                .contents("contents")
-                .purpose(Purpose.PROJECT)
-                .status(Status.RECRUITMENT)
-                .fieldList(List.of(Field.BACKEND,Field.FRONTEND))
-                .languageList(List.of(Language.JAVA,Language.TS))
-                .fileUrlList(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
-                .build();
-
         boardService.post(postRequestDto);
 
         em.clear();
 
         Board board = boardRepository.findAll().get(0);
-
-        attendService.requestAttend(board.getId());
+        Long boardId = board.getId();
+        attendService.requestAttend(boardId);
         Long attendId = attendRepository.findAll().get(0).getId();
-
         em.clear();
 
         // when
-        attendService.deleteAttend(attendId);
+        attendService.deleteAttend(boardId);
 
         // then
         assertThat(attendRepository.findById(attendId).isEmpty()).isTrue();

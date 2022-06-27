@@ -60,7 +60,8 @@ public class User extends BaseTimeEntity implements UserDetails {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    private List<Roles> roles = new ArrayList<>();;
+    @Builder.Default()
+    private List<Roles> roles = new ArrayList<>();
 
     @Column(name = "user_bio", nullable = true)
     private String bio;

@@ -21,7 +21,7 @@ public enum ErrorCode {
     IS_ALREADY_ATTEND(400,"이미 신청되어 있습니다"),
     ATTEND_PATCH_PERMISSION_DENIED(401, "신청을 수정할 권한이 존재하지 않습니다."),
     ATTEND_NOT_FOUND(404, "신청을 찾을 수 없습니다."),
-    ATTEND_DELETE_PERMISSION_DENIED(401, "신청을 삭제할 권한이 존재하지 않습니다.");
+    NOT_ATTEND(400,"신청을 하지 않았습니다.");
 
     private final int status;
     private final String detail;

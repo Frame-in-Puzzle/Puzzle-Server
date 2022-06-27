@@ -2,6 +2,7 @@ package com.server.Puzzle.service.user;
 
 import com.server.Puzzle.domain.user.domain.User;
 import com.server.Puzzle.domain.user.domain.UserLanguage;
+import com.server.Puzzle.domain.user.dto.ProfileUpdateDto;
 import com.server.Puzzle.domain.user.dto.UserUpdateDto;
 import com.server.Puzzle.domain.user.repository.UserRepository;
 import com.server.Puzzle.domain.user.service.ProfileService;
@@ -58,7 +59,7 @@ public class UserServiceTest {
     EntityManager em;
 
     @BeforeEach
-    void 로그인한_유저확인() {
+    void 유저_세팅() {
         //given
         User user = User.builder()
                 .oauthIdx("68847615")
@@ -111,14 +112,12 @@ public class UserServiceTest {
 
         assertEquals(currentUser.isFirstVisited(), true);
 
-        UserUpdateDto user = UserUpdateDto.builder()
+        ProfileUpdateDto user = ProfileUpdateDto.builder()
                 .email("hyunin0102@gmail.com")
                 .name("홍현인")
-                .imageUrl("https://avatars.githubusercontent.com/u/68847615?v=4")
                 .bio("상메")
                 .field(BACKEND)
                 .language(List.of(JAVA, SPRINGBOOT))
-                .url("github.com/honghyunin")
                 .build();
 
         profileService.profileUpdate(user);
@@ -146,11 +145,12 @@ public class UserServiceTest {
         em.flush();
         em.clear();
 
-        Map<String, String> map;
+        Map<String, String> map = tokenService.reissueToken(user.getRefreshToken(), user.getGithubId());
 
-        map = tokenService.reissueToken(user.getRefreshToken(), user.getGithubId());
+        User findUser = userRepository.findByGithubId(githubId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        assertEquals(map.get("RefreshToken").substring(7), user.getRefreshToken());
+        assertEquals(map.get("RefreshToken").substring(7), findUser.getRefreshToken());
     }
 
     @Test
@@ -158,9 +158,8 @@ public class UserServiceTest {
         UserUpdateDto userUpdateDto = UserUpdateDto.builder()
                 .name("인현홍")
                 .imageUrl("imageUrl")
-                .url("github.com/honghyunin")
                 .bio("bio")
-                .language(List.of(TS, REACT))
+                .languages(List.of(TS, REACT))
                 .field(BACKEND)
                 .email("s20080@gsm.hs.kr")
                 .build();
@@ -173,7 +172,7 @@ public class UserServiceTest {
         User user = userRepository.findByName(userUpdateDto.getName()).orElseThrow();
 
         assertEquals(userUpdateDto.getName(), user.getName());
-        assertEquals(userUpdateDto.getLanguage(), user.getUserLanguages().stream().map(UserLanguage::getLanguage).collect(Collectors.toList()));
+        assertEquals(userUpdateDto.getLanguages(), user.getUserLanguages().stream().map(UserLanguage::getLanguage).collect(Collectors.toList()));
     }
 
 }

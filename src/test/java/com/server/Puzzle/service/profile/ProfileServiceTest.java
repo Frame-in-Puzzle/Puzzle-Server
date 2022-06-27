@@ -6,9 +6,9 @@ import com.server.Puzzle.domain.board.enumType.Status;
 import com.server.Puzzle.domain.board.service.BoardService;
 import com.server.Puzzle.domain.user.domain.User;
 import com.server.Puzzle.domain.user.domain.UserLanguage;
+import com.server.Puzzle.domain.user.dto.ProfileUpdateDto;
 import com.server.Puzzle.domain.user.dto.UserBoardResponse;
-import com.server.Puzzle.domain.user.dto.UserResponseDto;
-import com.server.Puzzle.domain.user.dto.UserUpdateDto;
+import com.server.Puzzle.domain.user.dto.UserProfileResponse;
 import com.server.Puzzle.domain.user.repository.UserLanguageRepository;
 import com.server.Puzzle.domain.user.repository.UserRepository;
 import com.server.Puzzle.domain.user.service.ProfileService;
@@ -57,7 +57,7 @@ public class ProfileServiceTest {
     BoardService boardService;
 
     @BeforeEach
-    void 로그인한_유저확인() {
+    void 유저_세팅() {
         //given
         User user = User.builder()
                 .oauthIdx("68847615")
@@ -99,21 +99,21 @@ public class ProfileServiceTest {
     void 프로필_조회() {
         String githubId = "honghyunin12";
 
-        UserResponseDto user = profileService.getProfile(githubId);
+        em.clear();
+
+        UserProfileResponse user = profileService.getProfile(githubId);
 
         assertEquals("홍현인", user.getName()); // name : hyunin
     }
 
     @Test
     void 프로필_수정() {
-        UserUpdateDto user = UserUpdateDto.builder()
+        ProfileUpdateDto user = ProfileUpdateDto.builder()
                 .email("hyunin0102@gmail.com")
                 .name("홍현인")
-                .imageUrl("https://avatars.githubusercontent.com/u/68847615?v=4")
                 .bio("상메")
                 .field(Field.BACKEND)
                 .language(List.of(Language.JAVA, SPRINGBOOT))
-                .url("github.com/honghyunin")
                 .build();
 
         profileService.profileUpdate(user);
@@ -136,6 +136,7 @@ public class ProfileServiceTest {
         PostRequestDto postRequestDto = PostRequestDto.builder()
                 .title("title")
                 .contents("contents")
+                .introduce("hi i'm introduce")
                 .purpose(Purpose.PROJECT)
                 .status(Status.RECRUITMENT)
                 .fieldList(List.of(Field.BACKEND, Field.FRONTEND))

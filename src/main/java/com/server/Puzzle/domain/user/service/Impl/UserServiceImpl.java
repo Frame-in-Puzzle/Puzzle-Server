@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
     public void delete() {
         User currentUser = currentUserUtil.getCurrentUser();
 
-        User savedUser = userRepository.findByName(currentUser.getName())
+        User savedUser = userRepository.findByGithubId(currentUser.getGithubId())
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
         userRepository.delete(savedUser);
@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
         if(!user.isFirstVisited())
             throw new CustomException(IS_ALREADY_USER);
 
-        List<Language> languageList = userInfo.getLanguage();
+        List<Language> languageList = userInfo.getLanguages();
 
         userLanguageRepo.deleteAllByUserId(user.getId());
 
@@ -66,7 +66,6 @@ public class UserServiceImpl implements UserService {
                 .updateEmail(userInfo.getEmail())
                 .updateImageUrl(userInfo.getImageUrl())
                 .updateBio(userInfo.getBio())
-                .updateUrl(userInfo.getUrl())
                 .updateIsFirstVisited(false)
                 .updateField(userInfo.getField());
     }

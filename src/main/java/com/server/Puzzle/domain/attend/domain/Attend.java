@@ -35,4 +35,8 @@ public class Attend extends BaseTimeEntity {
         this.attendStatus = attendStatus;
     }
 
+    public boolean isAttend(User currentUser){
+        return this.user.equals(currentUser);
+    }
+
 }
