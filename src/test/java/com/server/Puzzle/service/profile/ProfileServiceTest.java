@@ -113,7 +113,7 @@ public class ProfileServiceTest {
                 .name("홍현인")
                 .bio("상메")
                 .field(Field.BACKEND)
-                .language(List.of(Language.JAVA, SPRINGBOOT))
+                .languages(List.of(Language.JAVA, SPRINGBOOT))
                 .build();
 
         profileService.profileUpdate(user);
@@ -127,7 +127,7 @@ public class ProfileServiceTest {
 
         assertEquals(user.getField(), savedUser.getField());
 
-        assertEquals(user.getLanguage(), savedUser.getUserLanguages().stream().
+        assertEquals(user.getLanguages(), savedUser.getUserLanguages().stream().
                 map(u -> u.getLanguage()).collect(Collectors.toList()));
     }
 

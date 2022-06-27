@@ -117,7 +117,7 @@ public class UserServiceTest {
                 .name("홍현인")
                 .bio("상메")
                 .field(BACKEND)
-                .language(List.of(JAVA, SPRINGBOOT))
+                .languages(List.of(JAVA, SPRINGBOOT))
                 .build();
 
         profileService.profileUpdate(user);
