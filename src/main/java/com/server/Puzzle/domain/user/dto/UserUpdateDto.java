@@ -14,7 +14,7 @@ public class UserUpdateDto {
 
     private String name;
     private String email;
-    private String imageUrl;
+    private String profileImageUrl;
     private String bio;
     private Field field;
     private List<Language> languages;

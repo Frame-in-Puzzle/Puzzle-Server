@@ -27,7 +27,7 @@ public class UserCustomRepositoryImpl implements UserCustomRepository{
         return UserProfileResponse.builder()
                 .name(user1.getName())
                 .email(user1.getEmail())
-                .imageUrl(user1.getImageUrl())
+                .imageUrl(user1.getProfileImageUrl())
                 .bio(user1.getBio())
                 .field(user1.getField())
                 .url(user1.getUrl())

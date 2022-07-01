@@ -80,7 +80,7 @@ public class AttendServiceTest {
                 .field(Field.BACKEND)
                 .bio("성실한 개발자입니다")
                 .url("https://github.com/KyungJunNoh")
-                .imageUrl("https://avatars.githubusercontent.com/u/68670670?v=4")
+                .profileImageUrl("https://avatars.githubusercontent.com/u/68670670?v=4")
                 .isFirstVisited(false)
                 .build();
 

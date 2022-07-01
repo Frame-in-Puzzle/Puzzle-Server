@@ -63,7 +63,7 @@ public class ProfileServiceTest {
                 .oauthIdx("68847615")
                 .email("hyunin0102@gmail.com")
                 .name("홍현인")
-                .imageUrl("https://avatars.githubusercontent.com/u/68847615?v=4")
+                .profileImageUrl("https://avatars.githubusercontent.com/u/68847615?v=4")
                 .bio("한줄소개")
                 .field(Field.BACKEND)
                 .url("https://github.com/honghyunin")
