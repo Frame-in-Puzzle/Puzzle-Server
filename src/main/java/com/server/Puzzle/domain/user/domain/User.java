@@ -55,7 +55,7 @@ public class User extends BaseTimeEntity implements UserDetails {
     private List<UserLanguage> userLanguages; // 세부언어
 
     @OneToMany(
-            fetch = FetchType.EAGER,
+            fetch = FetchType.LAZY,
             mappedBy = "user",
             cascade = CascadeType.ALL,
             orphanRemoval = true

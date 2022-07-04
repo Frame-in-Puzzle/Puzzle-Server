@@ -1,20 +1,23 @@
 package com.server.Puzzle.service.user;
 
+import com.server.Puzzle.domain.user.domain.Roles;
 import com.server.Puzzle.domain.user.domain.User;
 import com.server.Puzzle.domain.user.domain.UserLanguage;
 import com.server.Puzzle.domain.user.dto.ProfileUpdateDto;
 import com.server.Puzzle.domain.user.dto.UserUpdateDto;
+import com.server.Puzzle.domain.user.repository.RolesRepository;
+import com.server.Puzzle.domain.user.repository.UserLanguageRepository;
 import com.server.Puzzle.domain.user.repository.UserRepository;
 import com.server.Puzzle.domain.user.service.ProfileService;
 import com.server.Puzzle.domain.user.service.TokenService;
 import com.server.Puzzle.domain.user.service.UserService;
 import com.server.Puzzle.global.enumType.Role;
 import com.server.Puzzle.global.exception.CustomException;
-import com.server.Puzzle.global.exception.ErrorCode;
 import com.server.Puzzle.global.exception.collection.UserNotFoundException;
 import com.server.Puzzle.global.security.jwt.JwtTokenProvider;
 import com.server.Puzzle.global.util.CurrentUserUtil;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -31,6 +34,7 @@ import java.util.stream.Collectors;
 
 import static com.server.Puzzle.global.enumType.Field.BACKEND;
 import static com.server.Puzzle.global.enumType.Language.*;
+import static com.server.Puzzle.global.exception.ErrorCode.USER_NOT_FOUND;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
@@ -39,6 +43,12 @@ public class UserServiceTest {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    RolesRepository rolesRepository;
+
+    @Autowired
+    UserLanguageRepository userLanguageRepository;
 
     @Autowired
     CurrentUserUtil currentUserUtil;
@@ -75,6 +85,25 @@ public class UserServiceTest {
                 .build();
 
         userRepository.save(user);
+
+        UserLanguage userLanguage = UserLanguage.builder()
+                .id(null)
+                .language(SPRINGBOOT)
+                .user(user)
+                .build();
+
+        Roles roles = Roles.builder()
+                .id(null)
+                .role(Role.ROLE_USER)
+                .user(user)
+                .build();
+
+        rolesRepository.save(roles);
+        userLanguageRepository.save(userLanguage);
+
+        em.flush();
+        em.clear();
+
         //when
         UsernamePasswordAuthenticationToken token =
                 new UsernamePasswordAuthenticationToken(user.getGithubId(), "password", List.of(Role.ROLE_USER));
@@ -90,7 +119,7 @@ public class UserServiceTest {
         User currentUser = currentUserUtil.getCurrentUser();
 
         User user = userRepository.findByName(currentUser.getName())
-                .orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
         assertEquals(user.getRefreshToken(), null);
     }
 
@@ -126,7 +155,7 @@ public class UserServiceTest {
         em.clear();
 
         User user1 = userRepository.findByName(user.getName())
-                .orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
 
         assertEquals(user1.isFirstVisited(), false);
     }
@@ -136,7 +165,7 @@ public class UserServiceTest {
         String githubId = currentUserUtil.getCurrentUser().getGithubId();
 
         User user = userRepository.findByGithubId(githubId)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
         String refreshToken = jwtTokenProvider.createRefreshToken();
 
@@ -148,7 +177,7 @@ public class UserServiceTest {
         Map<String, String> map = tokenService.reissueToken(user.getRefreshToken(), user.getGithubId());
 
         User findUser = userRepository.findByGithubId(githubId)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
         assertEquals(map.get("RefreshToken").substring(7), findUser.getRefreshToken());
     }
@@ -174,5 +203,22 @@ public class UserServiceTest {
         assertEquals(userUpdateDto.getName(), user.getName());
         assertEquals(userUpdateDto.getLanguages(), user.getUserLanguages().stream().map(UserLanguage::getLanguage).collect(Collectors.toList()));
     }
+
+    @Test
+    @Transactional
+    @DisplayName("유저 + 권한 조회 테스트")
+    void findUserAndRolesByGithubIdTest() {
+        String githubId = "honghyunin12";
+
+        User user = userRepository.findByGithubId(githubId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        System.out.println("user = " + user.getGithubId());
+
+        User user1 = userRepository.findUserAndRolesByGithubId(githubId);
+
+        assertEquals(user1.getUserLanguages().get(0).getLanguage(), SPRINGBOOT);
+        assertEquals(user1.getRoles().get(0).getRole(), Role.ROLE_USER);
+        assertEquals(user1.getGithubId(), githubId);
+    }
+    
 
 }

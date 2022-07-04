@@ -4,11 +4,13 @@ import com.server.Puzzle.domain.board.dto.request.PostRequestDto;
 import com.server.Puzzle.domain.board.enumType.Purpose;
 import com.server.Puzzle.domain.board.enumType.Status;
 import com.server.Puzzle.domain.board.service.BoardService;
+import com.server.Puzzle.domain.user.domain.Roles;
 import com.server.Puzzle.domain.user.domain.User;
 import com.server.Puzzle.domain.user.domain.UserLanguage;
 import com.server.Puzzle.domain.user.dto.ProfileUpdateDto;
 import com.server.Puzzle.domain.user.dto.UserBoardResponse;
 import com.server.Puzzle.domain.user.dto.UserProfileResponse;
+import com.server.Puzzle.domain.user.repository.RolesRepository;
 import com.server.Puzzle.domain.user.repository.UserLanguageRepository;
 import com.server.Puzzle.domain.user.repository.UserRepository;
 import com.server.Puzzle.domain.user.service.ProfileService;
@@ -31,7 +33,6 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.server.Puzzle.global.enumType.Language.JAVA;
 import static com.server.Puzzle.global.enumType.Language.SPRINGBOOT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -46,6 +47,12 @@ public class ProfileServiceTest {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    RolesRepository rolesRepository;
+
+    @Autowired
+    UserLanguageRepository userLanguageRepository;
 
     @Autowired
     UserLanguageRepository langRepo;
@@ -73,7 +80,25 @@ public class ProfileServiceTest {
 
         userRepository.save(user);
 
-        createUserLanguage(user, JAVA, SPRINGBOOT);
+        UserLanguage userLanguage = UserLanguage.builder()
+                .id(null)
+                .language(SPRINGBOOT)
+                .user(user)
+                .build();
+
+        Roles roles = Roles.builder()
+                .id(null)
+                .role(Role.ROLE_USER)
+                .user(user)
+                .build();
+
+        userLanguageRepository.save(userLanguage);
+        rolesRepository.save(roles);
+
+        em.flush();
+        em.clear();
+
+        createUserLanguage(user, SPRINGBOOT);
         //when
         UsernamePasswordAuthenticationToken token =
                 new UsernamePasswordAuthenticationToken(user.getGithubId(), "password", List.of(Role.ROLE_USER));

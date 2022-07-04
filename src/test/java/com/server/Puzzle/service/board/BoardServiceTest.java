@@ -9,7 +9,11 @@ import com.server.Puzzle.domain.board.enumType.Purpose;
 import com.server.Puzzle.domain.board.enumType.Status;
 import com.server.Puzzle.domain.board.repository.BoardRepository;
 import com.server.Puzzle.domain.board.service.BoardService;
+import com.server.Puzzle.domain.user.domain.Roles;
 import com.server.Puzzle.domain.user.domain.User;
+import com.server.Puzzle.domain.user.domain.UserLanguage;
+import com.server.Puzzle.domain.user.repository.RolesRepository;
+import com.server.Puzzle.domain.user.repository.UserLanguageRepository;
 import com.server.Puzzle.domain.user.repository.UserRepository;
 import com.server.Puzzle.global.enumType.Field;
 import com.server.Puzzle.global.enumType.Language;
@@ -31,6 +35,7 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.server.Puzzle.global.enumType.Language.SPRINGBOOT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -42,6 +47,13 @@ public class BoardServiceTest {
     private UserRepository userRepository;
     @Autowired
     private BoardRepository boardRepository;
+
+    @Autowired
+    RolesRepository rolesRepository;
+
+    @Autowired
+    UserLanguageRepository userLanguageRepository;
+
     @Autowired
     private BoardService boardService;
     @Autowired
@@ -76,6 +88,24 @@ public class BoardServiceTest {
                 .build();
 
         userRepository.save(user);
+
+        UserLanguage userLanguage = UserLanguage.builder()
+                .id(null)
+                .language(SPRINGBOOT)
+                .user(user)
+                .build();
+
+        Roles roles = Roles.builder()
+                .id(null)
+                .role(Role.ROLE_USER)
+                .user(user)
+                .build();
+
+        rolesRepository.save(roles);
+        userLanguageRepository.save(userLanguage);
+
+        em.flush();
+        em.clear();
 
         UsernamePasswordAuthenticationToken token
                 = new UsernamePasswordAuthenticationToken(user.getGithubId(),"password",List.of(Role.ROLE_USER));
