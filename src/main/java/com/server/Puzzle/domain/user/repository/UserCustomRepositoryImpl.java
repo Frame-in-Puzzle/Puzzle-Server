@@ -22,6 +22,7 @@ public class UserCustomRepositoryImpl implements UserCustomRepository{
         User user1  = jpaQueryFactory
                 .selectFrom(user)
                 .where(user.githubId.eq(githubId))
+                .innerJoin(user.userLanguages).fetchJoin()
                 .fetchOne();
 
         return UserProfileResponse.builder()
