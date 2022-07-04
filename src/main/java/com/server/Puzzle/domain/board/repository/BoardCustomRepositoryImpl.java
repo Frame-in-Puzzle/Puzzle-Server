@@ -3,10 +3,14 @@ package com.server.Puzzle.domain.board.repository;
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.server.Puzzle.domain.board.domain.Board;
+import com.server.Puzzle.domain.board.domain.BoardField;
 import com.server.Puzzle.domain.board.domain.BoardFile;
+import com.server.Puzzle.domain.board.domain.QBoard;
 import com.server.Puzzle.domain.board.dto.response.GetPostByTagResponseDto;
 import com.server.Puzzle.domain.board.enumType.Purpose;
 import com.server.Puzzle.domain.board.enumType.Status;
+import com.server.Puzzle.domain.user.domain.User;
+import com.server.Puzzle.domain.user.dto.UserBoardResponse;
 import com.server.Puzzle.global.enumType.Field;
 import com.server.Puzzle.global.enumType.Language;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +24,7 @@ import java.util.stream.Collectors;
 
 import static com.server.Puzzle.domain.board.domain.QBoard.board;
 import static com.server.Puzzle.domain.board.domain.QBoardField.boardField;
+import static com.server.Puzzle.domain.board.domain.QBoardFile.boardFile;
 import static com.server.Puzzle.domain.board.domain.QBoardLanguage.boardLanguage;
 
 @RequiredArgsConstructor
@@ -121,6 +126,35 @@ public class BoardCustomRepositoryImpl implements BoardCustomRepository{
                 ).collect(Collectors.toList());
 
         return new PageImpl<>(content, pageable, results.getTotal());
+    }
+
+    public Page<UserBoardResponse> findBoardsByUser(User user, Pageable pageable) {
+        List<Board> boards = jpaQueryFactory.selectFrom(QBoard.board)
+                .where(QBoard.board.user.eq(user))
+                .innerJoin(QBoard.board.boardFields).fetchJoin()
+                .fetch();
+
+        String thumbnail = jpaQueryFactory.select(boardFile.url)
+                .from(boardFile)
+                .where(boardFile.board.eq(boards.stream().findFirst().get()))
+                .fetchFirst();
+
+        List<UserBoardResponse> userBoards = boards.stream()
+                .map(b -> UserBoardResponse.builder()
+                        .boardId(b.getId())
+                        .title(b.getTitle())
+                        .contents(b.getContents())
+                        .introduce(b.getIntroduce())
+                        .date(b.getCreatedDate())
+                        .purpose(b.getPurpose())
+                        .status(b.getStatus())
+                        .thumbnail(thumbnail)
+                        .fields(b.getBoardFields().stream()
+                                .map(BoardField::getField)
+                                .collect(Collectors.toList()))
+                        .build()).collect(Collectors.toList());
+
+        return new PageImpl<>(userBoards, pageable, boards.size());
     }
 
 }
