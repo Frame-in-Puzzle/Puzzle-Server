@@ -37,4 +37,11 @@ public class UserCustomRepositoryImpl implements UserCustomRepository{
                 .build();
     }
 
+    public User findUserAndRolesByGithubId(String githubId) {
+        return jpaQueryFactory.selectFrom(user)
+                .where(user.githubId.eq(githubId))
+                .innerJoin(user.roles).fetchJoin()
+                .fetchOne();
+    }
+
 }
