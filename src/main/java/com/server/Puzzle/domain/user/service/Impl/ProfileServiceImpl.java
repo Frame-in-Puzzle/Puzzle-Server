@@ -1,5 +1,7 @@
 package com.server.Puzzle.domain.user.service.Impl;
 
+import com.server.Puzzle.domain.board.domain.BoardField;
+import com.server.Puzzle.domain.board.domain.BoardImage;
 import com.server.Puzzle.domain.board.repository.BoardRepository;
 import com.server.Puzzle.domain.user.domain.User;
 import com.server.Puzzle.domain.user.domain.UserLanguage;

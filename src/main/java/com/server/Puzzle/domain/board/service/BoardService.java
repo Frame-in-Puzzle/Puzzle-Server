@@ -18,11 +18,11 @@ import java.util.List;
 public interface BoardService {
 
     void post(PostRequestDto request);
-    String createUrl(MultipartFile files);
-    void correctionPost(Long id, CorrectionPostRequestDto request);
+    String createUrl(MultipartFile image);
+    void correctionPost(Long boardId, CorrectionPostRequestDto request);
     Page<GetAllPostResponseDto> getAllPost(Pageable pageable);
-    GetPostResponseDto getPost(Long id);
-    void deletePost(Long id);
+    GetPostResponseDto getPost(Long boardId);
+    void deletePost(Long boardId);
     Page<GetPostByTagResponseDto> getPostByTag(Purpose purpose, List<Field> field, List<Language> language, Status status, Pageable pageable);
 
 }

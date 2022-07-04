@@ -67,9 +67,9 @@ public class BoardServiceTest {
             .purpose(Purpose.PROJECT)
             .status(Status.RECRUITMENT)
             .introduce("this is board")
-            .fieldList(List.of(Field.BACKEND,Field.FRONTEND))
-            .languageList(List.of(Language.JAVA,Language.TS))
-            .fileUrlList(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
+            .fields(List.of(Field.BACKEND,Field.FRONTEND))
+            .languages(List.of(Language.JAVA,Language.TS))
+            .imageUrls(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
             .build();
 
     @BeforeEach
@@ -133,19 +133,19 @@ public class BoardServiceTest {
                 board.getBoardFields().stream()
                 .map(b -> b.getField())
                 .collect(Collectors.toList())
-        ).isEqualTo(postRequestDto.getFieldList());
+        ).isEqualTo(postRequestDto.getFields());
 
         assertThat(
                 board.getBoardLanguages().stream()
                         .map(b -> b.getLanguage())
                         .collect(Collectors.toList())
-        ).isEqualTo(postRequestDto.getLanguageList());
+        ).isEqualTo(postRequestDto.getLanguages());
 
         assertThat(
-                board.getBoardFiles().stream()
-                .map(b -> b.getUrl())
+                board.getBoardImages().stream()
+                .map(b -> b.getImageUrl())
                 .collect(Collectors.toList())
-        ).isEqualTo(postRequestDto.getFileUrlList());
+        ).isEqualTo(postRequestDto.getImageUrls());
     }
 
     @Test
@@ -157,9 +157,9 @@ public class BoardServiceTest {
                 .purpose(Purpose.PROJECT)
                 .status(Status.RECRUITMENT)
                 .introduce("this is board")
-                .fileUrlList(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
-                .languageList(List.of(Language.PYTORCH, Language.KOTLIN))
-                .fieldList(List.of(Field.AI,Field.ANDROID))
+                .imageUrls(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
+                .languages(List.of(Language.PYTORCH, Language.KOTLIN))
+                .fields(List.of(Field.AI,Field.ANDROID))
                 .build();
 
         boardService.post(postRequestDto);
@@ -224,9 +224,9 @@ public class BoardServiceTest {
                 .purpose(Purpose.PROJECT)
                 .status(Status.RECRUITMENT)
                 .introduce("this is introduce")
-                .fieldList(List.of(Field.BACKEND,Field.FRONTEND))
-                .languageList(List.of(Language.JAVA,Language.TS))
-                .fileUrlList(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
+                .fields(List.of(Field.BACKEND,Field.FRONTEND))
+                .languages(List.of(Language.JAVA,Language.TS))
+                .imageUrls(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
                 .build();
 
         PostRequestDto postRequestDto2 = PostRequestDto.builder()
@@ -235,9 +235,9 @@ public class BoardServiceTest {
                 .introduce("this is introduce")
                 .purpose(Purpose.SERVICE)
                 .status(Status.RECRUITMENT)
-                .fieldList(List.of(Field.BACKEND,Field.FRONTEND))
-                .languageList(List.of(Language.SPRINGBOOT,Language.REACT))
-                .fileUrlList(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
+                .fields(List.of(Field.BACKEND,Field.FRONTEND))
+                .languages(List.of(Language.SPRINGBOOT,Language.REACT))
+                .imageUrls(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
                 .build();
 
         PostRequestDto postRequestDto3 = PostRequestDto.builder()
@@ -246,9 +246,9 @@ public class BoardServiceTest {
                 .introduce("this is introduce")
                 .purpose(Purpose.STUDY)
                 .status(Status.RECRUITMENT)
-                .fieldList(List.of(Field.AI,Field.GAME))
-                .languageList(List.of(Language.PYTORCH,Language.UNITY))
-                .fileUrlList(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
+                .fields(List.of(Field.AI,Field.GAME))
+                .languages(List.of(Language.PYTORCH,Language.UNITY))
+                .imageUrls(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
                 .build();
 
         boardService.post(postRequestDto1);
