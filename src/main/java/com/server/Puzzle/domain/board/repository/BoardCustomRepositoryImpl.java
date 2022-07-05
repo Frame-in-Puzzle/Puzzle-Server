@@ -4,8 +4,6 @@ import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.server.Puzzle.domain.board.domain.Board;
 import com.server.Puzzle.domain.board.domain.BoardField;
-import com.server.Puzzle.domain.board.domain.BoardFile;
-import com.server.Puzzle.domain.board.domain.QBoard;
 import com.server.Puzzle.domain.board.domain.BoardImage;
 import com.server.Puzzle.domain.board.dto.response.GetPostByTagResponseDto;
 import com.server.Puzzle.domain.board.enumType.Purpose;
@@ -20,12 +18,13 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.server.Puzzle.domain.board.domain.QBoard.board;
 import static com.server.Puzzle.domain.board.domain.QBoardField.boardField;
-import static com.server.Puzzle.domain.board.domain.QBoardFile.boardFile;
+import static com.server.Puzzle.domain.board.domain.QBoardImage.boardImage;
 import static com.server.Puzzle.domain.board.domain.QBoardLanguage.boardLanguage;
 
 @RequiredArgsConstructor
@@ -130,14 +129,14 @@ public class BoardCustomRepositoryImpl implements BoardCustomRepository{
     }
 
     public Page<UserBoardResponse> findBoardsByUser(User user, Pageable pageable) {
-        List<Board> boards = jpaQueryFactory.selectFrom(QBoard.board)
-                .where(QBoard.board.user.eq(user))
-                .innerJoin(QBoard.board.boardFields).fetchJoin()
+        List<Board> boards = jpaQueryFactory.selectFrom(board)
+                .where(board.user.eq(user))
+                .innerJoin(board.boardFields).fetchJoin()
                 .fetch();
 
-        String thumbnail = jpaQueryFactory.select(boardFile.url)
-                .from(boardFile)
-                .where(boardFile.board.eq(boards.stream().findFirst().get()))
+        String thumbnail = jpaQueryFactory.select(boardImage.imageUrl)
+                .from(boardImage)
+                .where(boardImage.board.eq(boards.stream().findFirst().get()))
                 .fetchFirst();
 
         List<UserBoardResponse> userBoards = boards.stream()
