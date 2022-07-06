@@ -1,12 +1,27 @@
-name: learn-github-actions
-on: push
+name: Java CI with Gradle
+
+on:
+  push:
+    branches: [ "feature/github-action-ci/cd" ]
+  pull_request:
+    branches: [ "feature/github-action-ci/cd" ]
+
+permissions:
+  contents: read
+
 jobs:
-  check-bats-version:
+  build:
+
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
         with:
-          node-version: '14'
-      - run: npm install -g bats
-      - run: bats -v
+          java-version: '11'
+          distribution: 'temurin'
+      - name: Build with Gradle
+        uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
+        with:
+          arguments: build
