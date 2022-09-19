@@ -2,7 +2,7 @@ package com.server.Puzzle.global.config.dev;
 
 import com.server.Puzzle.domain.board.domain.Board;
 import com.server.Puzzle.domain.board.domain.BoardField;
-import com.server.Puzzle.domain.board.domain.BoardFile;
+import com.server.Puzzle.domain.board.domain.BoardImage;
 import com.server.Puzzle.domain.board.domain.BoardLanguage;
 import com.server.Puzzle.domain.board.enumType.Purpose;
 import com.server.Puzzle.domain.board.enumType.Status;
@@ -66,7 +66,7 @@ public class GenerateUser {
                         .id(1L)
                         .email("hyunin0102@gmail.com")
                         .name("hyunin")
-                        .imageUrl("https://avatars.githubusercontent.com/u/68847615?v=4")
+                        .profileImageUrl("https://avatars.githubusercontent.com/u/68847615?v=4")
                         .githubId("honghyunin")
                         .bio("상메")
                         .isFirstVisited(false)
@@ -95,7 +95,7 @@ public class GenerateUser {
                         .id(2L)
                         .email("developerjun0615@gmail.com")
                         .name("노경준")
-                        .imageUrl("https://avatars.githubusercontent.com/u/68670670?v=4")
+                        .profileImageUrl("https://avatars.githubusercontent.com/u/68670670?v=4")
                         .githubId("KyungJunNoh")
                         .bio("상메")
                         .isFirstVisited(false)
@@ -176,9 +176,9 @@ public class GenerateUser {
     private void saveFiles(List<String> fileList, Board board) {
         for (String url : fileList) {
             boardFileRepository.save(
-                    BoardFile.builder()
+                    BoardImage.builder()
                             .board(board)
-                            .url(url)
+                            .imageUrl(url)
                             .build()
             );
         }

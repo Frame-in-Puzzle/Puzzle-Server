@@ -22,12 +22,13 @@ public class UserCustomRepositoryImpl implements UserCustomRepository{
         User user1  = jpaQueryFactory
                 .selectFrom(user)
                 .where(user.githubId.eq(githubId))
+                .innerJoin(user.userLanguages).fetchJoin()
                 .fetchOne();
 
         return UserProfileResponse.builder()
                 .name(user1.getName())
                 .email(user1.getEmail())
-                .imageUrl(user1.getImageUrl())
+                .imageUrl(user1.getProfileImageUrl())
                 .bio(user1.getBio())
                 .field(user1.getField())
                 .url(user1.getUrl())
@@ -35,6 +36,13 @@ public class UserCustomRepositoryImpl implements UserCustomRepository{
                         .map(UserLanguage::getLanguage)
                         .collect(Collectors.toList()))
                 .build();
+    }
+
+    public User findUserAndRolesByGithubId(String githubId) {
+        return jpaQueryFactory.selectFrom(user)
+                .where(user.githubId.eq(githubId))
+                .innerJoin(user.roles).fetchJoin()
+                .fetchOne();
     }
 
 }

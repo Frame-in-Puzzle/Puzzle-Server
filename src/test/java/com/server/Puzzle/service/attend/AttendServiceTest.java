@@ -12,7 +12,11 @@ import com.server.Puzzle.domain.board.enumType.Purpose;
 import com.server.Puzzle.domain.board.enumType.Status;
 import com.server.Puzzle.domain.board.repository.BoardRepository;
 import com.server.Puzzle.domain.board.service.BoardService;
+import com.server.Puzzle.domain.user.domain.Roles;
 import com.server.Puzzle.domain.user.domain.User;
+import com.server.Puzzle.domain.user.domain.UserLanguage;
+import com.server.Puzzle.domain.user.repository.RolesRepository;
+import com.server.Puzzle.domain.user.repository.UserLanguageRepository;
 import com.server.Puzzle.domain.user.repository.UserRepository;
 import com.server.Puzzle.global.enumType.Field;
 import com.server.Puzzle.global.enumType.Language;
@@ -30,6 +34,7 @@ import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.util.List;
 
+import static com.server.Puzzle.global.enumType.Language.SPRINGBOOT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -56,6 +61,12 @@ public class AttendServiceTest {
     private CurrentUserUtil currentUserUtil;
 
     @Autowired
+    private RolesRepository rolesRepository;
+
+    @Autowired
+    private UserLanguageRepository userLanguageRepository;
+
+    @Autowired
     private EntityManager em;
 
     final PostRequestDto postRequestDto = PostRequestDto.builder()
@@ -64,9 +75,9 @@ public class AttendServiceTest {
             .purpose(Purpose.PROJECT)
             .status(Status.RECRUITMENT)
             .introduce("this is board")
-            .fieldList(List.of(Field.BACKEND,Field.FRONTEND))
-            .languageList(List.of(Language.JAVA,Language.TS))
-            .fileUrlList(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
+            .fields(List.of(Field.BACKEND,Field.FRONTEND))
+            .languages(List.of(Language.JAVA,Language.TS))
+            .imageUrls(List.of("https://springbootpuzzletest.s3.ap-northeast-2.amazonaws.com/23752bbd-cd6e-4bde-986d-542df0517933.png"))
             .build();
 
     @BeforeEach
@@ -80,11 +91,29 @@ public class AttendServiceTest {
                 .field(Field.BACKEND)
                 .bio("성실한 개발자입니다")
                 .url("https://github.com/KyungJunNoh")
-                .imageUrl("https://avatars.githubusercontent.com/u/68670670?v=4")
+                .profileImageUrl("https://avatars.githubusercontent.com/u/68670670?v=4")
                 .isFirstVisited(false)
                 .build();
 
         userRepository.save(user);
+
+        UserLanguage userLanguage = UserLanguage.builder()
+                .id(null)
+                .language(SPRINGBOOT)
+                .user(user)
+                .build();
+
+        Roles roles = Roles.builder()
+                .id(null)
+                .role(Role.ROLE_USER)
+                .user(user)
+                .build();
+
+        rolesRepository.save(roles);
+        userLanguageRepository.save(userLanguage);
+
+        em.flush();
+        em.clear();
 
         UsernamePasswordAuthenticationToken token
                 = new UsernamePasswordAuthenticationToken(user.getGithubId(),"password", List.of(Role.ROLE_USER));

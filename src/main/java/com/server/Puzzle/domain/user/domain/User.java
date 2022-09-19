@@ -55,7 +55,7 @@ public class User extends BaseTimeEntity implements UserDetails {
     private List<UserLanguage> userLanguages; // 세부언어
 
     @OneToMany(
-            fetch = FetchType.EAGER,
+            fetch = FetchType.LAZY,
             mappedBy = "user",
             cascade = CascadeType.ALL,
             orphanRemoval = true
@@ -69,8 +69,8 @@ public class User extends BaseTimeEntity implements UserDetails {
     @Column(name = "user_url", nullable = true)
     private String url;
 
-    @Column(name = "user_image_url", nullable = false)
-    private String imageUrl;
+    @Column(name = "user_profile_image_url", nullable = false)
+    private String profileImageUrl;
 
     @Column(name = "refresh_token")
     private String refreshToken;
@@ -99,8 +99,8 @@ public class User extends BaseTimeEntity implements UserDetails {
         return this;
     }
 
-    public User updateImageUrl(String imageUrl){
-        this.imageUrl = imageUrl != null ? imageUrl : this.imageUrl;
+    public User updateProfileImageUrl(String imageUrl){
+        this.profileImageUrl = imageUrl != null ? imageUrl : this.profileImageUrl;
         return this;
     }
 

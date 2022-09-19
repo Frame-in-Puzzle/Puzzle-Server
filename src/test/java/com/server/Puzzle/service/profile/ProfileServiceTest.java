@@ -4,11 +4,13 @@ import com.server.Puzzle.domain.board.dto.request.PostRequestDto;
 import com.server.Puzzle.domain.board.enumType.Purpose;
 import com.server.Puzzle.domain.board.enumType.Status;
 import com.server.Puzzle.domain.board.service.BoardService;
+import com.server.Puzzle.domain.user.domain.Roles;
 import com.server.Puzzle.domain.user.domain.User;
 import com.server.Puzzle.domain.user.domain.UserLanguage;
 import com.server.Puzzle.domain.user.dto.ProfileUpdateDto;
 import com.server.Puzzle.domain.user.dto.UserBoardResponse;
 import com.server.Puzzle.domain.user.dto.UserProfileResponse;
+import com.server.Puzzle.domain.user.repository.RolesRepository;
 import com.server.Puzzle.domain.user.repository.UserLanguageRepository;
 import com.server.Puzzle.domain.user.repository.UserRepository;
 import com.server.Puzzle.domain.user.service.ProfileService;
@@ -31,7 +33,6 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.server.Puzzle.global.enumType.Language.JAVA;
 import static com.server.Puzzle.global.enumType.Language.SPRINGBOOT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -46,6 +47,12 @@ public class ProfileServiceTest {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    RolesRepository rolesRepository;
+
+    @Autowired
+    UserLanguageRepository userLanguageRepository;
 
     @Autowired
     UserLanguageRepository langRepo;
@@ -63,7 +70,7 @@ public class ProfileServiceTest {
                 .oauthIdx("68847615")
                 .email("hyunin0102@gmail.com")
                 .name("홍현인")
-                .imageUrl("https://avatars.githubusercontent.com/u/68847615?v=4")
+                .profileImageUrl("https://avatars.githubusercontent.com/u/68847615?v=4")
                 .bio("한줄소개")
                 .field(Field.BACKEND)
                 .url("https://github.com/honghyunin")
@@ -73,7 +80,25 @@ public class ProfileServiceTest {
 
         userRepository.save(user);
 
-        createUserLanguage(user, JAVA, SPRINGBOOT);
+        UserLanguage userLanguage = UserLanguage.builder()
+                .id(null)
+                .language(SPRINGBOOT)
+                .user(user)
+                .build();
+
+        Roles roles = Roles.builder()
+                .id(null)
+                .role(Role.ROLE_USER)
+                .user(user)
+                .build();
+
+        userLanguageRepository.save(userLanguage);
+        rolesRepository.save(roles);
+
+        em.flush();
+        em.clear();
+
+        createUserLanguage(user, SPRINGBOOT);
         //when
         UsernamePasswordAuthenticationToken token =
                 new UsernamePasswordAuthenticationToken(user.getGithubId(), "password", List.of(Role.ROLE_USER));
@@ -113,7 +138,7 @@ public class ProfileServiceTest {
                 .name("홍현인")
                 .bio("상메")
                 .field(Field.BACKEND)
-                .language(List.of(Language.JAVA, SPRINGBOOT))
+                .languages(List.of(Language.JAVA, SPRINGBOOT))
                 .build();
 
         profileService.profileUpdate(user);
@@ -127,7 +152,7 @@ public class ProfileServiceTest {
 
         assertEquals(user.getField(), savedUser.getField());
 
-        assertEquals(user.getLanguage(), savedUser.getUserLanguages().stream().
+        assertEquals(user.getLanguages(), savedUser.getUserLanguages().stream().
                 map(u -> u.getLanguage()).collect(Collectors.toList()));
     }
 
@@ -139,9 +164,9 @@ public class ProfileServiceTest {
                 .introduce("hi i'm introduce")
                 .purpose(Purpose.PROJECT)
                 .status(Status.RECRUITMENT)
-                .fieldList(List.of(Field.BACKEND, Field.FRONTEND))
-                .languageList(List.of(Language.JAVA, Language.TS))
-                .fileUrlList(List.of("google.com", "naver.com"))
+                .fields(List.of(Field.BACKEND, Field.FRONTEND))
+                .languages(List.of(Language.JAVA, Language.TS))
+                .imageUrls(List.of("google.com", "naver.com"))
                 .build();
 
         boardService.post(postRequestDto);
@@ -152,7 +177,7 @@ public class ProfileServiceTest {
 
         assertEquals(board.map(UserBoardResponse::getContents).get().findFirst().get(), "contents");
 
-        assertEquals(board.map(UserBoardResponse::getFields).get().findFirst().get(), postRequestDto.getFieldList());
+        assertEquals(board.map(UserBoardResponse::getFields).get().findFirst().get(), postRequestDto.getFields());
         
     }
 }

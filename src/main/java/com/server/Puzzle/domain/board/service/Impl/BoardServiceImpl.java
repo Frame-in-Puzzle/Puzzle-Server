@@ -2,7 +2,7 @@ package com.server.Puzzle.domain.board.service.Impl;
 
 import com.server.Puzzle.domain.board.domain.Board;
 import com.server.Puzzle.domain.board.domain.BoardField;
-import com.server.Puzzle.domain.board.domain.BoardFile;
+import com.server.Puzzle.domain.board.domain.BoardImage;
 import com.server.Puzzle.domain.board.domain.BoardLanguage;
 import com.server.Puzzle.domain.board.dto.request.CorrectionPostRequestDto;
 import com.server.Puzzle.domain.board.dto.request.PostRequestDto;
@@ -64,32 +64,32 @@ public class BoardServiceImpl implements BoardService {
                 request.dtoToEntity(currentUserUtil.getCurrentUser())
         );
 
-        saveFiledUrls(request.getFileUrlList(), board);
-        saveFileds(request.getFieldList(), board);
-        saveLanguages(request.getLanguageList(), board);
+        saveFiledUrls(request.getImageUrls(), board);
+        saveFileds(request.getFields(), board);
+        saveLanguages(request.getLanguages(), board);
     }
 
     /**
      * 이미지 url을 생성하는 서비스 로직
-     * @param files
+     * @param image
      * @return s3Url + filename
      */
     @Override
-    public String createUrl(MultipartFile files) {
-        String filename = awsS3Util.putS3(files);
+    public String createUrl(MultipartFile image) {
+        String filename = awsS3Util.putS3(image);
 
         return s3Url + filename;
     }
 
     /**
      * 게시글을 수정하는 서비스 로직
-     * @param id
+     * @param boardId
      * @param request title, contents, purpose, status, introduce, fileUrlList, fieldList, languageList
      */
     @Transactional
     @Override
-    public void correctionPost(Long id, CorrectionPostRequestDto request) {
-        Board board = boardRepository.findById(id)
+    public void correctionPost(Long boardId, CorrectionPostRequestDto request) {
+        Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new CustomException(BOARD_NOT_FOUND));
         if(!board.isAuthor(currentUserUtil.getCurrentUser())) throw new CustomException(BOARD_NOT_HAVE_PERMISSION);
 
@@ -103,10 +103,10 @@ public class BoardServiceImpl implements BoardService {
         boardFieldRepository.deleteByBoardId(board.getId());
         boardLanguageRepository.deleteByBoardId(board.getId());
 
-        saveFileds(request.getFieldList(), board);
-        saveLanguages(request.getLanguageList(), board);
+        saveFileds(request.getFields(), board);
+        saveLanguages(request.getLanguages(), board);
 
-        List<String> saveFileUrlList = this.getSaveFileUrlList(board, request);
+        List<String> saveFileUrlList = this.getSaveImageUrls(board, request);
 
         if(saveFileUrlList == Collections.EMPTY_LIST) saveFiledUrls(saveFileUrlList, board);
     }
@@ -124,9 +124,9 @@ public class BoardServiceImpl implements BoardService {
                         .title(board.getTitle())
                         .status(board.getStatus())
                         .createDateTime(board.getCreatedDate())
-                        .image_url(
-                                board.getBoardFiles().stream()
-                                        .map(BoardFile::getUrl)
+                        .thumbnail(
+                                board.getBoardImages().stream()
+                                        .map(BoardImage::getImageUrl)
                                         .findFirst().orElse(null)
                         )
                         .build()
@@ -161,9 +161,9 @@ public class BoardServiceImpl implements BoardService {
                                 .map(BoardLanguage::getLanguage)
                                 .collect(Collectors.toList())
                         )
-                        .files(
-                                board.getBoardFiles().stream()
-                                .map(BoardFile::getUrl)
+                        .imageUrls(
+                                board.getBoardImages().stream()
+                                .map(BoardImage::getImageUrl)
                                 .collect(Collectors.toList())
                         )
                         .build()
@@ -180,8 +180,8 @@ public class BoardServiceImpl implements BoardService {
                 .orElseThrow(() -> new CustomException(BOARD_NOT_FOUND));
 
         if(board.isAuthor(currentUserUtil.getCurrentUser())){
-            List<BoardFile> boardFiles = board.getBoardFiles();
-            for (BoardFile boardFile : boardFiles) awsS3Util.deleteS3(boardFile.getUrl().substring(61));
+            List<BoardImage> boardImageList = board.getBoardImages();
+            for (BoardImage boardImage : boardImageList) awsS3Util.deleteS3(boardImage.getImageUrl().substring(61));
             boardRepository.deleteById(id);
         } else {
             throw new CustomException(BOARD_NOT_HAVE_PERMISSION);
@@ -191,23 +191,23 @@ public class BoardServiceImpl implements BoardService {
     /**
      * 게시글을 태그조회하는 서비스로직
      * @param purpose
-     * @param field
-     * @param language
+     * @param fields
+     * @param languages
      * @param status
      * @param pageable
      * @return Page GetPostByTagResponseDto - boardId, title, status, createdDate, fileUrl, introduce
      */
     @Override
-    public Page<GetPostByTagResponseDto> getPostByTag(Purpose purpose, List<Field> field, List<Language> language, Status status, Pageable pageable) {
-        return boardRepository.findBoardByTag(purpose, field, language, status, pageable);
+    public Page<GetPostByTagResponseDto> getPostByTag(Purpose purpose, List<Field> fields, List<Language> languages, Status status, Pageable pageable) {
+        return boardRepository.findBoardByTag(purpose, fields, languages, status, pageable);
     }
 
-    private void saveFiledUrls(List<String> fileUrlList, Board board) {
-        for (String fileUrl : fileUrlList) {
+    private void saveFiledUrls(List<String> imageUrlList, Board board) {
+        for (String imageUrl : imageUrlList) {
             boardFileRepository.save(
-                    BoardFile.builder()
+                    BoardImage.builder()
                             .board(board)
-                            .url(fileUrl)
+                            .imageUrl(imageUrl)
                             .build()
             );
         }
@@ -235,44 +235,42 @@ public class BoardServiceImpl implements BoardService {
         }
     }
 
-    private List<String> getSaveFileUrlList(Board board, CorrectionPostRequestDto request){
-        List<BoardFile> dbBoardFileList = boardFileRepository.findByBoardId(board.getId());
-        List<String> requestFileUrlList = request.getFileUrlList();
-        List<String> addFileList = new ArrayList<>();
+    private List<String> getSaveImageUrls(Board board, CorrectionPostRequestDto request){
+        List<BoardImage> dbBoardImages = boardFileRepository.findByBoardId(board.getId());
+        List<String> requestImages = request.getImageUrls();
+        List<String> addImages = new ArrayList<>();
 
-        if(CollectionUtils.isEmpty(dbBoardFileList)) { // db에 url 이 없다면,
-            if(!CollectionUtils.isEmpty(requestFileUrlList)) { // 요청파일 목록에 파일이 있다면,
-                for (String fileUrls : requestFileUrlList) {
-                    addFileList.add(fileUrls); // addFileList 에 fileUrls 을 추가
-                }
-                return addFileList;
+        if(CollectionUtils.isEmpty(dbBoardImages)) { // db에 url 이 없다면,
+            if(!CollectionUtils.isEmpty(requestImages)) { // 요청파일 목록에 파일이 있다면,
+                addImages.addAll(requestImages);// addFileList 에 fileUrls 을 추가
+                return addImages;
             } else {
                 return Collections.EMPTY_LIST;
             }
         } else { // db에 url 이 있다면,
-            if(CollectionUtils.isEmpty(requestFileUrlList)){ // 요청파일 목록에 파일이 없다면,
-                for (BoardFile dbBoardFile : dbBoardFileList) {
-                    boardFileRepository.deleteById(dbBoardFile.getId()); // BoardFile 테이블에서 해당 게시물의 url들을 삭제
-                    awsS3Util.deleteS3(dbBoardFile.getUrl().substring(61));
+            if(CollectionUtils.isEmpty(requestImages)){ // 요청파일 목록에 파일이 없다면,
+                for (BoardImage dbBoardImage : dbBoardImages) {
+                    boardFileRepository.deleteById(dbBoardImage.getId()); // BoardFile 테이블에서 해당 게시물의 url들을 삭제
+                    awsS3Util.deleteS3(dbBoardImage.getImageUrl().substring(61));
                 }
             } else { // 요청파일 목록에 파일이 있다면,
                 List<String> dbBoardFileUrlList = new ArrayList<>();
 
-                for (BoardFile dbBoardFile : dbBoardFileList) {
-                    if(!requestFileUrlList.contains(dbBoardFile.getUrl())){ // 요청파일 목록에 이미 db에 존재하는 파일이 존재하지 않는다면,
-                        boardFileRepository.deleteById(dbBoardFile.getId()); // 해당 데이터 삭제
-                        awsS3Util.deleteS3(dbBoardFile.getUrl().substring(61));
+                for (BoardImage dbBoardImage : dbBoardImages) {
+                    if(!requestImages.contains(dbBoardImage.getImageUrl())){ // 요청파일 목록에 이미 db에 존재하는 파일이 존재하지 않는다면,
+                        boardFileRepository.deleteById(dbBoardImage.getId()); // 해당 데이터 삭제
+                        awsS3Util.deleteS3(dbBoardImage.getImageUrl().substring(61));
                     } else { // 요청 파일 목록에 이미 db에 존재하는 파일이 존재한다면,
-                        dbBoardFileUrlList.add(dbBoardFile.getUrl());
+                        dbBoardFileUrlList.add(dbBoardImage.getImageUrl());
                     }
                 }
 
-                for (String requestFileUrl : requestFileUrlList) {
+                for (String requestFileUrl : requestImages) {
                     if(!dbBoardFileUrlList.contains(requestFileUrl))
-                        addFileList.add(requestFileUrl);
+                        addImages.add(requestFileUrl);
                 }
 
-                return addFileList;
+                return addImages;
             }
         }
 

@@ -14,7 +14,7 @@ public class GetAllPostResponseDto {
     private String title;
     private Status status;
     private LocalDateTime createDateTime;
-    private String image_url;
+    private String thumbnail;
     private String introduce;
 
 }

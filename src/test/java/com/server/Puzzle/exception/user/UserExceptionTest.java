@@ -1,9 +1,12 @@
 package com.server.Puzzle.exception.user;
 
+import com.server.Puzzle.domain.user.domain.Roles;
 import com.server.Puzzle.domain.user.domain.User;
+import com.server.Puzzle.domain.user.domain.UserLanguage;
+import com.server.Puzzle.domain.user.repository.RolesRepository;
+import com.server.Puzzle.domain.user.repository.UserLanguageRepository;
 import com.server.Puzzle.domain.user.repository.UserRepository;
 import com.server.Puzzle.domain.user.service.TokenService;
-import com.server.Puzzle.global.enumType.Field;
 import com.server.Puzzle.global.enumType.Role;
 import com.server.Puzzle.global.exception.CustomException;
 import com.server.Puzzle.global.exception.ErrorCode;
@@ -26,6 +29,8 @@ import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
 
+import static com.server.Puzzle.global.enumType.Field.BACKEND;
+import static com.server.Puzzle.global.enumType.Language.SPRINGBOOT;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Transactional
@@ -50,6 +55,12 @@ public class UserExceptionTest {
     @Autowired
     CurrentUserUtil currentUserUtil;
 
+    @Autowired
+    UserLanguageRepository userLanguageRepository;
+
+    @Autowired
+    RolesRepository rolesRepository;
+
     @BeforeEach
     void 로그인한_유저확인() {
         //given
@@ -57,16 +68,36 @@ public class UserExceptionTest {
                 .oauthIdx("68847615")
                 .email("hyunin0102@gmail.com")
                 .name("홍현인")
-                .imageUrl("https://avatars.githubusercontent.com/u/68847615?v=4")
+                .profileImageUrl("https://avatars.githubusercontent.com/u/68847615?v=4")
                 .bio("한줄소개")
-                .field(Field.BACKEND)
+                .field(BACKEND)
                 .url("https://github.com/honghyunin")
                 .isFirstVisited(true)
                 .refreshToken("refreshToken")
-                .githubId("honghyunin123")
+                .githubId("honghyunin12")
                 .build();
 
+
         userRepository.save(user);
+
+        UserLanguage userLanguage = UserLanguage.builder()
+                .id(null)
+                .language(SPRINGBOOT)
+                .user(user)
+                .build();
+
+        Roles roles = Roles.builder()
+                .id(null)
+                .role(Role.ROLE_USER)
+                .user(user)
+                .build();
+
+        userLanguageRepository.save(userLanguage);
+        rolesRepository.save(roles);
+
+        em.flush();
+        em.clear();
+
         //when
         UsernamePasswordAuthenticationToken token =
                 new UsernamePasswordAuthenticationToken(user.getGithubId(), "password", List.of(Role.ROLE_USER));

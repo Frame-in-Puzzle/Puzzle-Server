@@ -153,7 +153,7 @@ public class ProfileControllerTest {
                 .name("hyunin")
                 .field(Field.BACKEND)
                 .bio("bio")
-                .language(List.of(Language.SPRING, Language.DJANGO))
+                .languages(List.of(Language.SPRING, Language.DJANGO))
                 .build();
     }
 

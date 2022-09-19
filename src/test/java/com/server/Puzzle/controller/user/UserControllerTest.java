@@ -92,7 +92,7 @@ class UserControllerTest {
         return UserUpdateDto.builder()
                 .name("현인")
                 .email("hyunin0102@gmail.com")
-                .imageUrl("https://avatars.githubusercontent.com/u/68847615?v=4")
+                .profileImageUrl("https://avatars.githubusercontent.com/u/68847615?v=4")
                 .bio("i am bio")
                 .field(Field.BACKEND)
                 .languages(List.of(Language.SPRING, Language.SPRINGBOOT))

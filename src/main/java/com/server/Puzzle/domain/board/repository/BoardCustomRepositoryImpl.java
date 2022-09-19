@@ -3,10 +3,13 @@ package com.server.Puzzle.domain.board.repository;
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.server.Puzzle.domain.board.domain.Board;
-import com.server.Puzzle.domain.board.domain.BoardFile;
+import com.server.Puzzle.domain.board.domain.BoardField;
+import com.server.Puzzle.domain.board.domain.BoardImage;
 import com.server.Puzzle.domain.board.dto.response.GetPostByTagResponseDto;
 import com.server.Puzzle.domain.board.enumType.Purpose;
 import com.server.Puzzle.domain.board.enumType.Status;
+import com.server.Puzzle.domain.user.domain.User;
+import com.server.Puzzle.domain.user.dto.UserBoardResponse;
 import com.server.Puzzle.global.enumType.Field;
 import com.server.Puzzle.global.enumType.Language;
 import lombok.RequiredArgsConstructor;
@@ -15,11 +18,13 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.server.Puzzle.domain.board.domain.QBoard.board;
 import static com.server.Puzzle.domain.board.domain.QBoardField.boardField;
+import static com.server.Puzzle.domain.board.domain.QBoardImage.boardImage;
 import static com.server.Puzzle.domain.board.domain.QBoardLanguage.boardLanguage;
 
 @RequiredArgsConstructor
@@ -114,13 +119,42 @@ public class BoardCustomRepositoryImpl implements BoardCustomRepository{
                                 .status(b.getStatus())
                                 .createdDate(b.getCreatedDate())
                                 .introduce(b.getIntroduce())
-                                .fileUrl(b.getBoardFiles().stream()
-                                            .map(BoardFile::getUrl)
+                                .thumbnail(b.getBoardImages().stream()
+                                            .map(BoardImage::getImageUrl)
                                             .findFirst().orElse(null))
                         .build()
                 ).collect(Collectors.toList());
 
         return new PageImpl<>(content, pageable, results.getTotal());
+    }
+
+    public Page<UserBoardResponse> findBoardsByUser(User user, Pageable pageable) {
+        List<Board> boards = jpaQueryFactory.selectFrom(board)
+                .where(board.user.eq(user))
+                .innerJoin(board.boardFields).fetchJoin()
+                .fetch();
+
+        String thumbnail = jpaQueryFactory.select(boardImage.imageUrl)
+                .from(boardImage)
+                .where(boardImage.board.eq(boards.stream().findFirst().get()))
+                .fetchFirst();
+
+        List<UserBoardResponse> userBoards = boards.stream()
+                .map(b -> UserBoardResponse.builder()
+                        .boardId(b.getId())
+                        .title(b.getTitle())
+                        .contents(b.getContents())
+                        .introduce(b.getIntroduce())
+                        .date(b.getCreatedDate())
+                        .purpose(b.getPurpose())
+                        .status(b.getStatus())
+                        .thumbnail(thumbnail)
+                        .fields(b.getBoardFields().stream()
+                                .map(BoardField::getField)
+                                .collect(Collectors.toList()))
+                        .build()).collect(Collectors.toList());
+
+        return new PageImpl<>(userBoards, pageable, boards.size());
     }
 
 }

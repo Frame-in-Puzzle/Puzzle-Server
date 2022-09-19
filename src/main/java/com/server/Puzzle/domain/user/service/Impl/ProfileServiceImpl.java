@@ -1,11 +1,13 @@
 package com.server.Puzzle.domain.user.service.Impl;
 
 import com.server.Puzzle.domain.board.domain.BoardField;
-import com.server.Puzzle.domain.board.domain.BoardFile;
+import com.server.Puzzle.domain.board.domain.BoardImage;
 import com.server.Puzzle.domain.board.repository.BoardRepository;
 import com.server.Puzzle.domain.user.domain.User;
 import com.server.Puzzle.domain.user.domain.UserLanguage;
-import com.server.Puzzle.domain.user.dto.*;
+import com.server.Puzzle.domain.user.dto.ProfileUpdateDto;
+import com.server.Puzzle.domain.user.dto.UserBoardResponse;
+import com.server.Puzzle.domain.user.dto.UserProfileResponse;
 import com.server.Puzzle.domain.user.repository.UserLanguageRepository;
 import com.server.Puzzle.domain.user.repository.UserRepository;
 import com.server.Puzzle.domain.user.service.ProfileService;
@@ -21,9 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
-
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.server.Puzzle.global.exception.ErrorCode.USER_NOT_FOUND;
 
@@ -59,7 +59,7 @@ public class ProfileServiceImpl implements ProfileService {
 
         User user = currentUserUtil.getCurrentUser();
 
-        List<Language> languageList = profileUpdateDto.getLanguage();
+        List<Language> languageList = profileUpdateDto.getLanguages();
 
         userLanguageRepo.deleteAllByUserId(user.getId());
 
@@ -77,7 +77,7 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     public String profileImageUpdate(MultipartFile multipartFile) {
         User currentUser = currentUserUtil.getCurrentUser();
-        String profileImageUrl = currentUser.getImageUrl();
+        String profileImageUrl = currentUser.getProfileImageUrl();
 
         if (!profileImageUrl.substring(38).equals(GITHUB_IMAGE_URL)) {
             awsS3Util.deleteS3(profileImageUrl);
@@ -85,7 +85,7 @@ public class ProfileServiceImpl implements ProfileService {
 
         String fileName = awsS3Util.putS3(multipartFile);
         String s3fileURL = s3Url + fileName;
-        currentUser.updateImageUrl(s3fileURL);
+        currentUser.updateProfileImageUrl(s3fileURL);
 
         return s3fileURL;
     }
@@ -96,24 +96,7 @@ public class ProfileServiceImpl implements ProfileService {
         User user = userRepository.findByGithubId(githubId)
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
-        return boardRepository.findBoardsByUser(user, pageable)
-                .map(board -> UserBoardResponse.builder()
-                        .boardId(board.getId())
-                        .title(board.getTitle())
-                        .contents(board.getContents())
-                        .introduce(board.getIntroduce())
-                        .date(board.getCreatedDate())
-                        .purpose(board.getPurpose())
-                        .status(board.getStatus())
-                        .thumbnail(
-                                board.getBoardFiles().stream()
-                                        .map(BoardFile::getUrl)
-                                        .findFirst()
-                                        .orElse(null))
-                        .fields(board.getBoardFields().stream()
-                                .map(BoardField::getField)
-                                .collect(Collectors.toList()))
-                        .build());
+        return boardRepository.findBoardsByUser(user, pageable);
     }
 
     private void saveLanguage(List<Language> languages, User user) {

@@ -35,7 +35,7 @@ public class BoardController {
 
     /**
      * 게시물 등록
-     * @param request title, contents, purpose, status, introduce, fieldList, languageList, fileUrlList
+     * @param request title, contents, purpose, status, introduce, fields, languages, imageUrls
      * @return ResponseEntity - Success
      */
     @ApiImplicitParams({
@@ -49,33 +49,33 @@ public class BoardController {
 
     /**
      * 이미지 url 생성
-     * @param files
+     * @param image
      * @return imageUrl
      */
     @PostMapping("/create-url")
-    public ResponseEntity<String> createUrl(@RequestPart MultipartFile files) {
-        return ResponseEntity.ok(boardService.createUrl(files));
+    public ResponseEntity<String> createUrl(@RequestPart MultipartFile image) {
+        return ResponseEntity.ok(boardService.createUrl(image));
     }
 
     /**
-     * 이미지 url 생성
-     * @param id
-     * @param request title, contents, purpose, status, introduce, fileUrlList, fieldList, languageList
+     * 게시글 수정
+     * @param boardId
+     * @param request title, contents, purpose, status, introduce, imageUrls, fields, languages
      * @return ResponseEntity - Success
      */
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header")
     })
-    @PutMapping("/{id}")
-    public ResponseEntity<String> correctionPost(@PathVariable("id") Long id, @RequestBody CorrectionPostRequestDto request){
-        boardService.correctionPost(id, request);
+    @PutMapping("/{boardId}")
+    public ResponseEntity<String> correctionPost(@PathVariable("boardId") Long boardId, @RequestBody CorrectionPostRequestDto request){
+        boardService.correctionPost(boardId, request);
         return ResponseEntity.ok("Success");
     }
 
     /**
      * 게시글 전체조회
      * @param pageable
-     * @return List GetAllPostResponseDto - boardId, title, status, createDateTime, image_url, introduce
+     * @return List GetAllPostResponseDto - boardId, title, status, createDateTime, thumbnail, introduce
      */
     @GetMapping("/all")
     public ResponseEntity<Page<GetAllPostResponseDto>> getAllPost(@PageableDefault(size = 12) Pageable pageable) {
@@ -84,45 +84,45 @@ public class BoardController {
 
     /**
      * 게시글 세부조회
-     * @param id
+     * @param boardId
      * @return GetPostResponseDto - id, title, contents, purpose, status, name, githubId, introduce, createDateTime, fields, languages, files
      */
-    @GetMapping("/{id}")
-    public ResponseEntity<GetPostResponseDto> getPost(@PathVariable("id") Long id) {
-        return ResponseEntity.ok(boardService.getPost(id));
+    @GetMapping("/{boardId}")
+    public ResponseEntity<GetPostResponseDto> getPost(@PathVariable("boardId") Long boardId) {
+        return ResponseEntity.ok(boardService.getPost(boardId));
     }
 
     /**
      * 게시글 삭제
-     * @param id
+     * @param boardId
      * @return ResponseEntity - Success
      */
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header")
     })
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deletePost(@PathVariable("id") Long id){
-        boardService.deletePost(id);
+    @DeleteMapping("/{boardId}")
+    public ResponseEntity<String> deletePost(@PathVariable("boardId") Long boardId){
+        boardService.deletePost(boardId);
         return ResponseEntity.ok("Success");
     }
 
     /**
      * 게시글 태그 조회
      * @param purpose
-     * @param field
-     * @param language
+     * @param fields
+     * @param languages
      * @param status
      * @param pageable
-     * @return GetPostByTagResponseDto - boardId, title, status, createdDate, fileUrl, introduce
+     * @return GetPostByTagResponseDto - boardId, title, status, createdDate, thumbnail, introduce
      */
     @GetMapping("/filter")
     public ResponseEntity<Page<GetPostByTagResponseDto>> getPostByTag(@RequestParam(defaultValue = "ALL") Purpose purpose,
-                                                                      @RequestParam(defaultValue = "ALL") List<Field> field,
-                                                                      @RequestParam(defaultValue = "NULL") List<Language> language,
+                                                                      @RequestParam(defaultValue = "ALL") List<Field> fields,
+                                                                      @RequestParam(defaultValue = "NULL") List<Language> languages,
                                                                       @RequestParam(defaultValue = "ALL") Status status,
                                                                       @PageableDefault(size = 12) Pageable pageable)
     {
-        return ResponseEntity.ok(boardService.getPostByTag(purpose, field, language, status, pageable));
+        return ResponseEntity.ok(boardService.getPostByTag(purpose, fields, languages, status, pageable));
     }
 
 }

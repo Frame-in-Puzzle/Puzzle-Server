@@ -19,6 +19,6 @@ public class ProfileUpdateDto {
     private String email;
     private String bio;
     private Field field;
-    private List<Language> language;
+    private List<Language> languages;
 
 }
