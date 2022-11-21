@@ -66,7 +66,7 @@
 
 ## API 명세서
 
-API 명세서는 노션으로 작성되어 해당 [링크](https://honghyunin.notion.site/API-6d4285d9dec94e228fad2ecfc9875172)를 통해 확인해보실 수 있습니다!
+API 명세서는 노션으로 작성되어 해당 [링크](https://spiritual-blanket-3f1.notion.site/API-99ef80b68ffb4602bfa3c9a7247efd9a)를 통해 확인해보실 수 있습니다!
 
 
 ## 프로젝트 UI
